@@ -79,36 +79,39 @@
   <ItemGroup>
     <Reference Include="CameraToImage_dll, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BSC_dll_pack\BSC_dll_pack\bin\Release\CameraToImage_dll.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack\BSC_dll_pack\bin\Release\CameraToImage_dll.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_sharedlib\x86\Reference\Emgu.CV.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.GPU, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_sharedlib\x86\Reference\Emgu.CV.GPU.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\Emgu.CV.GPU.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.OCR">
-      <HintPath>..\..\_sharedlib\x86\Reference\Emgu.CV.OCR.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\Emgu.CV.OCR.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.UI">
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_sharedlib\x86\Reference\Emgu.Util.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="FlyCap2CameraControl_v100, Version=2.8.3.1, Culture=neutral, PublicKeyToken=5abeeda345e59824, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_sharedlib\x86\Reference\FC_VS2013_release_2.8\FlyCap2CameraControl_v100.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\FC_VS2013_release_2.8\FlyCap2CameraControl_v100.dll</HintPath>
     </Reference>
     <Reference Include="FlyCapture2Managed_v100, Version=2.8.3.1, Culture=neutral, PublicKeyToken=76c6583b4a4585f4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_sharedlib\x86\Reference\FC_VS2013_release_2.8\FlyCapture2Managed_v100.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\FC_VS2013_release_2.8\FlyCapture2Managed_v100.dll</HintPath>
     </Reference>
     <Reference Include="mUserControl_BSC_dll">
-      <HintPath>..\..\BSC_dll_pack\BSC_dll_pack\bin\Release\mUserControl_BSC_dll.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack\BSC_dll_pack\bin\Release\mUserControl_BSC_dll.dll</HintPath>
     </Reference>
     <Reference Include="OpenCV_BSC_dll">
-      <HintPath>..\..\BSC_dll_pack\BSC_dll_pack\bin\Release\OpenCV_BSC_dll.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack\BSC_dll_pack\bin\Release\OpenCV_BSC_dll.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -123,13 +126,13 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Utilities_BSC_dll">
-      <HintPath>..\..\BSC_dll_pack\BSC_dll_pack\bin\Release\Utilities_BSC_dll.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack\BSC_dll_pack\bin\Release\Utilities_BSC_dll.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="zxing">
-      <HintPath>..\..\_ExampleCodes\ZXing.Net.0.14.0.0(barcodeReader)\net4.5\zxing.dll</HintPath>
+      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x86\Reference\zxing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -290,7 +293,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)dlls\* $(ProjectDir)$(OutDir)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
