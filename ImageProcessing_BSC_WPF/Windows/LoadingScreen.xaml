@@ -1,0 +1,25 @@
+﻿<Window x:Class="ImageProcessing_BSC_WPF.LoadingScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageProcessing_BSC_WPF"
+        mc:Ignorable="d"
+        Title="LoadingScreen"  ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}" >
+    <Border Height="300" Width="500" >
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20"/>
+        </Border.Effect>
+        <Grid Background="{DynamicResource Background_darkgray}">
+            <DockPanel Height="100" Width="300">
+                <Image Source="../Resources/title.png" DockPanel.Dock="Left"/>
+                <Label DockPanel.Dock="Right" Content="Image Processing" FontFamily="Impact" FontSize="24"/>
+            </DockPanel>
+
+            <Label x:Name="lbl_version" VerticalAlignment="Center" Content="ver. " FontSize="14" Opacity="0.5" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,59,55,0"/>
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                <Label VerticalAlignment="Bottom" Content="Copyright by Bojun Lin" Margin="0,0,0,10" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

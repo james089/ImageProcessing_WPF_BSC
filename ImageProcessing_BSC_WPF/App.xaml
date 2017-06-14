@@ -1,0 +1,8 @@
+﻿<Application x:Class="ImageProcessing_BSC_WPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="/Windows/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary Source="/mUserControl_BSC_dll;component/Theme/DarkBlue.xaml"/>
+    </Application.Resources>
+</Application>
