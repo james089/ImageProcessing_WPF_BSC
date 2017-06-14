@@ -2,7 +2,10 @@
 linbojun089@gmail.com	
 
 change log:
-
+2017/6/14
+v3.5.0.0
+1. Removed winhost, use WPF only
+2. Moved to GitHub
 
 2017/5/8
 v3.0.0.0
