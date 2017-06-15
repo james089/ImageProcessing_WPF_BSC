@@ -10,6 +10,13 @@ using ZXing.Common;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
+
+    public enum decodeMode
+    {
+        SINGLE,
+        MULTIPLE
+    }
+
     /// <summary>
     /// A barcode reader which accepts an Image instance from EmguCV
     /// </summary>

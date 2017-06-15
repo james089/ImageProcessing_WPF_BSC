@@ -13,19 +13,6 @@ using Emgu.CV.Structure;
 
 namespace ImageProcessing_BSC_WPF
 {
-    public enum decodeMode
-    {
-        SINGLE,
-        MULTIPLE
-    }
-
-    public enum previewFPS
-    {
-        LOW = 5,
-        MEDIUM = 30,
-        HIGH = 60
-    }
-
     public enum ErrorCode
     {
         Normal,
@@ -44,10 +31,6 @@ namespace ImageProcessing_BSC_WPF
         public static camType _camSelected;
         public static previewFPS _previewFPS;
 
-        public static DetectionType _detectionType;
-        public static featureDetectionType _featureType;
-        public static objectDetectionType _objectType;
-
         public static bool _cameraConnected = false;
         public static bool _capturing = false;
         public static bool _pictureLoaded = false;
@@ -65,9 +48,8 @@ namespace ImageProcessing_BSC_WPF
         public static Image<Bgr, byte> imgOriginal;
         public static Image<Bgr, byte> imgProcessed;
         public static Image<Bgr, byte> object_img = null;
+
         public static bool _colorInverse = false;
-        
-        public static string detectedOCR;
 
         public static Graphics mGraphics;
 

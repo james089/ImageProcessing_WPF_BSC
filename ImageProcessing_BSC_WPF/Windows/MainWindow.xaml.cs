@@ -356,29 +356,28 @@ namespace ImageProcessing_BSC_WPF
 
         private void Radio_original_Checked(object sender, RoutedEventArgs e)
         {
-            GV._featureType = featureDetectionType.original;
+            NCVFuns._featureType = featureDetectionType.original;
         }
 
         private void Radio_cannyEdge_Checked(object sender, RoutedEventArgs e)
         {
-            GV._featureType = featureDetectionType.cannyEdge;
+            NCVFuns._featureType = featureDetectionType.cannyEdge;
         }
 
         private void Radio_contour_Checked(object sender, RoutedEventArgs e)
         {
-            GV._featureType = featureDetectionType.contour;
+            NCVFuns._featureType = featureDetectionType.contour;
         }
 
         private void Radio_line_Checked(object sender, RoutedEventArgs e)
         {
-            GV._featureType = featureDetectionType.line;
+            NCVFuns._featureType = featureDetectionType.line;
         }
 
         private void Radio_invert_Checked(object sender, RoutedEventArgs e)
         {
             GV._colorInverse = (bool)Radio_invert.IsChecked;
         }
-
 
         private void Btn_apply_Click(object sender, RoutedEventArgs e)
         {
@@ -441,24 +440,24 @@ namespace ImageProcessing_BSC_WPF
 
         private void Radio_FFT_Checked(object sender, RoutedEventArgs e)
         {
-            GV._objectType = objectDetectionType.FFT;
+            NCVFuns._objectType = objectDetectionType.FFT;
         }
 
         private void Radio_Color_Checked(object sender, RoutedEventArgs e)
         {
-            GV._objectType = objectDetectionType.color;
+            NCVFuns._objectType = objectDetectionType.color;
         }
 
         private void Chk_enableObjectD_Checked(object sender, RoutedEventArgs e)
         {
-            GV._detectionType = DetectionType.Object;
+            NCVFuns._detectionType = DetectionType.Object;
             toggleExpander_object(true);
             Expander_feature.IsEnabled = false;
         }
 
         private void Chk_enableObjectD_Unchecked(object sender, RoutedEventArgs e)
         {
-            GV._detectionType = DetectionType.Feature;
+            NCVFuns._detectionType = DetectionType.Feature;
 
             toggleExpander_object(false);
             Expander_feature.IsEnabled = true;

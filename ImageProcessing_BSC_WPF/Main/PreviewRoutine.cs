@@ -17,6 +17,13 @@ using Utilities_BSC_dll;
 
 namespace ImageProcessing_BSC_WPF
 {
+    public enum previewFPS
+    {
+        LOW = 5,
+        MEDIUM = 30,
+        HIGH = 60
+    }
+
     public class PreviewRoutine
     {
         public static BackgroundWorker previewRoutine = new BackgroundWorker();
@@ -56,7 +63,6 @@ namespace ImageProcessing_BSC_WPF
             //Detect code
             if (GV._decodeSwitch)
             {
-                //BarcodeDecoder.drawDecodeResultInImg(GV.imgOriginal.ToBitmap());
                 if (BarcodeDecoder.outputStringList[0] != null) GV.mMainWindow.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
             }
 
@@ -100,6 +106,8 @@ namespace ImageProcessing_BSC_WPF
                 if (GV._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, GV._detectionType, out GV._err);
                 else GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
 
+                if (GV._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
+
                 // Checking center
                 if (GV._findCenterSwitch)
                 {
@@ -129,11 +137,6 @@ namespace ImageProcessing_BSC_WPF
                 if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0)
                 {
                     GV.imgProcessed.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
-                    /*
-                    GV.mGraphics = Graphics.FromImage(GV.imgProcessed);
-                    GV.mGraphics.DrawRectangle(new Pen(Brushes.Red) { Width = 2 }, OCR.croppedOCRArea);
-                    GV.mGraphics.Dispose();
-                    */
                 }
 
                 previewRoutine.ReportProgress(0);

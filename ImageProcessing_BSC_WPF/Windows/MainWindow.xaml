@@ -96,11 +96,6 @@
                             </GroupBox>
                         </Grid>
                     </Expander>
-                    <Expander x:Name="Expander_staticPicture" Header="Static Picture Editting" Grid.Row="2" Margin="0,5,0,0" RenderTransformOrigin="0.5,0.5" ExpandDirection="Down" >
-                        <Grid>
-
-                        </Grid>
-                    </Expander>
                     <Expander x:Name="Expander_feature" Header="Feature Detection" Grid.Row="3" Margin="0,5,0,0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect features" IsHitTestVisible="True" ExpandDirection="Down" >
                         <Grid>
                             <WrapPanel Margin="5,0">

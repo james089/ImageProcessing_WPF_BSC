@@ -17,6 +17,10 @@ namespace ImageProcessing_BSC_WPF.Modules
     /// </summary>
     public class NCVFuns
     {
+        public static DetectionType _detectionType;
+        public static featureDetectionType _featureType;
+        public static objectDetectionType _objectType;
+
         public static Image<Bgr, byte> Detection(Image<Bgr, byte> originalImage, DetectionType DT, out ErrorCode Err)
         {
             Err = ErrorCode.Normal;
@@ -24,7 +28,7 @@ namespace ImageProcessing_BSC_WPF.Modules
             switch (DT)
             {
                 case DetectionType.Feature:
-                    switch (GV._featureType)
+                    switch (_featureType)
                     {
                         case featureDetectionType.cannyEdge:
                             b = ContourDetection.cannyEdges(originalImage, false).Convert<Bgr, Byte>(); break;
@@ -38,7 +42,7 @@ namespace ImageProcessing_BSC_WPF.Modules
                     if (GV.imgOriginal != null && GV.object_img != null)
                     {
                         Image<Bgr, byte> outPutImg = GV.imgOriginal;
-                        switch (GV._objectType)
+                        switch (_objectType)
                         {
                             case objectDetectionType.FFT:
                                 if (!FFT.searchObject_FFT(GV.imgOriginal, GV.object_img, out outPutImg))
