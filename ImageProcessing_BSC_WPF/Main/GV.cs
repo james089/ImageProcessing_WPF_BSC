@@ -56,8 +56,8 @@ namespace ImageProcessing_BSC_WPF
 
         public static Graphics mGraphics;
 
-        public static CameraToImage_dll.CameraConnection mCamera;
-        public static CameraToImage_dll.Conversion mConvert;
+        public static CameraConnection mCamera = null;
+        public static CameraToImage_dll.Windows.Conversion mConvert;
 
         public static Setting mSetting;
 

@@ -28,6 +28,7 @@ using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll;
 using System.Drawing;
 using OpenCV_BSC_dll.Windows;
+using CameraToImage_dll.Windows;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -257,8 +258,14 @@ namespace ImageProcessing_BSC_WPF
 
         private void Menu_conversion_Click(object sender, RoutedEventArgs e)
         {
-            GV.mConvert = new Conversion(GV.mCamera, GV.imgWidth, GV.imgHeight);
-            GV.mConvert.ShowDialog();
+            if (GV.mCamera != null && GV.mCamera.IsConnected)
+            {
+                PreviewRoutine.stopPreview();
+                GV.mConvert = new Conversion(GV.mCamera, GV.imgWidth, GV.imgHeight);
+                GV.mConvert.ShowDialog();
+            }
+            else
+                mMessageBox.Show("Connect a camera first!");
         }
 
         #endregion  <Menu operation>
