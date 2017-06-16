@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -20,11 +21,21 @@ namespace ImageProcessing_BSC_WPF
     /// </summary>
     public partial class LoadingScreen : Window
     {
+        DispatcherTimer timer = new DispatcherTimer();
         public LoadingScreen()
         {
             InitializeComponent();
 
             lbl_version.Content = "ver." + Assembly.GetExecutingAssembly().GetName().Version;
+            timer.Interval = TimeSpan.FromSeconds(3);
+            timer.Tick += timer_tick;
+            timer.Start();
+        }
+
+        private void timer_tick(object sender, EventArgs e)
+        {
+            timer.Stop();
+            this.Close();
         }
     }
 }

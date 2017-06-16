@@ -68,7 +68,7 @@ namespace ImageProcessing_BSC_WPF
 
             if (GV._OCRSwitch)
             {
-                GV.mMainWindow.lbl_OCR.Content = GV.detectedOCR;
+                GV.mMainWindow.lbl_OCR.Content = OCR.detectedOCRString;
             }
             // Normal
             GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
@@ -103,10 +103,10 @@ namespace ImageProcessing_BSC_WPF
 
 
                 //====Display Processed image========== 
-                if (GV._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, GV._detectionType, out GV._err);
+                if (NCVFuns._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
                 else GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
 
-                if (GV._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
+                if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
 
                 // Checking center
                 if (GV._findCenterSwitch)
@@ -131,7 +131,7 @@ namespace ImageProcessing_BSC_WPF
                 {
                     if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0) OCR.croppedOriginalImg = GV.imgOriginal.Copy(OCR.croppedOCRArea);
                     else OCR.croppedOriginalImg = GV.imgOriginal;
-                    GV.detectedOCR = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.imgProcessed);
+                    OCR.detectedOCRString = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.imgProcessed);
                 }
                 // OCR cropped Area display
                 if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0)

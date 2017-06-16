@@ -19,7 +19,7 @@ namespace ImageProcessing_BSC_WPF.Modules
     }
     public class OCR
     {
-        public static string detectedOCR;
+        public static string detectedOCRString;
 
         private static Tesseract _ocr;
         private static double timeSpent;
@@ -60,7 +60,7 @@ namespace ImageProcessing_BSC_WPF.Modules
         private static void OCRRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
-            GV.mMainWindow.lbl_OCR.Content = detectedOCR + " [" + timeSpent.ToString("#") + " ms]";
+            GV.mMainWindow.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
         }
 
         private static void OCRRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -74,7 +74,7 @@ namespace ImageProcessing_BSC_WPF.Modules
             if (croppedOCRArea.Width * croppedOCRArea.Height != 0) croppedOriginalImg = GV.imgOriginal.Copy(croppedOCRArea);
             else croppedOriginalImg = GV.imgOriginal;
 
-            detectedOCR = OCRDetect(croppedOriginalImg, out GV.imgProcessed);
+            detectedOCRString = OCRDetect(croppedOriginalImg, out GV.imgProcessed);
             timeSpent = (DateTime.Now - startTime).TotalMilliseconds;
         }
 

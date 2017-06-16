@@ -10,6 +10,7 @@ using Utilities_BSC_dll;
 using ZXing;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using OpenCV_BSC_dll.Windows;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -22,8 +23,10 @@ namespace ImageProcessing_BSC_WPF
         SearchColor_Fail
     }
 
-    public static class GV
+    public class GV
     {
+        public static MainWindow mMainWindow = null;
+
         public static int _pictureBoxWidthRatio = 4;
         public static int _pictureBoxHeightRatio = 3;
 
@@ -56,9 +59,7 @@ namespace ImageProcessing_BSC_WPF
         public static CameraToImage_dll.CameraConnection mCamera;
         public static CameraToImage_dll.Conversion mConvert;
 
-        public static OpenCV_BSC_dll.Setting mSetting = new Setting();
-
-        public static MainWindow mMainWindow = null;
+        public static Setting mSetting;
 
     }
 }

@@ -27,6 +27,7 @@ using ZXing.QrCode;
 using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll;
 using System.Drawing;
+using OpenCV_BSC_dll.Windows;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -48,8 +49,9 @@ namespace ImageProcessing_BSC_WPF
 
         public MainWindow()
         {
-            InitializeComponent();
             loadingScreen.Show();
+            InitializeComponent();
+
             //Static MainWindow
             GV.mMainWindow = this;
 
@@ -59,15 +61,14 @@ namespace ImageProcessing_BSC_WPF
             BarcodeDecoder.decoderSetup();
             OCR.OCRSetup(OCRMode.NUMBERS);
 
-            loadProgramSetting();
-            applyProgramSetting();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Title.Content = "Image processing vers." + Assembly.GetExecutingAssembly().GetName().Version;
 
-            loadingScreen.Close();
+            loadProgramSetting();
+            applyProgramSetting();
         }
 
         private void loadProgramSetting()
@@ -125,7 +126,7 @@ namespace ImageProcessing_BSC_WPF
         private void Btn_close_Click(object sender, RoutedEventArgs e)
         {
             saveProgramSetting();
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void Btn_minimize_Click(object sender, RoutedEventArgs e)

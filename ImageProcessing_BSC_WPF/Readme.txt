@@ -2,10 +2,15 @@
 linbojun089@gmail.com	
 
 change log:
+2017/6/15
+v3.5.0.1
+1. Loading Screen constant 3s
+
 2017/6/14
 v3.5.0.0
 1. Removed winhost, use WPF only
 2. Moved to GitHub
+3. Open cv dlls removed from project, add to exe folder manually
 
 2017/5/8
 v3.0.0.0
