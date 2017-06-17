@@ -4,7 +4,7 @@ linbojun089@gmail.com
 change log:
 2017/6/15
 v3.5.0.1
-1. Loading Screen constant 3s
+1. Loading Screen constant 2s
 
 2017/6/14
 v3.5.0.0

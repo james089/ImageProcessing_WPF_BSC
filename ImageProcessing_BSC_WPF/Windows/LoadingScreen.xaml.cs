@@ -27,7 +27,7 @@ namespace ImageProcessing_BSC_WPF
             InitializeComponent();
 
             lbl_version.Content = "ver." + Assembly.GetExecutingAssembly().GetName().Version;
-            timer.Interval = TimeSpan.FromSeconds(3);
+            timer.Interval = TimeSpan.FromSeconds(2);
             timer.Tick += timer_tick;
             timer.Start();
         }

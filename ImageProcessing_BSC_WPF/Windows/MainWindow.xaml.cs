@@ -152,7 +152,7 @@ namespace ImageProcessing_BSC_WPF
                 System.Drawing.Point p = new System.Drawing.Point();
                 p.X = (int)e.GetPosition(ibOriginal).X;
                 p.Y = (int)e.GetPosition(ibOriginal).Y;
-                ImageCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, 0.5);
+                ImageCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, GV._zoomFactor);
             }
         }
 
@@ -181,7 +181,7 @@ namespace ImageProcessing_BSC_WPF
                 System.Drawing.Point p = new System.Drawing.Point();
                 p.X = (int)e.GetPosition(ibOriginal).X;
                 p.Y = (int)e.GetPosition(ibOriginal).Y;
-                ImageCropping.WPF_mouseMove(ibOriginal, p, 0.5);
+                ImageCropping.WPF_mouseMove(ibOriginal, p, GV._zoomFactor);
             }
         }
 
@@ -191,7 +191,7 @@ namespace ImageProcessing_BSC_WPF
             if (GV.imgOriginal != null)
             {
                 ibOriginal.Cursor = Cursors.Arrow;
-                ImageCropping.WPF_mouseUp(ibOriginal, 0.5);
+                ImageCropping.WPF_mouseUp(ibOriginal, GV._zoomFactor);
             }
         }   
         
@@ -206,8 +206,8 @@ namespace ImageProcessing_BSC_WPF
             Image<Bgr,byte> loadPic = new Image<Bgr, byte>(Tools.loadPicture_withDialog());
             if (loadPic != null)
             {
-                GV.imgOriginal = new Image<Bgr, byte>( ImageStiching.createFixRatioBitmap(loadPic.ToBitmap(), 4, 3));
-                //ibOriginal.Image = GV.imgOriginal;
+                GV.imgOriginal = ImageStiching.createFixRatioBitmap(loadPic, 4, 3);
+                ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
                 GV._pictureLoaded = true;
                 GF.updateImgInfo();
             }
@@ -261,6 +261,7 @@ namespace ImageProcessing_BSC_WPF
             if (GV.mCamera != null && GV.mCamera.IsConnected)
             {
                 PreviewRoutine.stopPreview();
+
                 GV.mConvert = new Conversion(GV.mCamera, GV.imgWidth, GV.imgHeight);
                 GV.mConvert.ShowDialog();
             }

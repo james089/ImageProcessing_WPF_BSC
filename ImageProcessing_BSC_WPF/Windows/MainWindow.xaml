@@ -46,8 +46,8 @@
                     </MenuItem>
                 </Menu>
 
-                <Viewbox x:Name="ibOriginalHolder" Margin="0" Grid.Row="1" MouseDown="ibOriginal_MouseDown" MouseMove="ibOriginal_MouseMove" MouseUp="ibOriginal_MouseUp">
-                    <Image x:Name="ibOriginal" Height="480" Width="640" />
+                <Viewbox x:Name="ibOriginalHolder" Margin="0" Grid.Row="1" >
+                    <Image x:Name="ibOriginal" Height="480" Width="640" MouseDown="ibOriginal_MouseDown" MouseMove="ibOriginal_MouseMove" MouseUp="ibOriginal_MouseUp"/>
                 </Viewbox>
 
                 <Grid x:Name="Control_Info_Panel" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Margin="5,0,5,5">
