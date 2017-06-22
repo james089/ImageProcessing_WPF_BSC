@@ -2,6 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+2017/6/21
+v3.5.1.0
+1. Added cropped view
+2. Added universal static image processing
+
 2017/6/15
 v3.5.0.1
 1. Loading Screen constant 2s

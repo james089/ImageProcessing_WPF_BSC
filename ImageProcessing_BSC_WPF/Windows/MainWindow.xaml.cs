@@ -70,13 +70,15 @@ namespace ImageProcessing_BSC_WPF
 
             loadProgramSetting();
             applyProgramSetting();
+
+            Chk_connectCam.IsChecked = true;
         }
 
         private void loadProgramSetting()
         {
             GV._camSelected = (camType)Properties.Settings.Default.camSelection;
             GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
-            GV._previewFPS = (previewFPS)Properties.Settings.Default.previewFPS;
+            PreviewRoutine._previewFPS = (previewFPS)Properties.Settings.Default.previewFPS;
         }
 
         private void applyProgramSetting()
@@ -109,7 +111,7 @@ namespace ImageProcessing_BSC_WPF
         {
             Properties.Settings.Default.camSelection = (int)GV._camSelected;
             Properties.Settings.Default.camConnect = GV._camConnectAtStartup;
-            Properties.Settings.Default.previewFPS = (int) GV._previewFPS;
+            Properties.Settings.Default.previewFPS = (int) PreviewRoutine._previewFPS;
 
             Properties.Settings.Default.Save();
         }
@@ -252,9 +254,8 @@ namespace ImageProcessing_BSC_WPF
 
         private void preferenceWindow_preferenceUpdated(object sender, EventArgs e)
         {
-            PreviewRoutine.startPreview(GV._previewFPS);
+            PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
         }
-
 
         private void Menu_conversion_Click(object sender, RoutedEventArgs e)
         {
@@ -267,6 +268,18 @@ namespace ImageProcessing_BSC_WPF
             }
             else
                 mMessageBox.Show("Connect a camera first!");
+        }
+
+
+        private void Tools_cropView_Checked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsCropViewEnabled = true;
+            if (!PreviewRoutine.IsCapturing) PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+        }
+
+        private void Tools_cropView_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsCropViewEnabled = false;
         }
 
         #endregion  <Menu operation>
@@ -316,37 +329,14 @@ namespace ImageProcessing_BSC_WPF
             saveProgramSetting(); 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)                    //Preview Button
-        {
-            if ((bool)Chk_connectCam.IsChecked)
-            {
-                if (GV._capturing == true)
-                {
-                    PreviewRoutine.stopPreview();                    //stop capturing 
-                    //Chk_connectCam.IsEnabled = false;
-                    if (GV.imgOriginal != null)
-                    {
-                        GV._pictureLoaded = true;
-                    }
-                    GV._capturing = false;
-                }
-                else
-                {
-                    PreviewRoutine.startPreview(GV._previewFPS);
-                    //Chk_connectCam.IsEnabled = false;
-                    GV._capturing = true;
-                }
-            }
-            else
-                mMessageBox.Show("Please connect camera first!");
-        }
-
         private void Chk_connectCam_Checked(object sender, RoutedEventArgs e)
         {
+            if (!IsLoaded) return;
+
             switch (GV._camSelected)
             {
                 case camType.WebCam:
-                    ConnectRoutine.connectWebCam();break;
+                    ConnectRoutine.connectWebCam(); break;
                 case camType.PointGreyCam:
                     ConnectRoutine.connectPointGreyCam(); break;
             }
@@ -354,7 +344,9 @@ namespace ImageProcessing_BSC_WPF
 
         private void Chk_connectCam_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (GV._capturing)
+            if (!IsLoaded) return;
+
+            if (PreviewRoutine.IsCapturing)
                 PreviewRoutine.stopPreview();
             if (GV.mCamera.IsConnected)                                           //if there is a camera, dispose and reconnect.
             {
@@ -363,6 +355,62 @@ namespace ImageProcessing_BSC_WPF
             }
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)                    //Preview Button
+        {
+            if ((bool)Chk_connectCam.IsChecked)
+            {
+                if (PreviewRoutine.IsCapturing == true)
+                {
+                    PreviewRoutine.stopPreview();                    //stop capturing 
+                    //Chk_connectCam.IsEnabled = false;
+                    if (GV.imgOriginal != null)
+                    {
+                        GV._pictureLoaded = true;
+                    }
+                    PreviewRoutine.IsCapturing = false;
+                }
+                else
+                {
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+                    //Chk_connectCam.IsEnabled = false;
+                    PreviewRoutine.IsCapturing = true;
+                }
+            }
+            else
+                mMessageBox.Show("Please connect camera first!");
+        }
+
+        private void Btn_staticProcess_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.originalImageProcessing();
+            PreviewRoutine.processedImageDisplaying();
+            PreviewRoutine.GUIUpdates();
+        }
+
+
+        private void Btn_capture_Click(object sender, RoutedEventArgs e)
+        {
+            if (PreviewRoutine.IsCapturing && GV.imgOriginal != null)
+            {
+                if (Combo_saveOption.SelectedItem == Combo_originalImage)
+                {
+                    ibOriginal.Source = null;
+                    sound.Play();
+                    Thread.Sleep(200);
+                    Tools.savePicture_withDialog(GV.imgOriginal.ToBitmap());
+                }
+                else
+                {
+                    ibOriginal.Source = null;
+                    sound.Play();
+                    Thread.Sleep(200);
+                    Tools.savePicture_withDialog(GV.imgProcessed.ToBitmap());
+                }
+            }
+
+        }
+
+        #region Feature Detection
         private void Radio_original_Checked(object sender, RoutedEventArgs e)
         {
             NCVFuns._featureType = featureDetectionType.original;
@@ -383,42 +431,7 @@ namespace ImageProcessing_BSC_WPF
             NCVFuns._featureType = featureDetectionType.line;
         }
 
-        private void Radio_invert_Checked(object sender, RoutedEventArgs e)
-        {
-            GV._colorInverse = (bool)Radio_invert.IsChecked;
-        }
-
-        private void Btn_apply_Click(object sender, RoutedEventArgs e)
-        {
-            if (GV._pictureLoaded && GV.imgOriginal != null)
-            {
-                //====Processed image==========
-                GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Feature, out GV._err);
-                ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
-            }
-        }
-
-        private void Btn_capture_Click(object sender, RoutedEventArgs e)
-        {
-            if (GV._capturing && GV.imgOriginal != null)
-            {
-                if (Combo_saveOption.SelectedItem == Combo_originalImage)
-                {
-                    ibOriginal.Source = null;
-                    sound.Play();
-                    Thread.Sleep(200);
-                    Tools.savePicture_withDialog(GV.imgOriginal.ToBitmap());
-                }
-                else
-                {
-                    ibOriginal.Source = null;
-                    sound.Play();
-                    Thread.Sleep(200);
-                    Tools.savePicture_withDialog(GV.imgProcessed.ToBitmap());
-                }
-            }
-
-        }
+        #endregion Feature Detection
 
         private void Btn_setObject_Click(object sender, RoutedEventArgs e)
         {
@@ -427,7 +440,7 @@ namespace ImageProcessing_BSC_WPF
                 Image<Bgr, byte> Img = GV.imgOriginal;
                 GV.object_img = Img.Copy(ImageCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
                 ibObject.Source = Converter.ToBitmapSource(GV.object_img);
-                PreviewRoutine.startPreview(GV._previewFPS);
+                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
 
@@ -522,19 +535,19 @@ namespace ImageProcessing_BSC_WPF
         {
             if (GV.mCamera != null && GV.mCamera.IsConnected)
             {
-                if (GV._capturing)
+                if (PreviewRoutine.IsCapturing)
                 {
                     PreviewRoutine.stopPreview();
                     GV.mMainWindow.TB_info.Text = "Select the area and hit set area again to confirm";
                 }
-                else if (!GV._capturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
+                else if (!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
                 {
                     OCR.croppedOCRArea = ImageCropping.rect;
-                    PreviewRoutine.startPreview(GV._previewFPS);
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
                     GV.mMainWindow.TB_info.Text = "Area set! Only do OCR inside the red rectangle!";
                 }
             }
-            else if(!GV._capturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)   //crop static picture
+            else if(!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)   //crop static picture
             {
                 OCR.croppedOCRArea = ImageCropping.rect;
                 GV.mMainWindow.TB_info.Text = "Area set! Only do OCR inside the red rectangle!";

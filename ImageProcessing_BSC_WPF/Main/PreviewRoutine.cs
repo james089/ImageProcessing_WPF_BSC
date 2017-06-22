@@ -14,6 +14,8 @@ using System.Windows;
 using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll;
 using Utilities_BSC_dll;
+using OpenCV_BSC_dll.Windows;
+using OpenCV_BSC_dll.General;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -27,6 +29,9 @@ namespace ImageProcessing_BSC_WPF
     public class PreviewRoutine
     {
         public static BackgroundWorker previewRoutine = new BackgroundWorker();
+        public static bool IsCropViewEnabled = false;
+        public static bool IsCapturing = false;
+        public static previewFPS _previewFPS;
 
         public static void previewSetup()
         {
@@ -40,24 +45,31 @@ namespace ImageProcessing_BSC_WPF
         public static void startPreview(previewFPS previewFPS)
         {
             GV.mMainWindow.Btn_PR.Content = "Pause";
-            GV._capturing = true;
+            IsCapturing = true;
+            GV.mMainWindow.Btn_staticProcess.IsEnabled = false;
             previewRoutine.RunWorkerAsync(previewFPS);
         }
 
         public static void stopPreview()
         {
             GV.mMainWindow.Btn_PR.Content = "Resume";
-            GV._capturing = false;
+            IsCapturing = false;
+            GV.mMainWindow.Btn_staticProcess.IsEnabled = true;
             previewRoutine.CancelAsync();
         }
 
 
         private static void previewRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            GV._capturing = false;
+            IsCapturing = false;
         }
 
         private static void previewRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            GUIUpdates();
+        }
+
+        public static void GUIUpdates()
         {
             GV.mMainWindow.listBox.Items.Clear();
             //Detect code
@@ -78,7 +90,7 @@ namespace ImageProcessing_BSC_WPF
 
         private static void previewRoutine_doWork(object sender, DoWorkEventArgs e)
         {
-            GV._capturing = true;
+            IsCapturing = true;
             previewFPS FPS = (previewFPS)e.Argument;
             while (!previewRoutine.CancellationPending)
             {
@@ -98,51 +110,67 @@ namespace ImageProcessing_BSC_WPF
                         GV.imgOriginal = GV.mCamera.capture(); break;
                 }
 
-                // Inverse color
-                if (GV._colorInverse) GV.imgOriginal = GV.imgOriginal.Not();
+                originalImageProcessing();
 
-
-                //====Display Processed image========== 
-                if (NCVFuns._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
-                else GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
-
-                if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
-
-                // Checking center
-                if (GV._findCenterSwitch)
-                {
-                    CheckCenter.checkCenter();
-                }
-
-                // Checking distance
-                else if (GV._findMinSwitch)
-                {
-                    FindMinDistance.findMinDistance();
-                }
-
-                // Decoding
-                else if (GV._decodeSwitch)
-                {
-                    BarcodeDecoder.decoding();
-                }
-
-                // OCR detection
-                else if (GV._OCRSwitch)
-                {
-                    if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0) OCR.croppedOriginalImg = GV.imgOriginal.Copy(OCR.croppedOCRArea);
-                    else OCR.croppedOriginalImg = GV.imgOriginal;
-                    OCR.detectedOCRString = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.imgProcessed);
-                }
-                // OCR cropped Area display
-                if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0)
-                {
-                    GV.imgProcessed.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
-                }
-
+                processedImageDisplaying();
+                
                 previewRoutine.ReportProgress(0);
 
                 Thread.Sleep(1000 / (int)FPS);
             }
+        }
+
+        public static void processedImageDisplaying()
+        {
+            //====Display Processed image========== 
+            if (NCVFuns._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
+            else GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
+
+            if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
+
+            // Checking center
+            if (GV._findCenterSwitch)
+            {
+                CheckCenter.checkCenter();
+            }
+
+            // Checking distance
+            else if (GV._findMinSwitch)
+            {
+                FindMinDistance.findMinDistance();
+            }
+
+            // Decoding
+            else if (GV._decodeSwitch)
+            {
+                BarcodeDecoder.decoding();
+            }
+
+            // OCR detection
+            else if (GV._OCRSwitch)
+            {
+                if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0) OCR.croppedOriginalImg = GV.imgOriginal.Copy(OCR.croppedOCRArea);
+                else OCR.croppedOriginalImg = GV.imgOriginal;
+                OCR.detectedOCRString = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.imgProcessed);
+            }
+            // OCR cropped Area display
+            if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0)
+            {
+                GV.imgProcessed.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
+            }
+        }
+
+        public static void originalImageProcessing()
+        {
+            // Inverse color
+            if (Setting.IsColorInverseEnabled) GV.imgOriginal = ImageProcessing.colorInvert(GV.imgOriginal);
+
+            // Color filtering
+            if (Setting.IsColorFilterEnabled) GV.imgOriginal = ImageProcessing.colorFilter(GV.imgOriginal.Convert<Gray, byte>()).Convert<Bgr, byte>();
+
+            // Cropped View
+            if (ImageCropping.rect.Size != new System.Drawing.Size(0, 0) && IsCropViewEnabled)
+                GV.imgOriginal = GV.imgOriginal.Copy(ImageCropping.rect);
         }
     }
 }

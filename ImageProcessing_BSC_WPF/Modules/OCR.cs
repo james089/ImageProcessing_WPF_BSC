@@ -9,6 +9,7 @@ using Emgu.CV.Structure;
 using System.ComponentModel;
 using System.IO;
 using Utilities_BSC_dll;
+using OpenCV_BSC_dll;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
@@ -40,7 +41,6 @@ namespace ImageProcessing_BSC_WPF.Modules
                     _ocr = new Tesseract(dir, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
                     break;
             }
-            
 
             OCRRoutine.DoWork += new DoWorkEventHandler(OCRRoutine_doWork);
             OCRRoutine.ProgressChanged += new ProgressChangedEventHandler(OCRRoutine_ProgressChanged);
@@ -79,6 +79,17 @@ namespace ImageProcessing_BSC_WPF.Modules
         }
 
         /// <summary>
+        /// Overload
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <returns></returns>
+        public static string OCRDetect(Image<Bgr, byte> inputImage)
+        {
+            Image<Bgr, byte> ProcessedImage = inputImage;
+            return OCRDetect(inputImage, out ProcessedImage);
+        }
+
+        /// <summary>
         /// Processed Image is the one with some rectangles
         /// </summary>
         /// <param name="inputImage"></param>
@@ -88,23 +99,32 @@ namespace ImageProcessing_BSC_WPF.Modules
         {
             ProcessedImage = inputImage;
             Bgr drawColor = new Bgr(Color.Blue);
+
+            Image<Bgr, byte> cleanedInputImage = inputImage.Copy();
+
+            //cleanedInputImage = filterNoise(cleanedInputImage, 200);
+
             try
             {
-                Image<Bgr, Byte> image = inputImage;
-
-                using (Image<Gray, byte> gray = image.Convert<Gray, Byte>())
+                using (Image<Gray, byte> gray = cleanedInputImage.Convert<Gray, Byte>())
                 {
                     _ocr.Recognize(gray);
                     Tesseract.Charactor[] charactors = _ocr.GetCharactors();
                     foreach (Tesseract.Charactor c in charactors)
                     {
-                        image.Draw(c.Region, drawColor, 1);
+                        if (c.Region.Width * c.Region.Height < 100)
+                        {
+                            cleanedInputImage.Draw(c.Region, new Bgr(Color.Red), 1);
+                        }
+                        else
+                            cleanedInputImage.Draw(c.Region, drawColor, 1);
+
                     }
 
-                    ProcessedImage = image;
+                    ProcessedImage = cleanedInputImage;
 
                     //String text = String.Concat( Array.ConvertAll(charactors, delegate(Tesseract.Charactor t) { return t.Text; }) );
-                    String text = _ocr.GetText();
+                    string text = _ocr.GetText();
                     return text;
                 }
             }
@@ -112,28 +132,9 @@ namespace ImageProcessing_BSC_WPF.Modules
             {
                 return "NULL";
             }
+
         }
 
-        public static string OCRDetect(Bitmap inputImage)
-        {
-            try
-            {
-                Image<Bgr, Byte> image = new Image<Bgr, byte>(inputImage);
-
-                using (Image<Gray, byte> gray = image.Convert<Gray, Byte>())
-                {
-                    _ocr.Recognize(gray);
-
-                    String text = _ocr.GetText();
-                    return text;
-                }
-            }
-            catch (Exception exception)
-            {
-                return "NULL";
-            }
-        }
-
-
+      
     }
 }

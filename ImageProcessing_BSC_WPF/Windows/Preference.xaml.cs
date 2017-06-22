@@ -37,14 +37,14 @@ namespace ImageProcessing_BSC_WPF
         private void loadProgramSetting()
         {
             GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
-            GV._previewFPS = (previewFPS) Properties.Settings.Default.previewFPS;
+            PreviewRoutine._previewFPS = (previewFPS) Properties.Settings.Default.previewFPS;
         }
 
         private void applyProgramSetting()
         {
             Chk_connectAtStartUp.IsChecked = GV._camConnectAtStartup;
 
-            switch(GV._previewFPS)
+            switch(PreviewRoutine._previewFPS)
             {
                 case previewFPS.LOW :
                     Radio_FPS_low.IsChecked = true;
@@ -63,7 +63,7 @@ namespace ImageProcessing_BSC_WPF
         private void saveProgramSetting()
         {
             Properties.Settings.Default.camConnect = GV._camConnectAtStartup;
-            Properties.Settings.Default.previewFPS = (int) GV._previewFPS;
+            Properties.Settings.Default.previewFPS = (int) PreviewRoutine._previewFPS;
 
             Properties.Settings.Default.Save();
         }
@@ -85,7 +85,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (_settingApplied)
             {
-                GV._previewFPS = previewFPS.LOW;
+                PreviewRoutine._previewFPS = previewFPS.LOW;
                 TB_previewFPS.Text = "" + (int)previewFPS.LOW;
                 saveProgramSetting();
             }
@@ -95,7 +95,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (_settingApplied)
             {
-                GV._previewFPS = previewFPS.MEDIUM;
+                PreviewRoutine._previewFPS = previewFPS.MEDIUM;
                 TB_previewFPS.Text = "" + (int)previewFPS.MEDIUM;
                 saveProgramSetting();
             }
@@ -105,7 +105,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (_settingApplied)
             {
-                GV._previewFPS = previewFPS.HIGH;
+                PreviewRoutine._previewFPS = previewFPS.HIGH;
                 TB_previewFPS.Text = "" + (int)previewFPS.HIGH;
                 saveProgramSetting();
             }

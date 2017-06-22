@@ -61,27 +61,41 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Expander Header="Video Control" Margin="0" IsExpanded="True" RenderTransformOrigin="0.5,0.5" ToolTip="Video control" IsHitTestVisible="True" ExpandDirection="Down" Height="200">
+                    <Expander Header="General" Margin="0" IsExpanded="True" RenderTransformOrigin="0.5,0.5" ToolTip="Video control" IsHitTestVisible="True" ExpandDirection="Down">
                         <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" Margin="5,0,0,0" >
+                            <Grid Grid.Column="0" Margin="5,0,0,0" Grid.RowSpan="1" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
-                                <Label Content="Choose your cam" Height="25" Grid.Row="0" HorizontalAlignment="Left"/>
-                                <DockPanel HorizontalAlignment="Right" Margin="5">
+                                <Label Content="Choose your cam" Height="25" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5"/>
+                                <DockPanel HorizontalAlignment="Right" Margin="0,5,5,5" Grid.Column="1">
                                     <RadioButton x:Name="Radio_webcam" Style="{DynamicResource Radio_left}" Content="WebCam" VerticalAlignment="Top" Checked="Radio_webcam_Checked" Width="70"/>
                                     <RadioButton x:Name="Radio_PTcam" Style="{DynamicResource Radio_right}" Content="PTCam" VerticalAlignment="Top" Width="70" Checked="Radio_PTcam_Checked"/>
                                 </DockPanel>
-                                <CheckBox x:Name="Chk_connectCam" Content="Connect camera" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="35" Margin="0,5,5,5" Grid.Row="1" HorizontalContentAlignment="Left"/>
-                                <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" Grid.Row="2" Width="200" IsHitTestVisible="True" Click="Button_Click" />
+                                <DockPanel Grid.Row="1" Grid.ColumnSpan="2">
+                                    <CheckBox x:Name="Chk_connectCam" Content="Connect camera" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="35" Margin="0,5,5,5" HorizontalContentAlignment="Left"/>
+                                    <ToggleButton x:Name="Tools_cropView" Margin="5" Content="Cropped View" Checked="Tools_cropView_Checked" Unchecked="Tools_cropView_Unchecked"/>
+                                </DockPanel>
+                                
+                                <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" Grid.Row="2" Width="200" IsHitTestVisible="True" Click="Button_Click" Margin="54,5,53,5" Grid.ColumnSpan="2"/>
+                                <Button x:Name="Btn_staticProcess" Content="Process Static Image" Height="35" Grid.Row="3" Width="200" IsHitTestVisible="True" Click="Btn_staticProcess_Click" Margin="54,5,53,5" Grid.ColumnSpan="2"/>
                             </Grid>
-                            <GroupBox Header="Take static photo" Grid.Column="1" Margin="0,0,0,10">
+                            <GroupBox Header="Take static photo" Grid.Column="1" Margin="0,0,0,10" Grid.RowSpan="1">
                                 <Grid Margin="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="1*"/>
@@ -103,8 +117,6 @@
                                 <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="80"/>
                                 <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="80"/>
                                 <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="80"/>
-                                <RadioButton x:Name="Radio_invert"  Style="{DynamicResource Radio_right}" Content="Color Invert" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_invert_Checked" Unchecked="Radio_invert_Checked" Margin="0" Width="80"/>
-                                <Button x:Name="Btn_apply_feature" Content="Apply Once" DockPanel.Dock="Top" Height="25"  ToolTip="Apply to static photo" Click="Btn_apply_Click" Width="80" Margin="10,0,0,0"/>
                             </WrapPanel>
                         </Grid>
                     </Expander>
@@ -175,7 +187,7 @@
                         </Grid>
                     </Expander>
                 </Grid>
-                
+
                 <Grid x:Name="Info_Panel" Grid.Column="0" Grid.Row="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.5*"/>

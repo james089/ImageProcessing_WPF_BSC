@@ -1,6 +1,7 @@
 ﻿using CameraToImage_dll;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using OpenCV_BSC_dll;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -49,5 +50,13 @@ namespace ImageProcessing_BSC_WPF
                                   "Zoom factor: " + GV._zoomFactor.ToString("0.##");
         }
 
+        public static Image<Gray, Byte> colorFilter(Image<Gray, Byte> img)
+        {
+            Image<Gray, Byte> thresh = img.ThresholdBinaryInv(new Gray(180), new Gray(255)).Not();
+
+            //thresh._Erode(1);
+
+            return thresh;
+        }
     }
 }

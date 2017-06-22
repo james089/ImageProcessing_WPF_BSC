@@ -44,22 +44,6 @@ namespace ImageProcessing_BSC_WPF
 
         private static void connectRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            /*
-            Image<Bgr,byte> connecting = new Image<Bgr, byte>(new Bitmap((int)GV.mMainWindow.ibOriginal.Width, (int)GV.mMainWindow.ibOriginal.Height));
-            using (Graphics grp = Graphics.FromImage(connecting.ToBitmap()))
-            {
-                grp.FillRectangle(Brushes.Gray, 0, 0, connecting.Width, connecting.Height);
-            }
-            ShapeNDraw.drawString("Connecting...", connecting.Width / 3 - 10, connecting.Height / 2 - 10, Color.White, 36, connecting.ToBitmap());
-
-            Image<Bgr, byte> connected = new Image<Bgr, byte>(new Bitmap((int)GV.mMainWindow.ibOriginal.Width, (int)GV.mMainWindow.ibOriginal.Height));
-            using (Graphics grp = Graphics.FromImage(connected.ToBitmap()))
-            {
-                grp.FillRectangle(Brushes.Black, 0, 0, connected.Width, connected.Height);
-            }
-            ShapeNDraw.drawString("Connected", connected.Width / 3 - 10, connected.Height / 2 - 10, Color.White, 36, connected.ToBitmap());
-            */
-
             Image<Bgr, byte> connecting = new Image<Bgr, byte>(new Bitmap((int)GV.mMainWindow.ibOriginal.Width, (int)GV.mMainWindow.ibOriginal.Height));
             connecting.SetValue(new Bgr(Color.Gray));   // Set background color
             ShapeNDraw.drawString("Connecting", connecting, new System.Drawing.Point(connecting.Width / 3 - 10, connecting.Height / 2 - 10), 1, Color.White);
@@ -79,7 +63,7 @@ namespace ImageProcessing_BSC_WPF
                 GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(connected);
                 mPopText.popText("Connected", 1.5);
                 GV.mMainWindow.Btn_PR.IsEnabled = true;
-                PreviewRoutine.startPreview(GV._previewFPS);
+                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
 

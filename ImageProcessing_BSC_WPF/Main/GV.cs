@@ -32,10 +32,8 @@ namespace ImageProcessing_BSC_WPF
 
         public static bool _camConnectAtStartup;
         public static camType _camSelected;
-        public static previewFPS _previewFPS;
 
         public static bool _cameraConnected = false;
-        public static bool _capturing = false;
         public static bool _pictureLoaded = false;
 
         public static int imgWidth = 0, imgHeight = 0;
@@ -51,8 +49,6 @@ namespace ImageProcessing_BSC_WPF
         public static Image<Bgr, byte> imgOriginal;
         public static Image<Bgr, byte> imgProcessed;
         public static Image<Bgr, byte> object_img = null;
-
-        public static bool _colorInverse = false;
 
         public static Graphics mGraphics;
 
