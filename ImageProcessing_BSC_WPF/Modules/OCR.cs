@@ -100,30 +100,56 @@ namespace ImageProcessing_BSC_WPF.Modules
             ProcessedImage = inputImage;
             Bgr drawColor = new Bgr(Color.Blue);
 
-            Image<Bgr, byte> cleanedInputImage = inputImage.Copy();
-
-            //cleanedInputImage = filterNoise(cleanedInputImage, 200);
-
+            Image<Bgr, byte> localImage = inputImage.Copy();
+            
             try
             {
-                using (Image<Gray, byte> gray = cleanedInputImage.Convert<Gray, Byte>())
+                using (Image<Gray, byte> gray = localImage.Convert<Gray, Byte>())
                 {
                     _ocr.Recognize(gray);
+
                     Tesseract.Charactor[] charactors = _ocr.GetCharactors();
-                    foreach (Tesseract.Charactor c in charactors)
+
+                    /*
+                    // This will filter the charactors that are too small. But noise is going to affect the accuracy already
+                    List<Tesseract.Charactor> charactorsList = new List<Tesseract.Charactor>();
+                    for (int i = 0; i < charactors.Length; i++)
                     {
-                        if (c.Region.Width * c.Region.Height < 100)
+                        if (charactors[i].Region.Width * charactors[i].Region.Height < 100)   //Too Small
                         {
-                            cleanedInputImage.Draw(c.Region, new Bgr(Color.Red), 1);
+                            localImage.Draw(charactors[i].Region, new Bgr(Color.Red), 1);
                         }
                         else
-                            cleanedInputImage.Draw(c.Region, drawColor, 1);
-
+                        {
+                            localImage.Draw(charactors[i].Region, drawColor, 1);
+                            charactorsList.Add(charactors[i]);
+                        }
                     }
 
-                    ProcessedImage = cleanedInputImage;
+                    Tesseract.Charactor[] newCharactors = new Tesseract.Charactor[charactorsList.Count];
+                    for (int i = 0; i < newCharactors.Length; i++)
+                    {
+                        newCharactors[i] = charactorsList[i];
+                    }
+                    
+                    */
+                    foreach (Tesseract.Charactor c in charactors)
+                    {
+                        if (c.Region.Width * c.Region.Height < 200)
+                        {
+                            localImage.Draw(c.Region, new Bgr(Color.Red), 1);
+                            //ShapeNDraw.drawString(c.Cost.ToString(), cleanedInputImage, new Point(c.Region.X, c.Region.Y), 0.3, Color.Red);
+                        }
+                        else
+                        {
+                            localImage.Draw(c.Region, drawColor, 1);
+                            //ShapeNDraw.drawString(c.Cost.ToString(), cleanedInputImage, new Point(c.Region.X, c.Region.Y), 0.3, Color.Red);
+                        }
+                    }
 
-                    //String text = String.Concat( Array.ConvertAll(charactors, delegate(Tesseract.Charactor t) { return t.Text; }) );
+                    ProcessedImage = localImage;
+
+                    //string text = String.Concat( Array.ConvertAll(newCharactors, delegate(Tesseract.Charactor t) { return t.Text; }) );
                     string text = _ocr.GetText();
                     return text;
                 }

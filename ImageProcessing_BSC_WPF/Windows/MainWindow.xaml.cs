@@ -205,10 +205,11 @@ namespace ImageProcessing_BSC_WPF
 
         private void File_loadImg_Click(object sender, RoutedEventArgs e)
         {
-            Image<Bgr,byte> loadPic = new Image<Bgr, byte>(Tools.loadPicture_withDialog());
+            Bitmap loadPic = Tools.loadPicture_withDialog();
             if (loadPic != null)
             {
-                GV.imgOriginal = ImageStiching.createFixRatioBitmap(loadPic, 4, 3);
+                GV.imgOriginal_save = ImageStiching.createFixRatioBitmap((new Image<Bgr, byte>(loadPic)).Copy(), 4, 3);
+                GV.imgOriginal = GV.imgOriginal_save.Copy();
                 ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
                 GV._pictureLoaded = true;
                 GF.updateImgInfo();
@@ -385,6 +386,12 @@ namespace ImageProcessing_BSC_WPF
             PreviewRoutine.originalImageProcessing();
             PreviewRoutine.processedImageDisplaying();
             PreviewRoutine.GUIUpdates();
+        }
+
+        private void Btn_staticReset_Click(object sender, RoutedEventArgs e)
+        {
+            if (GV.imgOriginal_save != null) GV.imgOriginal = GV.imgOriginal_save.Copy();
+            ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
         }
 
 

@@ -47,6 +47,7 @@ namespace ImageProcessing_BSC_WPF
 
         public static bool maxmized = false;
         public static Image<Bgr, byte> imgOriginal;
+        public static Image<Bgr, byte> imgOriginal_save;
         public static Image<Bgr, byte> imgProcessed;
         public static Image<Bgr, byte> object_img = null;
 

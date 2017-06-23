@@ -9,12 +9,12 @@
                 <RowDefinition Height="15*"/>
             </Grid.RowDefinitions>
             <Grid x:Name="TitleBar" Margin="0" Background="{DynamicResource SuperTransGrayColor}">
-                <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Notification" FontSize="20" Foreground="White" />
+                <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="" FontSize="20" Foreground="White" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,2,0">
                     <Button x:Name="Btn_minimize" Style="{DynamicResource Button_minimize}" Content="-" Margin="1,0" Width="60" FontWeight="Bold" Click="Btn_minimize_Click"/>
                     <Button x:Name="Btn_close" Content="X" Style="{DynamicResource Button_close}" Margin="1,0" Width="60" Background="#FFD42525" FontWeight="Bold" Click="Btn_close_Click"/>
                 </StackPanel>
-                <StackPanel HorizontalAlignment="Left" Height="30" VerticalAlignment="Center" Width="260" Orientation="Horizontal">
+                <StackPanel HorizontalAlignment="Left" Height="50" VerticalAlignment="Center" Width="260" Orientation="Horizontal" Margin="10,0,0,0">
                     <Image Width="39" Source="../Resources/fav.ico"/>
                     <Label x:Name="Title" Content="Image Processing 3" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
                 </StackPanel>
@@ -93,7 +93,8 @@
                                 </DockPanel>
                                 
                                 <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" Grid.Row="2" Width="200" IsHitTestVisible="True" Click="Button_Click" Margin="54,5,53,5" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Btn_staticProcess" Content="Process Static Image" Height="35" Grid.Row="3" Width="200" IsHitTestVisible="True" Click="Btn_staticProcess_Click" Margin="54,5,53,5" Grid.ColumnSpan="2"/>
+                                <Button x:Name="Btn_staticProcess" Content="Process Static Image" Height="35" Grid.Row="3" Width="Auto" IsHitTestVisible="True" Click="Btn_staticProcess_Click" Grid.ColumnSpan="1" Margin="5"/>
+                                <Button x:Name="Btn_staticReset" Content="Reset Static Image" Height="35" Grid.Row="3" Width="Auto" IsHitTestVisible="True" Click="Btn_staticReset_Click" Grid.Column="1" Margin="5"/>
                             </Grid>
                             <GroupBox Header="Take static photo" Grid.Column="1" Margin="0,0,0,10" Grid.RowSpan="1">
                                 <Grid Margin="0">
