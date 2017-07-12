@@ -1,8 +1,8 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using OpenCV_BSC_dll;
-using OpenCV_BSC_dll.FeatureDetection;
-using OpenCV_BSC_dll.ObjectDetection;
+using OpenCV_BSC_dll_x64;
+using OpenCV_BSC_dll_x64.FeatureDetection;
+using OpenCV_BSC_dll_x64.ObjectDetection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

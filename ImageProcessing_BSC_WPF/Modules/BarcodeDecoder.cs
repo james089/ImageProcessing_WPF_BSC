@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using Utilities_BSC_dll;
+using Utilities_BSC_dll_x64;
 using ZXing;
 using ZXing.Common;
 

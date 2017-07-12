@@ -1,7 +1,7 @@
-﻿using CameraToImage_dll;
+﻿using CameraToImage_dll_x64;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using mUserControl_BSC_dll;
+using mUserControl_BSC_dll_x64;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Utilities_BSC_dll;
+using Utilities_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -77,7 +77,7 @@ namespace ImageProcessing_BSC_WPF
             if (GV.mCamera != null)                                           //if there is a camera, dispose and reconnect.
                 GV.mCamera.disposeCam();
 
-            if (!GV.mCamera.cameraConnection(ct))
+            if (!GV.mCamera.connect(ct))
             {
                 GV._cameraConnected = false;
                 mMessageBox.Show("No " + ct.ToString() + " found!");

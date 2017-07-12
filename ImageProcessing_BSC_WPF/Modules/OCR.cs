@@ -8,8 +8,8 @@ using Emgu.CV.OCR;
 using Emgu.CV.Structure;
 using System.ComponentModel;
 using System.IO;
-using Utilities_BSC_dll;
-using OpenCV_BSC_dll;
+using Utilities_BSC_dll_x64;
+using OpenCV_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
@@ -35,7 +35,8 @@ namespace ImageProcessing_BSC_WPF.Modules
             switch (mode)
             {
                 case OCRMode.NUMBERS:
-                    _ocr = new Tesseract(dir, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY, "1234567890");
+                    _ocr = new Tesseract(dir, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
+                    _ocr.SetVariable("tessedit_char_whitelist", "1234567890");
                     break;
                 case OCRMode.COMBINED:
                     _ocr = new Tesseract(dir, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
@@ -76,6 +77,7 @@ namespace ImageProcessing_BSC_WPF.Modules
 
             detectedOCRString = OCRDetect(croppedOriginalImg, out GV.imgProcessed);
             timeSpent = (DateTime.Now - startTime).TotalMilliseconds;
+
         }
 
         /// <summary>

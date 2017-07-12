@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CameraToImage_dll;
-using OpenCV_BSC_dll;
+using OpenCV_BSC_dll_x64;
 using System.Drawing;
-using Utilities_BSC_dll;
+using Utilities_BSC_dll_x64;
 using ZXing;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using OpenCV_BSC_dll.Windows;
+using OpenCV_BSC_dll_x64.Windows;
+using CameraToImage_dll_x64;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -25,6 +25,8 @@ namespace ImageProcessing_BSC_WPF
 
     public class GV
     {
+        public static string liveViewMessage;      //Messages showing during live view applications
+
         public static MainWindow mMainWindow = null;
 
         public static int _pictureBoxWidthRatio = 4;
@@ -44,17 +46,19 @@ namespace ImageProcessing_BSC_WPF
         public static bool _findCenterSwitch;
         public static bool _decodeSwitch;                       //turn on code decoding.
         public static bool _OCRSwitch;                          //turn on OCR decoding.
+        public static bool _MLSwitch;                          //turn on machine learning.
 
         public static bool maxmized = false;
         public static Image<Bgr, byte> imgOriginal;
         public static Image<Bgr, byte> imgOriginal_save;
         public static Image<Bgr, byte> imgProcessed;
+        public static Image<Bgr, byte> OCROutputImg;
         public static Image<Bgr, byte> object_img = null;
 
         public static Graphics mGraphics;
 
         public static CameraConnection mCamera = null;
-        public static CameraToImage_dll.Windows.Conversion mConvert;
+        public static CameraToImage_dll_x64.Windows.Conversion mConvert;
 
         public static Setting mSetting = new Setting();  //This will load the newest setting
 

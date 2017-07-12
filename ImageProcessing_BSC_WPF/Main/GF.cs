@@ -1,7 +1,7 @@
-﻿using CameraToImage_dll;
+﻿using CameraToImage_dll_x64;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using OpenCV_BSC_dll;
+using OpenCV_BSC_dll_x64;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utilities_BSC_dll;
+using Utilities_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF
 {

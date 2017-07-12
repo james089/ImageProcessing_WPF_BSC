@@ -2,6 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+2017/7/11
+v4.0.0.0
+1. Complete x64 version (OpenCV x64, flycapture x64, v140, 2.11)
+2. Adding machine learning support
+
 2017/6/21
 v3.5.1.0
 1. Added cropped view

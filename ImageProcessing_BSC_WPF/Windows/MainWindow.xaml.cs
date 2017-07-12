@@ -1,34 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 
-using Utilities_BSC_dll;
-using OpenCV_BSC_dll;
+using Utilities_BSC_dll_x64;
+using OpenCV_BSC_dll_x64;
 using Emgu.CV;
-using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using Emgu.Util;
-using System.Windows.Threading;
 using System.Media;
 using System.Threading;
-using System.ComponentModel;
 using System.Reflection;
-using CameraToImage_dll;
-using ZXing.Common;
-using ZXing;
-using ZXing.QrCode;
+using CameraToImage_dll_x64;
 using ImageProcessing_BSC_WPF.Modules;
-using mUserControl_BSC_dll;
+using mUserControl_BSC_dll_x64;
 using System.Drawing;
-using OpenCV_BSC_dll.Windows;
-using CameraToImage_dll.Windows;
+using OpenCV_BSC_dll_x64.Windows;
+using CameraToImage_dll_x64.Windows;
+using ImageProcessing_BSC_WPF.MachineLearning;
+using CNTK;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -62,6 +50,7 @@ namespace ImageProcessing_BSC_WPF
             BarcodeDecoder.decoderSetup();
             OCR.OCRSetup(OCRMode.NUMBERS);
 
+            ResNet.MLSetup();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -70,8 +59,7 @@ namespace ImageProcessing_BSC_WPF
 
             loadProgramSetting();
             applyProgramSetting();
-
-            Chk_connectCam.IsChecked = true;
+            //Chk_connectCam.IsChecked = true;
         }
 
         private void loadProgramSetting()
@@ -564,6 +552,23 @@ namespace ImageProcessing_BSC_WPF
                 GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(bm);
             }
 
+        }
+
+        private void Btn_runML_Click(object sender, RoutedEventArgs e)
+        {
+            GV.mMainWindow.listBox.Items.Clear();
+            ResNet.EvaluationSingleImage(GV.imgOriginal);
+        }
+
+        private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (!this.IsLoaded) return;
+            DataSetLabels.MachineLearningTrainedDataSet = (DataSet)ML_cmb_dataset.SelectedIndex;
+        }
+
+        private void Chk_ML_Checked(object sender, RoutedEventArgs e)
+        {
+            GV._MLSwitch = (bool)Chk_ML.IsChecked;
         }
 
 

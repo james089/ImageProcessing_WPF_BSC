@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenCV_BSC_dll;
+using OpenCV_BSC_dll_x64;
 using Emgu.CV;
 using System.Drawing;
 using Emgu.CV.Structure;
 using System.ComponentModel;
-using CameraToImage_dll;
+using CameraToImage_dll_x64;
 using System.Threading;
 using System.Windows;
 using ImageProcessing_BSC_WPF.Modules;
-using mUserControl_BSC_dll;
-using Utilities_BSC_dll;
-using OpenCV_BSC_dll.Windows;
-using OpenCV_BSC_dll.General;
+using mUserControl_BSC_dll_x64;
+using Utilities_BSC_dll_x64;
+using OpenCV_BSC_dll_x64.Windows;
+using OpenCV_BSC_dll_x64.General;
+using ImageProcessing_BSC_WPF.MachineLearning;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -71,7 +72,8 @@ namespace ImageProcessing_BSC_WPF
 
         public static void GUIUpdates()
         {
-            GV.mMainWindow.listBox.Items.Clear();
+            GV.mMainWindow.TB_info.Text = GV.liveViewMessage;
+            //GV.mMainWindow.listBox.Items.Clear();
             //Detect code
             if (GV._decodeSwitch)
             {
@@ -81,6 +83,15 @@ namespace ImageProcessing_BSC_WPF
             if (GV._OCRSwitch)
             {
                 GV.mMainWindow.lbl_OCR.Content = OCR.detectedOCRString;
+                GV.mMainWindow.ibOCR.Source = Converter.ToBitmapSource(GV.OCROutputImg);
+            }
+
+            if (GV._MLSwitch)
+            {
+                if (ResNet.OutputProbablility > 8)
+                    GV.liveViewMessage = "This must be a " + ResNet.OutputString + "! {" + ResNet.OutputProbablility.ToString("0.##") + "}";
+                else
+                    GV.liveViewMessage = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
             // Normal
             GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
@@ -151,12 +162,19 @@ namespace ImageProcessing_BSC_WPF
             {
                 if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0) OCR.croppedOriginalImg = GV.imgOriginal.Copy(OCR.croppedOCRArea);
                 else OCR.croppedOriginalImg = GV.imgOriginal;
-                OCR.detectedOCRString = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.imgProcessed);
+                OCR.detectedOCRString = OCR.OCRDetect(OCR.croppedOriginalImg, out GV.OCROutputImg);
             }
-            // OCR cropped Area display
+            // OCR cropped Area display (Red rectangle)
             if (OCR.croppedOCRArea.Width * OCR.croppedOCRArea.Height != 0)
             {
                 GV.imgProcessed.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
+            }
+
+            // Machine Learing
+            else if (GV._MLSwitch)
+            {
+                ResNet.startMLRoutine();
+
             }
         }
 

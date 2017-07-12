@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenCV_BSC_dll;
+using OpenCV_BSC_dll_x64;
 using Emgu.CV;
 using System.Drawing;
 using Emgu.CV.Structure;
-using mUserControl_BSC_dll;
-using OpenCV_BSC_dll.FeatureDetection;
+using mUserControl_BSC_dll_x64;
+using OpenCV_BSC_dll_x64.FeatureDetection;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
