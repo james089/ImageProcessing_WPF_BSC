@@ -101,6 +101,9 @@
     <Reference Include="Cntk.Core.Managed-2.0">
       <HintPath>Dlls\Cntk.Core.Managed-2.0.dll</HintPath>
     </Reference>
+    <Reference Include="Cntk.Eval.Wrapper-2.0">
+      <HintPath>Dlls\Cntk.Eval.Wrapper-2.0.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\Emgu.CV.dll</HintPath>
@@ -158,7 +161,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MachineLearning\CntkBitmapExtensions.cs" />
-    <Compile Include="MachineLearning\DataSetLabels.cs" />
+    <Compile Include="MachineLearning\MLCore.cs" />
+    <Compile Include="MachineLearning\FastRCNN.cs" />
     <Compile Include="MachineLearning\ResNet.cs" />
     <Compile Include="Modules\OCR.cs" />
     <Compile Include="Windows\LoadingScreen.xaml.cs">

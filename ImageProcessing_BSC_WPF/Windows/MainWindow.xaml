@@ -220,15 +220,16 @@
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Model" Grid.RowSpan="1"/>
-                            <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1">
+                            <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged">
                                 <ComboBoxItem Content="ResNet"/>
-                                <ComboBoxItem Content="Fast-R-CNN"/>
+                                <ComboBoxItem Content="FastRCNN"/>
                             </ComboBox>
                             <Button x:Name="Btn_runML" Grid.Column="2"  Width="150" Content="Run" Click="Btn_runML_Click" Grid.RowSpan="1" Margin="5"/>
 
                             <Label Content="DataSet" Grid.Row="1"/>
                             <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
                                 <ComboBoxItem Content="CIFAR10"/>
+                                <ComboBoxItem Content="Grocery"/>
                             </ComboBox>
                             <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
                         </Grid>

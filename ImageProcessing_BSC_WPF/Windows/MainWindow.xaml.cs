@@ -557,19 +557,29 @@ namespace ImageProcessing_BSC_WPF
         private void Btn_runML_Click(object sender, RoutedEventArgs e)
         {
             GV.mMainWindow.listBox.Items.Clear();
-            ResNet.EvaluationSingleImage(GV.imgOriginal);
+
+            if (MLCore.MLModelSelected == MLModel.ResNet)
+                ResNet.EvaluationSingleImage(GV.imgOriginal);
+            else if (MLCore.MLModelSelected == MLModel.FastRCNN)
+                FastRCNN.EvaluateObjectDetectionModel();
         }
 
+        private void ML_cmb_model_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (!this.IsLoaded) return;
+            MLCore.MLModelSelected = (MLModel)ML_cmb_model.SelectedIndex;
+        }
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
-            DataSetLabels.MachineLearningTrainedDataSet = (DataSet)ML_cmb_dataset.SelectedIndex;
+            MLCore.MLTrainedDataSetSelected = (DataSet)ML_cmb_dataset.SelectedIndex;
         }
 
         private void Chk_ML_Checked(object sender, RoutedEventArgs e)
         {
             GV._MLSwitch = (bool)Chk_ML.IsChecked;
         }
+
 
 
 

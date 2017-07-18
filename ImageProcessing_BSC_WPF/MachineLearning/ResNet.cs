@@ -229,7 +229,7 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
 
         private static void showResult<T>(int sampleSize, IList<IList<T>> outputBuffer, double outputValue)
         {
-            switch (DataSetLabels.MachineLearningTrainedDataSet)
+            switch (MLCore.MLTrainedDataSetSelected)
             {
                 case DataSet.CIFAR10:
                     int predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);

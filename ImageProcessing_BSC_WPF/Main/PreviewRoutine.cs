@@ -89,7 +89,8 @@ namespace ImageProcessing_BSC_WPF
             if (GV._MLSwitch)
             {
                 if (ResNet.OutputProbablility > 8)
-                    GV.liveViewMessage = "This must be a " + ResNet.OutputString + "! {" + ResNet.OutputProbablility.ToString("0.##") + "}";
+                    //GV.liveViewMessage = "This must be a " + ResNet.OutputString + "! {" + ResNet.OutputProbablility.ToString("0.##") + "}";
+                    GV.liveViewMessage = string.Format("This must be a {0}! [{1}]",ResNet.OutputString, ResNet.OutputProbablility.ToString("0.##"));
                 else
                     GV.liveViewMessage = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
