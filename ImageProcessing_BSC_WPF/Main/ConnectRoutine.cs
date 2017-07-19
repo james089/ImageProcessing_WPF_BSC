@@ -61,7 +61,7 @@ namespace ImageProcessing_BSC_WPF
             if (e.ProgressPercentage == 100)
             {
                 GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(connected);
-                mPopText.popText("Connected", 1.5);
+                //mNotification.Show("Connected");
                 GV.mMainWindow.Btn_PR.IsEnabled = true;
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }

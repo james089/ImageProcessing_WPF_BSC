@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ImageProcessing_BSC_WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="870" Width="1295" WindowStyle="None" ResizeMode="NoResize" Background="{DynamicResource Background_darkgray}" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="ImageProcessing_BSC" Height="870" Width="1295" WindowStyle="None" ResizeMode="NoResize" Background="{DynamicResource Background_darkgray}" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Border>
         <Grid Margin="0">
             <Grid.RowDefinitions>

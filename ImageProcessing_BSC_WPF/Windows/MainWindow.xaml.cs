@@ -340,7 +340,8 @@ namespace ImageProcessing_BSC_WPF
             if (GV.mCamera.IsConnected)                                           //if there is a camera, dispose and reconnect.
             {
                 GV.mCamera.disposeCam();
-                mPopText.popText("Disconnected", 1.5);
+                mNotification.Show("Disconnected");
+                GV.mCamera.IsConnected = false;
             }
         }
 
