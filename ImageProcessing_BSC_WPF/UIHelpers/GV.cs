@@ -23,12 +23,13 @@ namespace ImageProcessing_BSC_WPF
         SearchColor_Fail
     }
 
+    public class Windows
+    {
+        public static MainWindow main = null;
+    }
+
     public class GV
     {
-        public static string liveViewMessage;      //Messages showing during live view applications
-
-        public static MainWindow mMainWindow = null;
-
         public static int _pictureBoxWidthRatio = 4;
         public static int _pictureBoxHeightRatio = 3;
 
@@ -61,6 +62,5 @@ namespace ImageProcessing_BSC_WPF
         public static CameraToImage_dll_x64.Windows.Conversion mConvert;
 
         public static Setting mSetting = new Setting();  //This will load the newest setting
-
     }
 }

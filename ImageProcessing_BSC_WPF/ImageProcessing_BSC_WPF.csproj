@@ -160,20 +160,32 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MachineLearning\CntkBitmapExtensions.cs" />
-    <Compile Include="MachineLearning\MLCore.cs" />
-    <Compile Include="MachineLearning\FastRCNN.cs" />
-    <Compile Include="MachineLearning\ResNet.cs" />
-    <Compile Include="Modules\OCR.cs" />
+    <Compile Include="Modules\MachineLearning\CntkBitmapExtensions.cs" />
+    <Compile Include="Modules\MachineLearning\ImageResizing.cs" />
+    <Compile Include="Modules\MachineLearning\MeanFileGenerator.cs" />
+    <Compile Include="Modules\MachineLearning\MLCore.cs" />
+    <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
+    <Compile Include="Modules\MachineLearning\ResNet.cs" />
+    <Compile Include="Modules\BarcodeDecoder\ZxingFunctions.cs" />
+    <Compile Include="Modules\OCR\OCR.cs" />
+    <Compile Include="UIHelpers\Binds.cs" />
+    <Compile Include="UIHelpers\StringManager.cs" />
+    <Compile Include="Modules\MachineLearning\GUI\ImageLabelingWindow.xaml.cs">
+      <DependentUpon>ImageLabelingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LoadingScreen.xaml.cs">
       <DependentUpon>LoadingScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Style\ExpressionDark.xaml">
+    <Page Include="UIHelpers\Style\ExpressionDark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Modules\MachineLearning\GUI\ImageLabelingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\LoadingScreen.xaml">
       <SubType>Designer</SubType>
@@ -187,14 +199,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Main\ConnectRoutine.cs" />
-    <Compile Include="Main\GF.cs" />
+    <Compile Include="Routines\ConnectRoutine.cs" />
+    <Compile Include="UIHelpers\GF.cs" />
     <Compile Include="Modules\CheckCenter.cs" />
-    <Compile Include="Modules\BarcodeDecoder.cs" />
+    <Compile Include="Modules\BarcodeDecoder\BarcodeDecoder.cs" />
     <Compile Include="Modules\NormalCVFunctions.cs" />
-    <Compile Include="Main\PreviewRoutine.cs" />
+    <Compile Include="Routines\PreviewRoutine.cs" />
     <Compile Include="Modules\FindMinDistance.cs" />
-    <Compile Include="Main\GV.cs" />
+    <Compile Include="UIHelpers\GV.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -229,7 +241,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="MachineLearning\TrainedModels\resnet20.dnn">
+    <None Include="Modules\MachineLearning\TrainedModels\resnet20.dnn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
@@ -237,31 +249,31 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="tessdata\eng.cube.bigrams">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.bigrams">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.fold">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.fold">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.lm">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.lm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.nn">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.nn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.params">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.params">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.size">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.size">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.cube.word-freq">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.word-freq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.tesseract_cube.nn">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.tesseract_cube.nn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="tessdata\eng.traineddata">
+    <None Include="Modules\BarcodeDecoder\tessdata\eng.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -318,6 +330,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

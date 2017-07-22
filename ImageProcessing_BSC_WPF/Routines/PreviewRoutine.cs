@@ -10,13 +10,14 @@ using Emgu.CV.Structure;
 using System.ComponentModel;
 using CameraToImage_dll_x64;
 using System.Threading;
-using System.Windows;
-using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll_x64;
 using Utilities_BSC_dll_x64;
 using OpenCV_BSC_dll_x64.Windows;
 using OpenCV_BSC_dll_x64.General;
-using ImageProcessing_BSC_WPF.MachineLearning;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning;
+using ImageProcessing_BSC_WPF.Modules.BarcodeDecoder;
+using ImageProcessing_BSC_WPF.Modules.OCR;
+using ImageProcessing_BSC_WPF.Modules;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -45,17 +46,17 @@ namespace ImageProcessing_BSC_WPF
         
         public static void startPreview(previewFPS previewFPS)
         {
-            GV.mMainWindow.Btn_PR.Content = "Pause";
+            Windows.main.Btn_PR.Content = "Pause";
             IsCapturing = true;
-            GV.mMainWindow.Btn_staticProcess.IsEnabled = false;
+            Windows.main.Btn_staticProcess.IsEnabled = false;
             previewRoutine.RunWorkerAsync(previewFPS);
         }
 
         public static void stopPreview()
         {
-            GV.mMainWindow.Btn_PR.Content = "Resume";
+            Windows.main.Btn_PR.Content = "Resume";
             IsCapturing = false;
-            GV.mMainWindow.Btn_staticProcess.IsEnabled = true;
+            Windows.main.Btn_staticProcess.IsEnabled = true;
             previewRoutine.CancelAsync();
         }
 
@@ -63,6 +64,7 @@ namespace ImageProcessing_BSC_WPF
         private static void previewRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             IsCapturing = false;
+            mNotification.Show("Live view stopped");
         }
 
         private static void previewRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -72,32 +74,31 @@ namespace ImageProcessing_BSC_WPF
 
         public static void GUIUpdates()
         {
-            GV.mMainWindow.TB_info.Text = GV.liveViewMessage;
-            //GV.mMainWindow.listBox.Items.Clear();
+            //Windows.main.TB_info.Text = GV.liveViewMessage;
+            //Windows.main.listBox.Items.Clear();
             //Detect code
             if (GV._decodeSwitch)
             {
-                if (BarcodeDecoder.outputStringList[0] != null) GV.mMainWindow.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
+                if (BarcodeDecoder.outputStringList[0] != null) Windows.main.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
             }
 
             if (GV._OCRSwitch)
             {
-                GV.mMainWindow.lbl_OCR.Content = OCR.detectedOCRString;
-                GV.mMainWindow.ibOCR.Source = Converter.ToBitmapSource(GV.OCROutputImg);
+                Windows.main.lbl_OCR.Content = OCR.detectedOCRString;
+                Windows.main.ibOCR.Source = Converter.ToBitmapSource(GV.OCROutputImg);
             }
 
             if (GV._MLSwitch)
             {
                 if (ResNet.OutputProbablility > 8)
-                    //GV.liveViewMessage = "This must be a " + ResNet.OutputString + "! {" + ResNet.OutputProbablility.ToString("0.##") + "}";
-                    GV.liveViewMessage = string.Format("This must be a {0}! [{1}]",ResNet.OutputString, ResNet.OutputProbablility.ToString("0.##"));
+                    StringManager.StrMngr.GMessage.value = string.Format("This must be a {0}! [{1:0.00}]",ResNet.OutputString, ResNet.OutputProbablility);
                 else
-                    GV.liveViewMessage = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
+                    StringManager.StrMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
             // Normal
-            GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
+            Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
             // Error reporting
-            if (GV._err != ErrorCode.Normal) GV.mMainWindow.TB_info.Text = GV._err.ToString();
+            if (GV._err != ErrorCode.Normal) StringManager.StrMngr.GMessage.value = GV._err.ToString();
         }
 
         private static void previewRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -108,7 +109,6 @@ namespace ImageProcessing_BSC_WPF
             {
                 if (GV.mCamera == null)
                 {
-                    mMessageBox.Show("No camera detected!");
                     previewRoutine.CancelAsync();
                     return;
                 }

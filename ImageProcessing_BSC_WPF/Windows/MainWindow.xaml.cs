@@ -15,8 +15,11 @@ using mUserControl_BSC_dll_x64;
 using System.Drawing;
 using OpenCV_BSC_dll_x64.Windows;
 using CameraToImage_dll_x64.Windows;
-using ImageProcessing_BSC_WPF.MachineLearning;
-using CNTK;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning;
+using System.IO;
+using ImageProcessing_BSC_WPF.Modules.OCR;
+using ImageProcessing_BSC_WPF.Modules.BarcodeDecoder;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -27,10 +30,6 @@ namespace ImageProcessing_BSC_WPF
     public partial class MainWindow : Window
     {
         #region Local setup
-
-        //public PictureBox ibOriginal = new PictureBox() {Width = 640, Height = 480 };
-        //public PictureBox ibObjectImage = new PictureBox();
-
         SoundPlayer sound = new SoundPlayer(System.Environment.CurrentDirectory + @"\Resources\camera-shutter-click-03.wav");
 
         LoadingScreen loadingScreen = new LoadingScreen();
@@ -41,9 +40,6 @@ namespace ImageProcessing_BSC_WPF
             loadingScreen.Show();
             InitializeComponent();
 
-            //Static MainWindow
-            GV.mMainWindow = this;
-
             PreviewRoutine.previewSetup();
             ConnectRoutine.connectionSetup();
 
@@ -51,6 +47,14 @@ namespace ImageProcessing_BSC_WPF
             OCR.OCRSetup(OCRMode.NUMBERS);
 
             ResNet.MLSetup();
+            //Static MainWindow
+
+            Windows.main = this;
+
+            //DataContext = Windows.main;                         // This is neccessary
+            //GMessage = new BindString();
+
+            DataContext = StringManager.StrMngr;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -124,8 +128,7 @@ namespace ImageProcessing_BSC_WPF
         {
             this.WindowState = WindowState.Minimized;
         }
-
-        // 
+        
         #region Img original Panel
        
         bool _mouseDown = false;
@@ -200,7 +203,7 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgOriginal = GV.imgOriginal_save.Copy();
                 ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
                 GV._pictureLoaded = true;
-                GF.updateImgInfo();
+                GF.UpdateImgInfo();
             }
         }
         private void File_loadContour_Click(object sender, RoutedEventArgs e)
@@ -453,7 +456,7 @@ namespace ImageProcessing_BSC_WPF
                 GV._err = ErrorCode.No_object_image;
             }
 
-            TB_info.Text = GV._err.ToString();
+            StringManager.StrMngr.GMessage.value = GV._err.ToString();
         }
 
         private void Radio_FFT_Checked(object sender, RoutedEventArgs e)
@@ -534,30 +537,30 @@ namespace ImageProcessing_BSC_WPF
                 if (PreviewRoutine.IsCapturing)
                 {
                     PreviewRoutine.stopPreview();
-                    GV.mMainWindow.TB_info.Text = "Select the area and hit set area again to confirm";
+                    StringManager.StrMngr.GMessage.value = "Select the area and hit set area again to confirm";
                 }
                 else if (!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
                 {
                     OCR.croppedOCRArea = ImageCropping.rect;
                     PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
-                    GV.mMainWindow.TB_info.Text = "Area set! Only do OCR inside the red rectangle!";
+                    StringManager.StrMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 }
             }
             else if(!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)   //crop static picture
             {
                 OCR.croppedOCRArea = ImageCropping.rect;
-                GV.mMainWindow.TB_info.Text = "Area set! Only do OCR inside the red rectangle!";
-                GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
+                StringManager.StrMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
+                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
                 Image<Bgr, byte> bm = GV.imgOriginal.Copy();
                 bm.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
-                GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(bm);
+                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(bm);
             }
 
         }
 
         private void Btn_runML_Click(object sender, RoutedEventArgs e)
         {
-            GV.mMainWindow.listBox.Items.Clear();
+            Windows.main.listBox.Items.Clear();
 
             if (MLCore.MLModelSelected == MLModel.ResNet)
                 ResNet.EvaluationSingleImage(GV.imgOriginal);
@@ -581,17 +584,57 @@ namespace ImageProcessing_BSC_WPF
             GV._MLSwitch = (bool)Chk_ML.IsChecked;
         }
 
+        private void Btn_resize_Click(object sender, RoutedEventArgs e)
+        {
+            if (TB_sourceImgDir.Text != "" && TB_resizedImgDir.Text != "" && TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
+                ImageResizing.ImageBatchResizing(
+                    StringManager.StrMngr.ML_sourceImgDir.value, 
+                    StringManager.StrMngr.ML_resizedImgDir.value, 
+                    Convert.ToInt32(StringManager.StrMngr.ML_desWidth.value), 
+                    Convert.ToInt32(StringManager.StrMngr.ML_desHeight.value));
+            else
+                mMessageBox.Show("Empty string");
+        }
 
+        private void Btn_openDir_Click(object sender, RoutedEventArgs e)
+        {
+            // Create an instance of the open file dialog box.
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
+            // Process input if the user clicked OK.
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                StringManager.StrMngr.ML_sourceImgDir.value = dialog.SelectedPath;
+            }
+        }
 
+        private void Btn_openDir_resized_Click(object sender, RoutedEventArgs e)
+        {
+            // Create an instance of the open file dialog box.
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+            // Process input if the user clicked OK.
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                StringManager.StrMngr.ML_resizedImgDir.value = dialog.SelectedPath;
+            }
+        }
+
+        private void Btn_calculateMean_Click(object sender, RoutedEventArgs e)
+        {
+            string meanFileDir = StringManager.StrMngr.ML_rootDir.value;
+            if (!Directory.Exists(meanFileDir)) Directory.CreateDirectory(meanFileDir);
+            MeanFileGenerator.GenerateMeanFile(StringManager.StrMngr.ML_resizedImgDir.value, meanFileDir);
+        }
+
+        private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
+        {
+            ImageLabelingWindow w = new ImageLabelingWindow();
+            w.ShowDialog();
+        }
         #endregion <GUI operation>
-
-        /// <summary>
-        /// Functions region
-        /// </summary>
-        /// 
-
-
 
     }
 }

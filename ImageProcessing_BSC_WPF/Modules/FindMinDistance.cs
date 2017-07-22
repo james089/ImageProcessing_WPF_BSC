@@ -30,7 +30,7 @@ namespace ImageProcessing_BSC_WPF.Modules
 
             int dis = findMinDistance(originalImage);
             if (dis > threshold)
-                GV.mMainWindow.TB_info.Text = dis.ToString();
+                StringManager.StrMngr.GMessage.value = dis.ToString();
             else if (dis != 0)
                 mMessageBox.Show("Hit the wall!");
             GV.imgOriginal = originalImage;

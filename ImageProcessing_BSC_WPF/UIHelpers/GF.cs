@@ -5,6 +5,7 @@ using OpenCV_BSC_dll_x64;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace ImageProcessing_BSC_WPF
 {
     public class GF
     {
-        public static void updateImgInfo()
+        public static void UpdateImgInfo()
         {
             // clear cropping rectangle
             if (ImageCropping.rect != null)
@@ -43,14 +44,14 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgWidth = GV.imgOriginal.Width;
             }
 
-            GV._zoomFactor = ImageCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, GV.mMainWindow.ibOriginal);
-            GV.mMainWindow.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
-                                  "PictureBox size: (" + GV.mMainWindow.ibOriginal.ActualWidth.ToString("0.#") + "," +
-                                  GV.mMainWindow.ibOriginal.ActualHeight.ToString("0.#") + ") " +
+            GV._zoomFactor = ImageCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, Windows.main.ibOriginal);
+            Windows.main.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
+                                  "PictureBox size: (" + Windows.main.ibOriginal.ActualWidth.ToString("0.#") + "," +
+                                  Windows.main.ibOriginal.ActualHeight.ToString("0.#") + ") " +
                                   "Zoom factor: " + GV._zoomFactor.ToString("0.##");
         }
 
-        public static Image<Gray, Byte> colorFilter(Image<Gray, Byte> img)
+        public static Image<Gray, Byte> ColorFilter(Image<Gray, Byte> img)
         {
             Image<Gray, Byte> thresh = img.ThresholdBinaryInv(new Gray(180), new Gray(255)).Not();
 
@@ -58,5 +59,22 @@ namespace ImageProcessing_BSC_WPF
 
             return thresh;
         }
+
+        /*
+        public static List<Bitmap> GetAllImg(string dir)
+        {
+            List<Bitmap> imgList = new List<Bitmap>();
+            DirectoryInfo Folder = new DirectoryInfo(dir);
+            FileInfo[] ImageInfo = Folder.GetFiles();
+
+            for (int i = 0; i < ImageInfo.Length; i++)
+            {
+                Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", dir, ImageInfo[i].Name));
+                imgList.Add(bm);
+                bm.Dispose();
+            }
+            return imgList;
+        }
+        */
     }
 }

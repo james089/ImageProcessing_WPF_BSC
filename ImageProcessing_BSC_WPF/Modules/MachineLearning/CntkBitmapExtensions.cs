@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageProcessing_BSC_WPF.MachineLearning
+namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
     public static class CntkBitmapExtensions
     {

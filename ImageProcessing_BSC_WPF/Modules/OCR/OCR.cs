@@ -11,7 +11,7 @@ using System.IO;
 using Utilities_BSC_dll_x64;
 using OpenCV_BSC_dll_x64;
 
-namespace ImageProcessing_BSC_WPF.Modules
+namespace ImageProcessing_BSC_WPF.Modules.OCR
 {
     public enum OCRMode
     {
@@ -30,7 +30,7 @@ namespace ImageProcessing_BSC_WPF.Modules
 
         public static void OCRSetup(OCRMode mode)
         {
-            string dir = Environment.CurrentDirectory + "\\tessdata";
+            string dir = Environment.CurrentDirectory + @"\Modules\BarcodeDecoder\tessdata";
 
             switch (mode)
             {
@@ -53,15 +53,15 @@ namespace ImageProcessing_BSC_WPF.Modules
         {
             if (!OCRRoutine.IsBusy)
             {
-                GV.mMainWindow.lbl_OCR.Content = "";
+                Windows.main.lbl_OCR.Content = "";
                 OCRRoutine.RunWorkerAsync();
             }
         }
 
         private static void OCRRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
-            GV.mMainWindow.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
+            Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
+            Windows.main.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
         }
 
         private static void OCRRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)

@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.MSR.CNTK.Extensibility.Managed;
 using System.Drawing;
 
-namespace ImageProcessing_BSC_WPF.MachineLearning
+namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
     class FastRCNN
     {

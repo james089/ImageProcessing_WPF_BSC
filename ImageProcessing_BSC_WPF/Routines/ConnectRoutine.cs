@@ -39,30 +39,30 @@ namespace ImageProcessing_BSC_WPF
 
         private static void connectRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (GV._cameraConnected) GF.updateImgInfo();
+            if (GV._cameraConnected) GF.UpdateImgInfo();
         }
 
         private static void connectRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Image<Bgr, byte> connecting = new Image<Bgr, byte>(new Bitmap((int)GV.mMainWindow.ibOriginal.Width, (int)GV.mMainWindow.ibOriginal.Height));
+            Image<Bgr, byte> connecting = new Image<Bgr, byte>(new Bitmap((int)Windows.main.ibOriginal.Width, (int)Windows.main.ibOriginal.Height));
             connecting.SetValue(new Bgr(Color.Gray));   // Set background color
             ShapeNDraw.drawString("Connecting", connecting, new System.Drawing.Point(connecting.Width / 3 - 10, connecting.Height / 2 - 10), 1, Color.White);
 
-            Image<Bgr, byte> connected = new Image<Bgr, byte>(new Bitmap((int)GV.mMainWindow.ibOriginal.Width, (int)GV.mMainWindow.ibOriginal.Height));
+            Image<Bgr, byte> connected = new Image<Bgr, byte>(new Bitmap((int)Windows.main.ibOriginal.Width, (int)Windows.main.ibOriginal.Height));
             connected.SetValue(new Bgr(Color.Black));   // Set background color
             ShapeNDraw.drawString("Connected", connected, new System.Drawing.Point(connected.Width / 3 - 10, connected.Height / 2 - 10), 1, Color.White);
 
 
             if (e.ProgressPercentage == 0)
             {
-                GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(connecting);
-                GV.mMainWindow.Btn_PR.IsEnabled = false;
+                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(connecting);
+                Windows.main.Btn_PR.IsEnabled = false;
             }
             if (e.ProgressPercentage == 100)
             {
-                GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(connected);
+                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(connected);
                 //mNotification.Show("Connected");
-                GV.mMainWindow.Btn_PR.IsEnabled = true;
+                Windows.main.Btn_PR.IsEnabled = true;
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }

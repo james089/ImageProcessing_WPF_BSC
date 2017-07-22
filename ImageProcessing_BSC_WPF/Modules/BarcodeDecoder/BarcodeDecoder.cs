@@ -8,63 +8,14 @@ using Utilities_BSC_dll_x64;
 using ZXing;
 using ZXing.Common;
 
-namespace ImageProcessing_BSC_WPF.Modules
+namespace ImageProcessing_BSC_WPF.Modules.BarcodeDecoder
 {
-
     public enum decodeMode
     {
         SINGLE,
         MULTIPLE
     }
-
-    /// <summary>
-    /// A barcode reader which accepts an Image instance from EmguCV
-    /// </summary>
-    internal class BarcodeReaderImage : BarcodeReaderGeneric<Image<Emgu.CV.Structure.Bgr, byte>>, IBarcodeReaderImage
-    {
-        private static readonly Func<Image<Emgu.CV.Structure.Bgr, byte>, LuminanceSource> defaultCreateLuminanceSource =
-           (image) => new ImageLuminanceSource(image);
-
-        public BarcodeReaderImage()
-           : base(null, defaultCreateLuminanceSource, null)
-        {
-        }
-    }
-    /// <summary>
-    /// The interface for a barcode reader which accepts an Image instance from EmguCV
-    /// </summary>
-    internal interface IBarcodeReaderImage : IBarcodeReaderGeneric<Image<Emgu.CV.Structure.Bgr, byte>>
-    {
-    }
-    /// <summary>
-    /// A luminance source class which consumes a Image from EmguCV and calculates the luminance values based on the bytes of the image
-    /// </summary>
-    internal class ImageLuminanceSource : BaseLuminanceSource
-    {
-        public ImageLuminanceSource(Image<Emgu.CV.Structure.Bgr, byte> image)
-           : base(image.Size.Width, image.Size.Height)
-        {
-            var bytes = image.Bytes;
-            for (int indexB = 0, indexL = 0; indexB < bytes.Length; indexB += 3, indexL++)
-            {
-                var b = bytes[indexB];
-                var g = bytes[indexB + 1];
-                var r = bytes[indexB + 2];
-                // Calculate luminance cheaply, favoring green.
-                luminances[indexL] = (byte)((r + g + g + b) >> 2);
-            }
-        }
-
-        protected ImageLuminanceSource(byte[] luminances, int width, int height)
-           : base(luminances, width, height)
-        {
-        }
-
-        protected override LuminanceSource CreateLuminanceSource(byte[] newLuminances, int width, int height)
-        {
-            return new ImageLuminanceSource(newLuminances, width, height);
-        }
-    }
+    
     /// <summary>
     /// This is the module to detect QR code\ Barcode\ all codes using Zxing.dll
     /// </summary>
@@ -112,7 +63,7 @@ namespace ImageProcessing_BSC_WPF.Modules
         {
             if (!decodeRoutine.IsBusy)
             {
-                GV.mMainWindow.listBox.Items.Clear();
+                Windows.main.listBox.Items.Clear();
                 decodeRoutine.RunWorkerAsync();
             }
         }
@@ -124,11 +75,11 @@ namespace ImageProcessing_BSC_WPF.Modules
                 Image<Bgr, Byte> processed = ImgToDecode;
                 //drawDecodeResultInImg(processed);  //can't draw on a roated bitmap...
 
-                GV.mMainWindow.ibOriginal.Source = Converter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
+                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
             }
             else
             {
-                GV.mMainWindow.listBox.Items.Add("Fail to find any result");
+                Windows.main.listBox.Items.Add("Fail to find any result");
             }
             s = 0;
         }
@@ -136,14 +87,14 @@ namespace ImageProcessing_BSC_WPF.Modules
         private static void decodeRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (s == 0 || s % 5 == 0)                                            //skip the repeated angle (5 rounds of check in each angle)
-                GV.mMainWindow.listBox.Items.Add("Checked angle: " + _angle);
+                Windows.main.listBox.Items.Add("Checked angle: " + _angle);
             s++;
 
-            GV.mMainWindow.TB_progress.Text = e.ProgressPercentage.ToString() + "%";
-            GV.mMainWindow.progressBar_decode.Value = e.ProgressPercentage;
+            Windows.main.TB_progress.Text = e.ProgressPercentage.ToString() + "%";
+            Windows.main.progressBar.Value = e.ProgressPercentage;
 
-            if (GV.mMainWindow.listBox.Items.Count != 0)
-                GV.mMainWindow.listBox.ScrollIntoView(GV.mMainWindow.listBox.Items[GV.mMainWindow.listBox.Items.Count - 1]);
+            if (Windows.main.listBox.Items.Count != 0)
+                Windows.main.listBox.ScrollIntoView(Windows.main.listBox.Items[Windows.main.listBox.Items.Count - 1]);
         }
 
         private static void decodeRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -275,7 +226,7 @@ namespace ImageProcessing_BSC_WPF.Modules
                 for (int i = 0; i < result.Length; i++)
                 {
                     ShapeNDraw.drawString(outputStringList[i], (int)loc[i].X, (int)loc[i].Y + 50, Color.Red, 24, imgToDraw);
-                    GV.mMainWindow.listBox.Items.Add(outputStringList[i] + "\n" + loc[i]);
+                    Windows.main.listBox.Items.Add(outputStringList[i] + "\n" + loc[i]);
                 }
             }
         }

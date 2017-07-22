@@ -1,0 +1,81 @@
+﻿<Window x:Class="ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI.ImageLabelingWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="640" d:DesignWidth="1366" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
+    <Grid Width="1000" Height="600" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" Grid.ColumnSpan="2" CornerRadius="15" Grid.RowSpan="3"/>
+
+        <Grid x:Name="Grid_title" Background="{DynamicResource SuperTransGrayColor}" Grid.ColumnSpan="2">
+            <Label x:Name="lbl_title" />
+        </Grid>
+
+        <Grid x:Name="Grid_ImageViewer" Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox Grid.Column="1">
+                <Image x:Name="Img_viewer" />
+            </Viewbox>
+            <Button Style="{DynamicResource Button_navigate}" x:Name="Btn_left" Grid.Column="0" Click="Btn_left_Click"/>
+            <Button Style="{DynamicResource Button_navigate}" x:Name="Btn_right" Grid.Column="2" RenderTransformOrigin="0.5,0.5" Click="Btn_right_Click">
+                <Button.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="1" ScaleX="-1"/>
+                        <SkewTransform AngleY="0" AngleX="0"/>
+                        <RotateTransform Angle="0"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Button.RenderTransform>
+            </Button>
+        </Grid>
+        <Grid x:Name="Grid_control" Grid.Column="1" Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Labeling img from: " Margin="5,5,0,5" HorizontalAlignment="Left" />
+            <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_resizedImgDir.value}" Grid.Column="1" Margin="5" Grid.ColumnSpan="2"/>
+
+            <Label Content="Set label: " Margin="5,5,0,5" Grid.Row="1" HorizontalAlignment="Left"/>
+            <TextBox x:Name="TB_currentLabel" Grid.Column="1" Grid.Row="1" Text="" Margin="5" TextChanged="TB_currentLabel_TextChanged" Grid.ColumnSpan="2"/>
+
+            <Grid x:Name="Grid_mapDir" Grid.Row="2" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Map File Directory: " Margin="5,5,0,5" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
+                <Label Style="{DynamicResource Label_frame}" x:Name="TB_ML_supportFileDir" Content="{Binding ML_rootDir.value}" Margin="5" Grid.Column="1" />
+
+            </Grid>
+
+            <Button x:Name="Btn_createMapFile" Content="Generate map file" Grid.Row="3" Margin="5" Click="Btn_createMapFile_Click"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" SelectedIndex="0" Grid.ColumnSpan="2">
+                <ComboBoxItem Content="Train"/>
+                <ComboBoxItem Content="Test"/>
+            </ComboBox>
+        </Grid>
+        <Button x:Name="Btn_close" Content="Close" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Margin="10" Width="150"/>
+    </Grid>
+</Window>

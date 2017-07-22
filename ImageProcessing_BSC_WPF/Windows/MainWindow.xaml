@@ -9,13 +9,13 @@
                 <RowDefinition Height="15*"/>
             </Grid.RowDefinitions>
             <Grid x:Name="TitleBar" Margin="0" Background="{DynamicResource SuperTransGrayColor}">
-                <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="" FontSize="20" Foreground="White" />
+                <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding GMessage.value}" FontSize="20" Foreground="White" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,2,0">
                     <Button x:Name="Btn_minimize" Style="{DynamicResource Button_minimize}" Content="-" Margin="1,0" Width="60" FontWeight="Bold" Click="Btn_minimize_Click"/>
                     <Button x:Name="Btn_close" Content="X" Style="{DynamicResource Button_close}" Margin="1,0" Width="60" Background="#FFD42525" FontWeight="Bold" Click="Btn_close_Click"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Height="50" VerticalAlignment="Center" Width="260" Orientation="Horizontal" Margin="10,0,0,0">
-                    <Image Width="39" Source="../Resources/fav.ico"/>
+                    <Image Width="40" Source="../Resources/fav.ico"/>
                     <Label x:Name="Title" Content="Image Processing 4" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
@@ -53,14 +53,7 @@
                 <Grid x:Name="Control_Info_Panel" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Margin="5,0,5,5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Expander Header="General" Margin="0" IsExpanded="True" RenderTransformOrigin="0.5,0.5" ToolTip="Video control" IsHitTestVisible="True" ExpandDirection="Down">
                         <Grid >
@@ -112,136 +105,207 @@
                             </GroupBox>
                         </Grid>
                     </Expander>
-                    <Expander x:Name="Expander_feature" Header="Feature Detection" Grid.Row="3" Margin="0,5,0,0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect features" IsHitTestVisible="True" ExpandDirection="Down" >
-                        <Grid>
-                            <WrapPanel Margin="5,0" HorizontalAlignment="Center">
-                                <RadioButton x:Name="Radio_original" Style="{DynamicResource Radio_left}" Content="None" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_original_Checked" Margin="0" Width="100"/>
-                                <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="100"/>
-                                <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="100"/>
-                                <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="100"/>
-                            </WrapPanel>
-                        </Grid>
-                    </Expander>
-                    <Expander x:Name="Expander_object" Header="Object Recognition" Margin="0,5,0,0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" ExpandDirection="Down" Grid.Row="4">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                            </Grid.RowDefinitions>
-                            <Grid Margin="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="7*"/>
-                                    <RowDefinition Height="47*"/>
-                                    <RowDefinition Height="10*"/>
-                                    <RowDefinition Height="11*"/>
-                                </Grid.RowDefinitions>
-                                <Label Content="Object image" Width="180"/>
-                                <Border BorderBrush="Gray" BorderThickness="1" Margin="5"  Grid.Row="1">
-                                    <Viewbox x:Name="objectImageHolder"  Height="150">
-                                        <Image x:Name="ibObject" Margin="0" Grid.Row="1" />
-                                    </Viewbox>
-                                </Border>
-                                <Button x:Name="Btn_setObject" Content="Set object image" Grid.Row="2" Margin="0,5,0,0" IsHitTestVisible="True" Click="Btn_setObject_Click"/>
-                                <CheckBox x:Name="Chk_enableObjectDetect" Content="Enable this panel" Unchecked="Chk_enableObjectD_Unchecked" Checked="Chk_enableObjectD_Checked" Margin="0" VerticalAlignment="Bottom" Grid.Row="3" Height="35"/>
+                    <TabControl Grid.Row="1" Margin="0,5,0,0">
+                        <TabItem x:Name="Expander_feature" Header="Feature Detect" Height="35" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect features" IsHitTestVisible="True" Width="110" >
+                            <Grid>
+                                <WrapPanel Margin="5" HorizontalAlignment="Center">
+                                    <RadioButton x:Name="Radio_original" Style="{DynamicResource Radio_left}" Content="None" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_original_Checked" Margin="0" Width="100"/>
+                                    <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="100"/>
+                                    <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="100"/>
+                                    <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="100"/>
+                                </WrapPanel>
                             </Grid>
-                            <DockPanel x:Name="Dock_objectType" LastChildFill="False" Margin="5,0,0,0" Grid.Column="1">
-                                <RadioButton x:Name="Radio_FFT" Style="{DynamicResource Radio_top}" Content="FFT" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_FFT_Checked"/>
-                                <RadioButton x:Name="Radio_Color" Style="{DynamicResource Radio_bottom}" Content="Color" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_Color_Checked"/>
-                                <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="80" VerticalAlignment="Top"/>
-                            </DockPanel>
-
-                        </Grid>
-                    </Expander>
-                    <Expander x:Name="Expander_Decode" Header="Decode Barcode" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" ExpandDirection="Down" Grid.Row="5" Margin="0,5,0,0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label x:Name="lbl_barcodeDetectResult" Style="{DynamicResource Label_frame}"  Height="80" Margin="5" Grid.Column="0" VerticalAlignment="Top"/>
-                            <StackPanel Margin="5" Orientation="Vertical" Grid.Column="1">
-                                <CheckBox x:Name="Chk_liveDecoding" Content="Live detection" Checked="Chk_liveDecoding_Checked" Unchecked="Chk_liveDecoding_Checked" Height="35" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Left" />
-                                <Button x:Name="Btn_decode" Content="Decode once" Margin="0,5" Click="Btn_decode_Click" Height="35" Width="200"/>
-                            </StackPanel>
-                        </Grid>
-                    </Expander>
-                    <Expander x:Name="OCR_Setting" Header="OCR" Grid.Row="6" Margin="0,5,0,0">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
-                            <Grid >
+                        </TabItem>
+                        <TabItem x:Name="Expander_object" Header="Object Detect" Margin="0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" Grid.Row="4" Height="35" Width="110">
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="7*"/>
+                                        <RowDefinition Height="47*"/>
+                                        <RowDefinition Height="10*"/>
+                                        <RowDefinition Height="11*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Content="Object image" Width="180"/>
+                                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5"  Grid.Row="1">
+                                        <Viewbox x:Name="objectImageHolder"  Height="150">
+                                            <Image x:Name="ibObject" Margin="0" Grid.Row="1" />
+                                        </Viewbox>
+                                    </Border>
+                                    <Button x:Name="Btn_setObject" Content="Set object image" Grid.Row="2" Margin="5" IsHitTestVisible="True" Click="Btn_setObject_Click"/>
+                                    <CheckBox x:Name="Chk_enableObjectDetect" Content="Enable this panel" Unchecked="Chk_enableObjectD_Unchecked" Checked="Chk_enableObjectD_Checked" Margin="5" VerticalAlignment="Bottom" Grid.Row="3" Height="35"/>
+                                </Grid>
+                                <DockPanel x:Name="Dock_objectType" LastChildFill="False" Margin="5,0,0,0" Grid.Column="1">
+                                    <RadioButton x:Name="Radio_FFT" Style="{DynamicResource Radio_top}" Content="FFT" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_FFT_Checked"/>
+                                    <RadioButton x:Name="Radio_Color" Style="{DynamicResource Radio_bottom}" Content="Color" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_Color_Checked"/>
+                                    <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="80" VerticalAlignment="Top"/>
+                                </DockPanel>
+
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="Expander_Decode" Header="Barcode" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" Grid.Row="5" Margin="0" Height="35" Width="110">
+                            <Grid  Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="1*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border BorderBrush="Gray" BorderThickness="1" Margin="5">
-                                    <Viewbox>
-                                        <Image x:Name="ibOCR" Width="200" Height="100" Grid.RowSpan="1"/>
-                                    </Viewbox>
-                                </Border>
-                                <Grid Grid.Column="1">
+                                <Label x:Name="lbl_barcodeDetectResult" Style="{DynamicResource Label_frame}"  Height="80" Margin="5" Grid.Column="0" VerticalAlignment="Top"/>
+                                <StackPanel Margin="5" Orientation="Vertical" Grid.Column="1">
+                                    <CheckBox x:Name="Chk_liveDecoding" Content="Live detection" Checked="Chk_liveDecoding_Checked" Unchecked="Chk_liveDecoding_Checked" Height="35" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Left" />
+                                    <Button x:Name="Btn_decode" Content="Decode once" Margin="0,5" Click="Btn_decode_Click" Height="35" Width="200"/>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="OCR_Setting" Header="OCR" Grid.Row="6" Margin="0" Height="35" Width="110">
+                            <Grid  Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*"/>
                                         <ColumnDefinition Width="1*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                    </Grid.RowDefinitions>
-                                    <CheckBox x:Name="Chk_OCR_live" Content="Live Detection" Height="35" Checked="Chk_OCR_live_Checked" Unchecked="Chk_OCR_live_Checked" Grid.ColumnSpan="2" Margin="5"/>
-                                    <Button x:Name="Btn_ocrOneTime" Content="Detect once" Click="Btn_ocrOneTime_Click" Height="35" Grid.Row="1" Margin="5"/>
-                                    <Button x:Name="Btn_setOCRArea" Content="Set OCR Area" Click="Btn_setOCRArea_Click" Height="35" Grid.Row="1" Grid.Column="1" Margin="5"/>
-                                    <Label x:Name="lbl_OCR" Style="{DynamicResource Label_frame}" Grid.Row="2" Margin="5" Grid.ColumnSpan="2"/>
+                                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5">
+                                        <Viewbox>
+                                            <Image x:Name="ibOCR" Width="200" Height="100" Grid.RowSpan="1"/>
+                                        </Viewbox>
+                                    </Border>
+                                    <Grid Grid.Column="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
+                                        <CheckBox x:Name="Chk_OCR_live" Content="Live Detection" Height="35" Checked="Chk_OCR_live_Checked" Unchecked="Chk_OCR_live_Checked" Grid.ColumnSpan="2" Margin="5"/>
+                                        <Button x:Name="Btn_ocrOneTime" Content="Detect once" Click="Btn_ocrOneTime_Click" Height="35" Grid.Row="1" Margin="5"/>
+                                        <Button x:Name="Btn_setOCRArea" Content="Set OCR Area" Click="Btn_setOCRArea_Click" Height="35" Grid.Row="1" Grid.Column="1" Margin="5"/>
+                                        <Label x:Name="lbl_OCR" Style="{DynamicResource Label_frame}" Grid.Row="2" Margin="5" Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+
                                 </Grid>
-
-
                             </Grid>
-                        </Grid>
-                    </Expander>
+                        </TabItem>
 
-                    <Expander x:Name="MachineLearning" Header="Machine Learning" Grid.Row="7" Margin="0,5,0,0" IsExpanded="True">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.5*"/>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="3*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Content="Model" Grid.RowSpan="1"/>
-                            <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged">
-                                <ComboBoxItem Content="ResNet"/>
-                                <ComboBoxItem Content="FastRCNN"/>
-                            </ComboBox>
-                            <Button x:Name="Btn_runML" Grid.Column="2"  Width="150" Content="Run" Click="Btn_runML_Click" Grid.RowSpan="1" Margin="5"/>
+                        <TabItem x:Name="MachineLearning" Header="Machine Learning" Grid.Row="7" Margin="0" Height="35" Width="110" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                                <GroupBox Header="General" Margin="5">
+                                    <Grid  Margin="5" VerticalAlignment="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.5*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Model" Grid.RowSpan="1"/>
+                                        <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged">
+                                            <ComboBoxItem Content="ResNet"/>
+                                            <ComboBoxItem Content="FastRCNN"/>
+                                        </ComboBox>
+                                        <Button x:Name="Btn_runML" Grid.Column="2"  Width="150" Content="Run" Click="Btn_runML_Click" Grid.RowSpan="1" Margin="5"/>
 
-                            <Label Content="DataSet" Grid.Row="1"/>
-                            <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
-                                <ComboBoxItem Content="CIFAR10"/>
-                                <ComboBoxItem Content="Grocery"/>
-                            </ComboBox>
-                            <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
-                        </Grid>
-                    </Expander>
-                    <Expander x:Name="Expander_test" Header="Test" Margin="0,5,0,0" RenderTransformOrigin="0.5,0.5" ExpandDirection="Down" Grid.Row="8">
-                        <Grid>
-                            <WrapPanel>
-                                <CheckBox x:Name="Chk_findMin" Content="Find Min Distance" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findMin_Checked" Unchecked="Chk_findMin_Checked" Height="35"/>
-                                <CheckBox x:Name="Chk_findCenter" Content="Find center of bright object" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findCenter_Checked" Unchecked="Chk_findCenter_Checked" Height="35"/>
-                            </WrapPanel>
-                        </Grid>
-                    </Expander>
+                                        <Label Content="DataSet" Grid.Row="1"/>
+                                        <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
+                                            <ComboBoxItem Content="CIFAR10"/>
+                                            <ComboBoxItem Content="Grocery"/>
+                                        </ComboBox>
+                                        <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Image Resizing" Grid.Row="1" Margin="5">
+                                    <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="10*"/>
+                                            <ColumnDefinition Width="25*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Source Image Directory: " Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                                        <TextBox x:Name="TB_sourceImgDir" Text="{Binding ML_sourceImgDir.value}" Grid.Column="1" Margin="5"/>
+                                        <Button x:Name="Btn_openDir" Content="..." Grid.Column="2" Margin="5" Click="Btn_openDir_Click"/>
+                                        <Label Content="Resized Image Directory: " Grid.Row="1" Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                                        <TextBox x:Name="TB_resizedImgDir" Text="{Binding ML_resizedImgDir.value}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+                                        <Button x:Name="Btn_openDir_resized" Content="..." Grid.Row="1" Grid.Column="2" Margin="5" Click="Btn_openDir_resized_Click"/>
+                                        <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Width" Grid.Column="0" Margin="5"/>
+                                            <TextBox x:Name="TB_resizeWidth" Grid.Column="1" Margin="5" Text="{Binding ML_desWidth.value}"/>
+                                            <Label Content="Height" Grid.Column="2" Margin="5"/>
+                                            <TextBox x:Name="TB_resizeHeight" Grid.Column="3" Margin="5" Text="{Binding ML_desHeight.value}"/>
+                                            <Button x:Name="Btn_resize" Content="Resize" Click="Btn_resize_Click" Grid.Column="4" Margin="5" />
+                                        </Grid>
+                                    </Grid>
+                                </GroupBox>
+
+                                <GroupBox Grid.Row="2" Grid.ColumnSpan="3" Header="Mean Calculation" Margin="5">
+                                    <Grid x:Name="Grid_mean" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button x:Name="Btn_calculateMean" Height="35" Content="Calculate Mean" Click="Btn_calculateMean_Click" Grid.ColumnSpan="1" Margin="5"/>
+                                        <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
+                                        <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_supportFileDir.value}" Grid.Column="2" Margin="5"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Grid.Row="3" Grid.ColumnSpan="3" Header="Labeling" Margin="5">
+                                    <Grid x:Name="Grid_labeling" >
+                                        <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5" Click="Btn_ML_labling_Click"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Grid.Row="4" Grid.ColumnSpan="3" Header="Model Training/Evaluating" Margin="5">
+                                    <Grid x:Name="Grid_trainModel" >
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="Expander_test" Header="Test" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35" Width="80">
+                            <Grid Margin="5">
+                                <WrapPanel>
+                                    <CheckBox x:Name="Chk_findMin" Content="Find Min Distance" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findMin_Checked" Unchecked="Chk_findMin_Checked" Height="35"/>
+                                    <CheckBox x:Name="Chk_findCenter" Content="Find center of bright object" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findCenter_Checked" Unchecked="Chk_findCenter_Checked" Height="35"/>
+                                </WrapPanel>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+
                 </Grid>
 
                 <Grid x:Name="Info_Panel" Grid.Column="0" Grid.Row="2">
@@ -257,7 +321,7 @@
                             <ColumnDefinition Width="8*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <ProgressBar x:Name="progressBar_decode" Height="10"/>
+                        <ProgressBar x:Name="progressBar" Height="10"/>
                         <TextBlock x:Name="TB_progress" Text="%" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" />
                     </Grid>
                 </Grid>

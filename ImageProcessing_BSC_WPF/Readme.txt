@@ -2,6 +2,13 @@
 linbojun089@gmail.com	
 
 change log:
+
+2017/7/21
+v4.0.0.1
+1. Rearrange modules. Machine learing is a module right now.
+2. Added resizing image and create mean file in machine learning (CIFAR-10 using)
+3. Added labeling function and map creating function. (All set!)
+
 2017/7/11
 v4.0.0.0
 1. Complete x64 version (OpenCV x64, flycapture x64, v140, 2.11)

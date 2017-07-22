@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace ImageProcessing_BSC_WPF.MachineLearning
+namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
+    public enum ErrCode
+    {
+        ModelNotExists,
+        LoadingError
+    }
+
     public enum MLModel
     {
         ResNet,
@@ -35,5 +44,7 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
     {
         public static DataSet MLTrainedDataSetSelected;
         public static MLModel MLModelSelected;
+
+        public static ErrCode ErrorCode;
     }
 }

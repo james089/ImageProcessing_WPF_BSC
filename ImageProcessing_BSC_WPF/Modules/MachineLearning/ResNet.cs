@@ -12,8 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Utilities_BSC_dll_x64;
 
-namespace ImageProcessing_BSC_WPF.MachineLearning
+namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
+  
     class ResNet
     {
         public static bool IsModelLoaded = false;
@@ -55,7 +56,13 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
 
         private static void MLRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            //throw new NotImplementedException();
+            switch (e.ProgressPercentage)
+            {
+                case (int)ErrCode.ModelNotExists:
+                    mNotification.Show("Model not exists"); break;
+                case (int)ErrCode.LoadingError:
+                    mNotification.Show("Cannot load model"); break;
+            }
         }
 
         private static void MLRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -72,10 +79,10 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
         private static void LoadModel()
         {
             // Load the model.
-            string modelFilePath = Environment.CurrentDirectory + @"\MachineLearning\TrainedModels\" + "resnet20.dnn";
+            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20.dnn";
             if (!File.Exists(modelFilePath))
             {
-                mNotification.Show("No model");
+                MLRoutine.ReportProgress((int)ErrCode.ModelNotExists);
                 return;
             }
 
@@ -97,7 +104,7 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
             DateTime startTime = DateTime.Now;
             if (!IsModelLoaded)
             {
-                mNotification.Show("Model Not Loaded!");
+                MLRoutine.ReportProgress((int)ErrCode.LoadingError);
                 return;
             }
             _ImgOriginal = Img.Copy();
@@ -161,7 +168,7 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
             }
             catch (Exception ex)
             {
-                GV.mMainWindow.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
+                Windows.main.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
                 throw ex;
             }
         }
@@ -175,7 +182,7 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
         /// <param name="outputBuffer">The evaluation result data.</param>
         internal static void printOutput<T>(int sampleSize, IList<IList<T>> outputBuffer)
         {
-            GV.mMainWindow.listBox.Items.Add("\nThe number of sequences in the batch: " + outputBuffer.Count);
+            Windows.main.listBox.Items.Add("\nThe number of sequences in the batch: " + outputBuffer.Count);
             int seqNo = 0;
             int outputSampleSize = sampleSize;
             foreach (var seq in outputBuffer)
@@ -185,24 +192,24 @@ namespace ImageProcessing_BSC_WPF.MachineLearning
                     throw new ApplicationException("The number of elements in the sequence is not a multiple of sample size");
                 }
 
-                GV.mMainWindow.listBox.Items.Add(String.Format("\nSequence {0} contains {1} samples.", seqNo++, seq.Count / outputSampleSize));
+                Windows.main.listBox.Items.Add(String.Format("\nSequence {0} contains {1} samples.", seqNo++, seq.Count / outputSampleSize));
                 int i = 0;
                 int sampleNo = 0;
                 foreach (var element in seq)
                 {
                     if (i++ % outputSampleSize == 0)
                     {
-                        GV.mMainWindow.listBox.Items.Add(String.Format("\n    sample {0}: ", sampleNo));
+                        Windows.main.listBox.Items.Add(String.Format("\n    sample {0}: ", sampleNo));
                     }
-                    GV.mMainWindow.listBox.Items.Add(element + "(" + (CIFAR10)(i-1) + ")");
+                    Windows.main.listBox.Items.Add(element + "(" + (CIFAR10)(i-1) + ")");
                     if (i % outputSampleSize == 0)
                     {
-                        GV.mMainWindow.listBox.Items.Add("." + " (" + timeSpent + " ms)");
+                        Windows.main.listBox.Items.Add("." + " (" + timeSpent + " ms)");
                         sampleNo++;
                     }
                     else
                     {
-                        GV.mMainWindow.listBox.Items.Add(",");
+                        Windows.main.listBox.Items.Add(",");
                     }
                 }
             }
