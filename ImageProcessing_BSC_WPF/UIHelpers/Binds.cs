@@ -40,6 +40,39 @@ namespace ImageProcessing_BSC_WPF
         #endregion
     }
 
+    public class BindInt : INotifyPropertyChanged
+    {
+        public BindInt() { }
+
+        private int value_ = 0;
+        public int value
+        {
+            get { return value_; }
+            set
+            {
+                if (value_ != value)
+                {
+                    value_ = value;
+                    NotifyPropertyChanged("value");
+                }
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+    }
+
     public class BindDouble : INotifyPropertyChanged
     {
         public BindDouble() { }

@@ -79,7 +79,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         private static void LoadModel()
         {
             // Load the model.
-            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20.dnn";
+            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20_BSC.dnn";
             if (!File.Exists(modelFilePath))
             {
                 MLRoutine.ReportProgress((int)ErrCode.ModelNotExists);
@@ -234,13 +234,20 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
             return maxIndex;
         }
 
+
         private static void showResult<T>(int sampleSize, IList<IList<T>> outputBuffer, double outputValue)
         {
+            int predictedIndex = 0;
             switch (MLCore.MLTrainedDataSetSelected)
             {
                 case DataSet.CIFAR10:
-                    int predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
+                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
                     OutputString = ((CIFAR10)predictedIndex).ToString();
+                    OutputProbablility = outputValue;
+                    break;
+                case DataSet.Bag:
+                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
+                    OutputString = ((Bag)predictedIndex).ToString();
                     OutputProbablility = outputValue;
                     break;
             }

@@ -108,11 +108,11 @@
                     <TabControl Grid.Row="1" Margin="0,5,0,0">
                         <TabItem x:Name="Expander_feature" Header="Feature Detect" Height="35" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect features" IsHitTestVisible="True" Width="110" >
                             <Grid>
-                                <WrapPanel Margin="5" HorizontalAlignment="Center">
+                                <WrapPanel Margin="5" HorizontalAlignment="Left">
                                     <RadioButton x:Name="Radio_original" Style="{DynamicResource Radio_left}" Content="None" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_original_Checked" Margin="0" Width="100"/>
                                     <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="100"/>
                                     <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="100"/>
-                                    <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="100"/>
+                                    <RadioButton x:Name="Radio_line" Style="{DynamicResource Radio_right}" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="100"/>
                                 </WrapPanel>
                             </Grid>
                         </TabItem>
@@ -206,9 +206,6 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
                                 <GroupBox Header="General" Margin="5">
@@ -233,67 +230,110 @@
                                         <Label Content="DataSet" Grid.Row="1"/>
                                         <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
                                             <ComboBoxItem Content="CIFAR10"/>
-                                            <ComboBoxItem Content="Grocery"/>
+                                            <ComboBoxItem Content="Bag"/>
                                         </ComboBox>
                                         <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
                                     </Grid>
                                 </GroupBox>
-                                <GroupBox Header="Image Resizing" Grid.Row="1" Margin="5">
-                                    <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="10*"/>
-                                            <ColumnDefinition Width="25*"/>
-                                            <ColumnDefinition Width="5*"/>
-                                        </Grid.ColumnDefinitions>
+
+                                <GroupBox x:Name="Group_modelPreparation" Header="Prepare Data" Grid.Row="1" >
+                                    <Grid Margin="5" Grid.Row="1">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Label Content="Source Image Directory: " Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
-                                        <TextBox x:Name="TB_sourceImgDir" Text="{Binding ML_sourceImgDir.value}" Grid.Column="1" Margin="5"/>
-                                        <Button x:Name="Btn_openDir" Content="..." Grid.Column="2" Margin="5" Click="Btn_openDir_Click"/>
-                                        <Label Content="Resized Image Directory: " Grid.Row="1" Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
-                                        <TextBox x:Name="TB_resizedImgDir" Text="{Binding ML_resizedImgDir.value}" Grid.Row="1" Grid.Column="1" Margin="5"/>
-                                        <Button x:Name="Btn_openDir_resized" Content="..." Grid.Row="1" Grid.Column="2" Margin="5" Click="Btn_openDir_resized_Click"/>
-                                        <Grid Grid.Row="2" Grid.ColumnSpan="3">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="4*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Label Content="Width" Grid.Column="0" Margin="5"/>
-                                            <TextBox x:Name="TB_resizeWidth" Grid.Column="1" Margin="5" Text="{Binding ML_desWidth.value}"/>
-                                            <Label Content="Height" Grid.Column="2" Margin="5"/>
-                                            <TextBox x:Name="TB_resizeHeight" Grid.Column="3" Margin="5" Text="{Binding ML_desHeight.value}"/>
-                                            <Button x:Name="Btn_resize" Content="Resize" Click="Btn_resize_Click" Grid.Column="4" Margin="5" />
-                                        </Grid>
+
+                                        <GroupBox x:Name="Grid_FileDirectory" Header="File Directory" >
+                                            <Grid >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="10*"/>
+                                                    <ColumnDefinition Width="15*"/>
+                                                    <ColumnDefinition Width="5*"/>
+                                                    <ColumnDefinition Width="10*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="Source Image Directory: " Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                                                <TextBox x:Name="TB_sourceImgDir" Text="{Binding ML_sourceImgDir.value}" Grid.Column="1" Margin="5"/>
+                                                <Button x:Name="Btn_openDir" Content="..." Grid.Column="2" Margin="5" Click="Btn_openDir_Click" Height="27" VerticalAlignment="Top"/>
+                                                <Button x:Name="Btn_generateImgFolder_source" Content="Create Sub Image Folder" Grid.Column="3" Margin="5" Click="Btn_generateImgFolder_source_Click" Height="27" VerticalAlignment="Top"/>
+                                                
+                                                <Label Content="ML Root Directory: " Grid.Row="1" Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                                                <TextBox x:Name="TB_resizedImgDir" Text="{Binding ML_rootDir.value}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+                                                <Button x:Name="Btn_openDir_ML_root" Content="..." Grid.Row="1" Grid.Column="2" Margin="5" Click="Btn_openDir_ML_root_Click"/>
+                                                <Button x:Name="Btn_generateImgFolder_MLRoot" Content="Create Sub Image Folder" Grid.Row="1" Grid.Column="3" Margin="5" Click="Btn_generateImgFolder_MLRoot_Click" Height="27" VerticalAlignment="Top"/>
+                                                
+                                            </Grid>
+                                        </GroupBox>
+
+                                        <GroupBox Header="Labeling" Grid.Row="1">
+                                            <Grid x:Name="Grid_labeling" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Content="Job Type: "  Margin="5"/>
+                                                <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
+                                                    <ComboBoxItem Content="Train" />
+                                                    <ComboBoxItem Content="Test" />
+                                                </ComboBox>
+                                                <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2"/>
+                                            </Grid>
+                                        </GroupBox>
+
+                                        <GroupBox Header="Image Resizing" Grid.Row="2" Visibility="Collapsed">
+                                            <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="10*"/>
+                                                    <ColumnDefinition Width="25*"/>
+                                                    <ColumnDefinition Width="5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="4*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Width" Grid.Column="0" Margin="5"/>
+                                                    <TextBox x:Name="TB_resizeWidth" Grid.Column="1" Margin="5" Text="{Binding ML_desWidth.value}"/>
+                                                    <Label Content="Height" Grid.Column="2" Margin="5"/>
+                                                    <TextBox x:Name="TB_resizeHeight" Grid.Column="3" Margin="5" Text="{Binding ML_desHeight.value}"/>
+                                                    <Button x:Name="Btn_resize" Content="Resize" Click="Btn_resize_Click" Grid.Column="4" Margin="5" />
+                                                </Grid>
+                                            </Grid>
+                                        </GroupBox>
+
+                                        <GroupBox Header="Mean Calculation" Grid.Row="3">
+                                            <Grid x:Name="Grid_mean" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button x:Name="Btn_calculateMean" Height="35" Content="Calculate Mean" Click="Btn_calculateMean_Click" Grid.ColumnSpan="1" Margin="5"/>
+                                                <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
+                                                <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_rootDir.value}" Grid.Column="2" Margin="5"/>
+                                            </Grid>
+                                        </GroupBox>
+
+                                        <GroupBox Header="Model Training/Evaluating" Grid.Row="4">
+                                            <Grid x:Name="Grid_trainModel" />
+                                        </GroupBox>
                                     </Grid>
                                 </GroupBox>
 
-                                <GroupBox Grid.Row="2" Grid.ColumnSpan="3" Header="Mean Calculation" Margin="5">
-                                    <Grid x:Name="Grid_mean" >
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Button x:Name="Btn_calculateMean" Height="35" Content="Calculate Mean" Click="Btn_calculateMean_Click" Grid.ColumnSpan="1" Margin="5"/>
-                                        <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
-                                        <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_supportFileDir.value}" Grid.Column="2" Margin="5"/>
-                                    </Grid>
-                                </GroupBox>
-                                <GroupBox Grid.Row="3" Grid.ColumnSpan="3" Header="Labeling" Margin="5">
-                                    <Grid x:Name="Grid_labeling" >
-                                        <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5" Click="Btn_ML_labling_Click"/>
-                                    </Grid>
-                                </GroupBox>
-                                <GroupBox Grid.Row="4" Grid.ColumnSpan="3" Header="Model Training/Evaluating" Margin="5">
-                                    <Grid x:Name="Grid_trainModel" >
-                                    </Grid>
-                                </GroupBox>
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="Expander_test" Header="Test" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35" Width="80">
@@ -321,8 +361,8 @@
                             <ColumnDefinition Width="8*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <ProgressBar x:Name="progressBar" Height="10"/>
-                        <TextBlock x:Name="TB_progress" Text="%" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" />
+                        <ProgressBar x:Name="progressBar" Height="10" Value="{Binding Progress.value}"/>
+                        <TextBlock x:Name="TB_progress" Text="{Binding ProgressString.value}" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" />
                     </Grid>
                 </Grid>
             </Grid>

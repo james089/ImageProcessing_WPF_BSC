@@ -3,6 +3,12 @@ linbojun089@gmail.com
 
 change log:
 
+2017/7/22
+v4.0.0.2
+1. Using original image to do labeling.
+2. Redo labeling page\ redo BindManager (StringManager before).
+
+
 2017/7/21
 v4.0.0.1
 1. Rearrange modules. Machine learing is a module right now.

@@ -60,21 +60,18 @@ namespace ImageProcessing_BSC_WPF
             return thresh;
         }
 
-        /*
-        public static List<Bitmap> GetAllImg(string dir)
+        public static string OpenDirectoryDialog()
         {
-            List<Bitmap> imgList = new List<Bitmap>();
-            DirectoryInfo Folder = new DirectoryInfo(dir);
-            FileInfo[] ImageInfo = Folder.GetFiles();
+            // Create an instance of the open file dialog box.
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
-            for (int i = 0; i < ImageInfo.Length; i++)
+            // Process input if the user clicked OK.
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
-                Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", dir, ImageInfo[i].Name));
-                imgList.Add(bm);
-                bm.Dispose();
+                return dialog.SelectedPath;
             }
-            return imgList;
+            return "";
         }
-        */
     }
 }

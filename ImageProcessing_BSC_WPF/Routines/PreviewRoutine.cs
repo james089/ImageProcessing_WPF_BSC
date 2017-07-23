@@ -91,14 +91,14 @@ namespace ImageProcessing_BSC_WPF
             if (GV._MLSwitch)
             {
                 if (ResNet.OutputProbablility > 8)
-                    StringManager.StrMngr.GMessage.value = string.Format("This must be a {0}! [{1:0.00}]",ResNet.OutputString, ResNet.OutputProbablility);
+                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}! [{1:0.00}]",ResNet.OutputString, ResNet.OutputProbablility);
                 else
-                    StringManager.StrMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
+                    BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
             // Normal
             Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
             // Error reporting
-            if (GV._err != ErrorCode.Normal) StringManager.StrMngr.GMessage.value = GV._err.ToString();
+            if (GV._err != ErrorCode.Normal) BindManager.BindMngr.GMessage.value = GV._err.ToString();
         }
 
         private static void previewRoutine_doWork(object sender, DoWorkEventArgs e)

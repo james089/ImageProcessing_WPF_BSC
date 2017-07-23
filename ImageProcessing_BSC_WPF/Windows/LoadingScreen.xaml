@@ -6,20 +6,20 @@
         xmlns:local="clr-namespace:ImageProcessing_BSC_WPF"
         mc:Ignorable="d"
         Title="LoadingScreen"  ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}" Topmost="True" >
-    <Border Height="300" Width="500" >
-        <Border.Effect>
-            <DropShadowEffect BlurRadius="20"/>
-        </Border.Effect>
-        <Grid Background="{DynamicResource Background_darkgray}">
-            <DockPanel Height="100" Width="300">
-                <Image Source="../Resources/title.png" DockPanel.Dock="Left"/>
-                <Label DockPanel.Dock="Right" Content="Image Processing" FontFamily="Impact" FontSize="24"/>
-            </DockPanel>
 
-            <Label x:Name="lbl_version" VerticalAlignment="Center" Content="ver. " FontSize="14" Opacity="0.5" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,59,55,0"/>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                <Label VerticalAlignment="Bottom" Content="Copyright by Bojun Lin" Margin="0,0,0,10" />
-            </StackPanel>
-        </Grid>
-    </Border>
+    <Grid Height="300" Width="500" >
+        <DockPanel Height="100" Width="300">
+            <Image Source="../Resources/title.png" DockPanel.Dock="Left"/>
+            <Label DockPanel.Dock="Right" Content="Image Processing" FontFamily="Impact" FontSize="24"/>
+        </DockPanel>
+        <Border Background="{DynamicResource Background_darkgray}" CornerRadius="15" Panel.ZIndex="-1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
+            </Border.Effect>
+        </Border>
+        <Label x:Name="lbl_version" VerticalAlignment="Center" Content="ver. " FontSize="14" Opacity="0.5" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,59,55,0"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Label VerticalAlignment="Bottom" Content="Copyright by Bojun Lin" Margin="0,0,0,10" />
+        </StackPanel>
+    </Grid>
 </Window>

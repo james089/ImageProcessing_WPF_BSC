@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
+    public enum JobType
+    {
+        train,
+        test
+    }
+
     public enum ErrCode
     {
         ModelNotExists,
@@ -24,7 +30,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
     public enum DataSet
     {
         CIFAR10,
-        Grocery
+        Bag
     }
 
     public enum CIFAR10
@@ -40,6 +46,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         ship,
         truck
     }
+
+    public enum Bag
+    {
+        notBag,
+        bag
+    }
+
     public class MLCore
     {
         public static DataSet MLTrainedDataSetSelected;

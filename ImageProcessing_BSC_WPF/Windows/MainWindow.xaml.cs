@@ -54,7 +54,7 @@ namespace ImageProcessing_BSC_WPF
             //DataContext = Windows.main;                         // This is neccessary
             //GMessage = new BindString();
 
-            DataContext = StringManager.StrMngr;
+            DataContext = BindManager.BindMngr;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -456,7 +456,7 @@ namespace ImageProcessing_BSC_WPF
                 GV._err = ErrorCode.No_object_image;
             }
 
-            StringManager.StrMngr.GMessage.value = GV._err.ToString();
+            BindManager.BindMngr.GMessage.value = GV._err.ToString();
         }
 
         private void Radio_FFT_Checked(object sender, RoutedEventArgs e)
@@ -537,19 +537,19 @@ namespace ImageProcessing_BSC_WPF
                 if (PreviewRoutine.IsCapturing)
                 {
                     PreviewRoutine.stopPreview();
-                    StringManager.StrMngr.GMessage.value = "Select the area and hit set area again to confirm";
+                    BindManager.BindMngr.GMessage.value = "Select the area and hit set area again to confirm";
                 }
                 else if (!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
                 {
                     OCR.croppedOCRArea = ImageCropping.rect;
                     PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
-                    StringManager.StrMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
+                    BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 }
             }
             else if(!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)   //crop static picture
             {
                 OCR.croppedOCRArea = ImageCropping.rect;
-                StringManager.StrMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
+                BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
                 Image<Bgr, byte> bm = GV.imgOriginal.Copy();
                 bm.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
@@ -584,54 +584,73 @@ namespace ImageProcessing_BSC_WPF
             GV._MLSwitch = (bool)Chk_ML.IsChecked;
         }
 
+
+        private void Btn_generateImgFolder_source_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Directory.Exists(BindManager.BindMngr.ML_sourceTrainImgDir.value))
+            {
+                Directory.CreateDirectory(BindManager.BindMngr.ML_sourceTrainImgDir.value);
+                mNotification.Show("Source train image folder is created");
+            }
+            else
+                mNotification.Show("Folder exists");
+            if (!Directory.Exists(BindManager.BindMngr.ML_sourceTestImgDir.value))
+            {
+                Directory.CreateDirectory(BindManager.BindMngr.ML_sourceTestImgDir.value);
+                mNotification.Show("Source test image folder is created");
+            }
+            else
+                mNotification.Show("Folder exists");
+        }
+
+        private void Btn_generateImgFolder_MLRoot_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Directory.Exists(BindManager.BindMngr.ML_trainImgDir.value))
+            {
+                Directory.CreateDirectory(BindManager.BindMngr.ML_trainImgDir.value);
+                mNotification.Show("ML train image folder is created");
+            }
+            else
+                mNotification.Show("Folder exists");
+            if (!Directory.Exists(BindManager.BindMngr.ML_testImgDir.value))
+            {
+                Directory.CreateDirectory(BindManager.BindMngr.ML_testImgDir.value);
+                mNotification.Show("ML test image folder is created");
+            }
+            else
+                mNotification.Show("Folder exists");
+        }
         private void Btn_resize_Click(object sender, RoutedEventArgs e)
         {
             if (TB_sourceImgDir.Text != "" && TB_resizedImgDir.Text != "" && TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
                 ImageResizing.ImageBatchResizing(
-                    StringManager.StrMngr.ML_sourceImgDir.value, 
-                    StringManager.StrMngr.ML_resizedImgDir.value, 
-                    Convert.ToInt32(StringManager.StrMngr.ML_desWidth.value), 
-                    Convert.ToInt32(StringManager.StrMngr.ML_desHeight.value));
+                    BindManager.BindMngr.ML_sourceImgDir.value, 
+                    BindManager.BindMngr.ML_rootDir.value, 
+                    Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value), 
+                    Convert.ToInt32(BindManager.BindMngr.ML_desHeight.value));
             else
                 mMessageBox.Show("Empty string");
         }
 
         private void Btn_openDir_Click(object sender, RoutedEventArgs e)
         {
-            // Create an instance of the open file dialog box.
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-
-            // Process input if the user clicked OK.
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                StringManager.StrMngr.ML_sourceImgDir.value = dialog.SelectedPath;
-            }
+            BindManager.BindMngr.ML_sourceImgDir.value = GF.OpenDirectoryDialog();
         }
 
-        private void Btn_openDir_resized_Click(object sender, RoutedEventArgs e)
+        private void Btn_openDir_ML_root_Click(object sender, RoutedEventArgs e)
         {
-            // Create an instance of the open file dialog box.
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-
-            // Process input if the user clicked OK.
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                StringManager.StrMngr.ML_resizedImgDir.value = dialog.SelectedPath;
-            }
+            BindManager.BindMngr.ML_rootDir.value = GF.OpenDirectoryDialog();
         }
 
         private void Btn_calculateMean_Click(object sender, RoutedEventArgs e)
         {
-            string meanFileDir = StringManager.StrMngr.ML_rootDir.value;
-            if (!Directory.Exists(meanFileDir)) Directory.CreateDirectory(meanFileDir);
-            MeanFileGenerator.GenerateMeanFile(StringManager.StrMngr.ML_resizedImgDir.value, meanFileDir);
+            string meanFileDir = BindManager.BindMngr.ML_rootDir.value;
+            MeanFileGenerator.GenerateMeanFile(BindManager.BindMngr.ML_trainImgDir.value, meanFileDir);
         }
 
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
         {
-            ImageLabelingWindow w = new ImageLabelingWindow();
+            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex);
             w.ShowDialog();
         }
         #endregion <GUI operation>

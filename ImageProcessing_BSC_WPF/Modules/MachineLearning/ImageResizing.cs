@@ -21,6 +21,43 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         static int TotalImages;
         private static int CurrentImageIndex = 0;
 
+
+        //public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight)
+        //{
+
+        //    ImgDir = _imgDir;
+        //    SaveDir = _saveDir;
+        //    DesWidth = _desWidth;
+        //    DesHeight = _desHeight;
+
+        //    if (!Directory.Exists(ImgDir)) Directory.CreateDirectory(ImgDir);
+        //    if (!Directory.Exists(SaveDir)) Directory.CreateDirectory(SaveDir);
+
+        //    DirectoryInfo Folder = new DirectoryInfo(ImgDir);
+        //    FileInfo[] ImageInfo = Folder.GetFiles();
+        //    TotalImages = ImageInfo.Length;
+
+        //    for (int i = 0; i < TotalImages; i++)
+        //    {
+        //        Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
+        //        Bitmap rbm = CntkBitmapExtensions.Resize(bm, DesWidth, DesHeight, true);
+        //        rbm.Save(SaveDir + string.Format("\\{0:D5}.jpg", i));         // This will make it "00000" "00001"...
+
+        //        bm.Dispose();
+        //        rbm.Dispose();
+
+        //        Windows.main.Dispatcher.Invoke(() => {
+        //            BindManager.BindMngr.Progress.value = Convert.ToInt32((i + 1) * 100 / TotalImages);
+        //            BindManager.BindMngr.ProgressString.value = BindManager.BindMngr.Progress.value + "%";
+        //        });
+        //        Thread.Sleep(100);
+
+        //        CurrentImageIndex++;
+        //    }
+
+        //}
+
+
         public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight)
         {
             ResizingRoutine.DoWork += new DoWorkEventHandler(ResizingRoutine_doWork);
@@ -39,7 +76,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
             //List<Bitmap> imagesList = new List<Bitmap>();
 
-            
+
             if (!ResizingRoutine.IsBusy)
                 ResizingRoutine.RunWorkerAsync();
 
@@ -48,9 +85,9 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         private static void ResizingRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            StringManager.StrMngr.GMessage.value = "Resizing complete.";
-            Windows.main.progressBar.Value = 100;
-            Windows.main.TB_progress.Text = "100%";
+            BindManager.BindMngr.GMessage.value = "Resizing complete.";
+            BindManager.BindMngr.Progress.value = 100;
+            BindManager.BindMngr.ProgressString.value = BindManager.BindMngr.Progress.value + "%";
 
             TotalImages = 0;
             CurrentImageIndex = 0;
@@ -58,9 +95,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         private static void ResizingRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            StringManager.StrMngr.GMessage.value = string.Format("Resizing {0} images...", TotalImages - CurrentImageIndex);
-            Windows.main.progressBar.Value = e.ProgressPercentage;
-            Windows.main.TB_progress.Text = e.ProgressPercentage + "%";
+            BindManager.BindMngr.GMessage.value = string.Format("Resizing {0} images...", TotalImages - CurrentImageIndex);
+
+            BindManager.BindMngr.Progress.value = e.ProgressPercentage;
+            BindManager.BindMngr.ProgressString.value = BindManager.BindMngr.Progress.value + "%";
         }
 
         private static void ResizingRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -71,10 +109,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
             for (int i = 0; i < TotalImages; i++)
             {
-                //imagesList.Add(new Bitmap(String.Format(@"{0}\{1}", imgDir, ImageInfo[i].Name)));
                 Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
                 Bitmap rbm = CntkBitmapExtensions.Resize(bm, DesWidth, DesHeight, true);
-                //rbm.Save(saveDir + "\\" + ImageInfo[i].Name);               // Keep original name
                 rbm.Save(SaveDir + string.Format("\\{0:D5}.jpg", i));         // This will make it "00000" "00001"...
 
                 bm.Dispose();
@@ -85,5 +121,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 CurrentImageIndex++;
             }
         }
+
     }
 }

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="640" d:DesignWidth="1366" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
-    <Grid Width="1000" Height="600" >
+
+    <Grid Height="600" Width="1200" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="2*"/>
@@ -15,10 +16,15 @@
             <RowDefinition Height="7*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" Grid.ColumnSpan="2" CornerRadius="15" Grid.RowSpan="3"/>
+        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" CornerRadius="15" Grid.RowSpan="3" Grid.ColumnSpan="2">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
+            </Border.Effect>
+        </Border>
 
-        <Grid x:Name="Grid_title" Background="{DynamicResource SuperTransGrayColor}" Grid.ColumnSpan="2">
-            <Label x:Name="lbl_title" />
+        <Grid x:Name="Grid_title" Grid.ColumnSpan="2">
+            <Border Background="{DynamicResource SuperTransGrayColor}" CornerRadius="15,15,0,0"/>
+            <Label x:Name="lbl_title" Content="{Binding GMessage.value}"/>
         </Grid>
 
         <Grid x:Name="Grid_ImageViewer" Grid.Row="1" Margin="10">
@@ -53,9 +59,11 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="Labeling img from: " Margin="5,5,0,5" HorizontalAlignment="Left" />
-            <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_resizedImgDir.value}" Grid.Column="1" Margin="5" Grid.ColumnSpan="2"/>
+            <Label x:Name="lbl_imgFolder" Style="{DynamicResource Label_frame}" Content="" Grid.Column="1" Margin="5" Grid.ColumnSpan="2"/>
 
             <Label Content="Set label: " Margin="5,5,0,5" Grid.Row="1" HorizontalAlignment="Left"/>
             <TextBox x:Name="TB_currentLabel" Grid.Column="1" Grid.Row="1" Text="" Margin="5" TextChanged="TB_currentLabel_TextChanged" Grid.ColumnSpan="2"/>
@@ -67,14 +75,32 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="Map File Directory: " Margin="5,5,0,5" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
                 <Label Style="{DynamicResource Label_frame}" x:Name="TB_ML_supportFileDir" Content="{Binding ML_rootDir.value}" Margin="5" Grid.Column="1" />
-
             </Grid>
 
-            <Button x:Name="Btn_createMapFile" Content="Generate map file" Grid.Row="3" Margin="5" Click="Btn_createMapFile_Click"/>
-            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" SelectedIndex="0" Grid.ColumnSpan="2">
-                <ComboBoxItem Content="Train"/>
-                <ComboBoxItem Content="Test"/>
-            </ComboBox>
+            <Grid Grid.Row="3" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Resize Width" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="TB_resizeWidth" Grid.Column="1" Margin="5" Text="{Binding ML_desWidth.value}"/>
+                <Label Content="Resize Height" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="TB_resizeHeight" Grid.Column="3" Margin="5" Text="{Binding ML_desHeight.value}"/>
+            </Grid>
+
+            <Button x:Name="Btn_resize" Content="Resize image" Grid.Row="4" Margin="5" Grid.ColumnSpan="1" Click="Btn_resize_Click"/>
+            <Button x:Name="Btn_createMapFile" Content="Generate map(label) file" Grid.Row="4" Margin="5" Click="Btn_createMapFile_Click" Grid.Column="1" Grid.ColumnSpan="2"/>
+
+            <Grid x:Name="ProgressBarPanel" Margin="10" Grid.Row="5" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <ProgressBar x:Name="progressBar" Height="10" Value="{Binding Progress.value}"/>
+                <TextBlock x:Name="TB_progress" Text="{Binding ProgressString.value}" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" />
+            </Grid>
         </Grid>
         <Button x:Name="Btn_close" Content="Close" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Margin="10" Width="150"/>
     </Grid>

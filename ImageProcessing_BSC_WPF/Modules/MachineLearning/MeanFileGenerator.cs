@@ -64,7 +64,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 sw1.WriteLine("  <Channel>3</Channel>");
                 sw1.WriteLine("  <Row>32</Row>");
                 sw1.WriteLine("  <Col>32</Col>");
-                sw1.WriteLine("  <MeanImg type_id=\"opencv - matrix\">");
+                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
                 sw1.WriteLine("    <rows>1</rows>");
                 sw1.WriteLine("    <cols>3072</cols>");
                 sw1.WriteLine("    <dt>f</dt>");

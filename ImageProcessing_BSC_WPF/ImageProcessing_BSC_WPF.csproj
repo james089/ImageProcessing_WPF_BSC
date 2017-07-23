@@ -169,7 +169,7 @@
     <Compile Include="Modules\BarcodeDecoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
     <Compile Include="UIHelpers\Binds.cs" />
-    <Compile Include="UIHelpers\StringManager.cs" />
+    <Compile Include="UIHelpers\BindManager.cs" />
     <Compile Include="Modules\MachineLearning\GUI\ImageLabelingWindow.xaml.cs">
       <DependentUpon>ImageLabelingWindow.xaml</DependentUpon>
     </Compile>
