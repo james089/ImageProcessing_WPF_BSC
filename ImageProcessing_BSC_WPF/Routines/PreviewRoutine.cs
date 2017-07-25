@@ -85,7 +85,7 @@ namespace ImageProcessing_BSC_WPF
             if (GV._OCRSwitch)
             {
                 Windows.main.lbl_OCR.Content = OCR.detectedOCRString;
-                Windows.main.ibOCR.Source = Converter.ToBitmapSource(GV.OCROutputImg);
+                Windows.main.ibOCR.Source = ImgConverter.ToBitmapSource(GV.OCROutputImg);
             }
 
             if (GV._MLSwitch)
@@ -96,7 +96,7 @@ namespace ImageProcessing_BSC_WPF
                     BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
             // Normal
-            Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
+            Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
             // Error reporting
             if (GV._err != ErrorCode.Normal) BindManager.BindMngr.GMessage.value = GV._err.ToString();
         }
@@ -188,8 +188,8 @@ namespace ImageProcessing_BSC_WPF
             if (Setting.IsColorFilterEnabled) GV.imgOriginal = ImageProcessing.colorFilter(GV.imgOriginal.Convert<Gray, byte>()).Convert<Bgr, byte>();
 
             // Cropped View
-            if (ImageCropping.rect.Size != new System.Drawing.Size(0, 0) && IsCropViewEnabled)
-                GV.imgOriginal = GV.imgOriginal.Copy(ImageCropping.rect);
+            if (ImgCropping.rect.Size != new System.Drawing.Size(0, 0) && IsCropViewEnabled)
+                GV.imgOriginal = GV.imgOriginal.Copy(ImgCropping.rect);
         }
     }
 }

@@ -27,35 +27,38 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         FastRCNN
     }
 
-    public enum DataSet
+    //public enum DataSet
+    //{
+    //    CIFAR10,
+    //    Bag
+    //}
+
+    public class DataSet
     {
-        CIFAR10,
-        Bag
+        static string[] CIFAR10 = new string[] { "airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck" };
+        static string[] Dental = new string[] { "crown", "bridge" };
+
+        public static List<string[]> labelSet = new List<string[]>() { CIFAR10, Dental };
     }
 
-    public enum CIFAR10
-    {
-        airplane,
-        automobile,
-        bird,
-        cat,
-        deer,
-        dog,
-        frog,
-        horse,
-        ship,
-        truck
-    }
-
-    public enum Bag
-    {
-        notBag,
-        bag
-    }
+    //public enum CIFAR10
+    //{
+    //    airplane,
+    //    automobile,
+    //    bird,
+    //    cat,
+    //    deer,
+    //    dog,
+    //    frog,
+    //    horse,
+    //    ship,
+    //    truck
+    //}
 
     public class MLCore
     {
-        public static DataSet MLTrainedDataSetSelected;
+        public static string[] MLTrainedDataSetSelected;
+        public static int MLTrainedDataSetSelectedIndex;
         public static MLModel MLModelSelected;
 
         public static ErrCode ErrorCode;

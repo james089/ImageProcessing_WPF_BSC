@@ -55,12 +55,12 @@ namespace ImageProcessing_BSC_WPF
 
             if (e.ProgressPercentage == 0)
             {
-                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(connecting);
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connecting);
                 Windows.main.Btn_PR.IsEnabled = false;
             }
             if (e.ProgressPercentage == 100)
             {
-                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(connected);
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
                 //mNotification.Show("Connected");
                 Windows.main.Btn_PR.IsEnabled = true;
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);

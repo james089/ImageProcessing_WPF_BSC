@@ -12,7 +12,7 @@
             <Image Source="../Resources/title.png" DockPanel.Dock="Left"/>
             <Label DockPanel.Dock="Right" Content="Image Processing" FontFamily="Impact" FontSize="24"/>
         </DockPanel>
-        <Border Background="{DynamicResource Background_darkgray}" CornerRadius="15" Panel.ZIndex="-1">
+        <Border Background="{DynamicResource Background_darkgray}" CornerRadius="10" Panel.ZIndex="-1">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
             </Border.Effect>

@@ -24,16 +24,22 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
     /// </summary>
     public partial class ImageLabelingWindow : Window
     {
+        #region Local Paras
         int totalImgNum = 0;
         int imageIndex = 0;                 // The labeling img index inside the imglist
-        
-        List<int> imgLabelList = new List<int>();
+        string[] labels;
+
+        List<int> labelList = new List<int>();
         FileInfo[] imageInfo;
         static string currentImgDir;                                     // Img dir
         static string mapFileUrl_train = BindManager.BindMngr.ML_rootDir.value + "\\train_map.txt";
         static string mapFileUrl_test = BindManager.BindMngr.ML_rootDir.value + "\\test_map.txt";
         string[] mapFileUrlArr = new string[2] { mapFileUrl_train, mapFileUrl_test };
 
+        Style Radio_tagStyle;
+        /// <summary>
+        /// Job type is train or test
+        /// </summary>
         JobType jobType;
         string[] sourceImgFolderArr = new string[2] 
         {
@@ -46,12 +52,18 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             BindManager.BindMngr.ML_testImgDir.value
         };
 
-        public ImageLabelingWindow(JobType jt)
+        List<RadioButton> radioBtnList = new List<RadioButton>();
+        #endregion Local Paras
+
+        public ImageLabelingWindow(JobType jt, string[] _labels)
         {
             InitializeComponent();
             DataContext = BindManager.BindMngr;
 
+            Radio_tagStyle = Application.Current.FindResource("Radio_tag") as Style;
+
             jobType = jt;
+            labels = _labels;
         }
 
         private void Btn_close_Click(object sender, RoutedEventArgs e)
@@ -61,6 +73,18 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            /// Adding radio buttons to wrap panel
+            for (int i = 0; i < labels.Length; i++)
+            {
+                radioBtnList.Add(new RadioButton());
+                radioBtnList[i].Checked += RadioButton_checked;
+                radioBtnList[i].Content = labels[i];
+                radioBtnList[i].Style = Radio_tagStyle;
+                Wrap_radios.Children.Add(radioBtnList[i]);
+            }
+
+
+            /// Show image folder info
             lbl_imgFolder.Content = sourceImgFolderArr[(int)jobType];
             /// Scan images
             currentImgDir = sourceImgFolderArr[(int)jobType];
@@ -74,8 +98,18 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             /// Load img labels if exists
             loadLabels(mapFileUrlArr[(int)jobType]);
             
-            /// Display the first img and 
+            /// Display the first img and the label
             displayImgAndLabel(0);
+        }
+
+        private void RadioButton_checked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                if ((bool)radioBtnList[i].IsChecked)
+                    labelList[imageIndex] = i;
+            }
         }
 
         private void Btn_right_Click(object sender, RoutedEventArgs e)
@@ -94,15 +128,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             displayImgAndLabel(imageIndex);
         }
 
-        private void TB_currentLabel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            if (TB_currentLabel.Text != "")
-            {
-                int currentLabel = Convert.ToInt32(TB_currentLabel.Text);
-                imgLabelList[imageIndex] = currentLabel;
-            }  
-        }
 
         private void Btn_resize_Click(object sender, RoutedEventArgs e)
         {
@@ -153,7 +178,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 // Initalize
                 for (int i = 0; i < totalImgNum; i++)
                 {
-                    imgLabelList.Add(0);
+                    labelList.Add(0);
                 }
             }
             else
@@ -164,7 +189,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     {
                         string[] temp;
                         temp = sr.ReadLine().Split('\t');
-                        imgLabelList.Add(Convert.ToInt32(temp[1]));
+                        labelList.Add(Convert.ToInt32(temp[1]));
                     }
                     sr.Dispose();
                 }
@@ -174,7 +199,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         private void displayImgAndLabel(int index)
         {
             Img_viewer.Source = new BitmapImage(new Uri(string.Format(@"{0}\{1}", sourceImgFolderArr[(int)jobType], imageInfo[index].Name)));
-            TB_currentLabel.Text = imgLabelList[index].ToString();
+            radioBtnList[labelList[index]].IsChecked = true;
         }
 
 
@@ -190,7 +215,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             {
                 for (int i = 0; i < totalImgNum; i++)
                 {
-                    sw.WriteLine(string.Format("{0}\t{1}", string.Format(@"{0}\{1}", mlImgFolderArr[(int)jobType], resizedFileInfo[i].Name), imgLabelList[i]));
+                    sw.WriteLine(string.Format("{0}\t{1}", string.Format(@"{0}\{1}", mlImgFolderArr[(int)jobType], resizedFileInfo[i].Name), labelList[i]));
                 }
                 sw.Dispose();
             }

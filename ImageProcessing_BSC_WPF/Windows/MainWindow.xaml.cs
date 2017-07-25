@@ -68,6 +68,8 @@ namespace ImageProcessing_BSC_WPF
 
         private void loadProgramSetting()
         {
+            MLCore.MLTrainedDataSetSelected = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
+
             GV._camSelected = (camType)Properties.Settings.Default.camSelection;
             GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
             PreviewRoutine._previewFPS = (previewFPS)Properties.Settings.Default.previewFPS;
@@ -145,7 +147,7 @@ namespace ImageProcessing_BSC_WPF
                 System.Drawing.Point p = new System.Drawing.Point();
                 p.X = (int)e.GetPosition(ibOriginal).X;
                 p.Y = (int)e.GetPosition(ibOriginal).Y;
-                ImageCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, GV._zoomFactor);
+                ImgCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, GV._zoomFactor);
             }
         }
 
@@ -174,7 +176,7 @@ namespace ImageProcessing_BSC_WPF
                 System.Drawing.Point p = new System.Drawing.Point();
                 p.X = (int)e.GetPosition(ibOriginal).X;
                 p.Y = (int)e.GetPosition(ibOriginal).Y;
-                ImageCropping.WPF_mouseMove(ibOriginal, p, GV._zoomFactor);
+                ImgCropping.WPF_mouseMove(ibOriginal, p, GV._zoomFactor);
             }
         }
 
@@ -184,7 +186,7 @@ namespace ImageProcessing_BSC_WPF
             if (GV.imgOriginal != null)
             {
                 ibOriginal.Cursor = Cursors.Arrow;
-                ImageCropping.WPF_mouseUp(ibOriginal, GV._zoomFactor);
+                ImgCropping.WPF_mouseUp(ibOriginal, GV._zoomFactor);
             }
         }   
         
@@ -199,9 +201,9 @@ namespace ImageProcessing_BSC_WPF
             Bitmap loadPic = Tools.loadPicture_withDialog();
             if (loadPic != null)
             {
-                GV.imgOriginal_save = ImageStiching.createFixRatioBitmap((new Image<Bgr, byte>(loadPic)).Copy(), 4, 3);
+                GV.imgOriginal_save = ImgStiching.createFixRatioBitmap((new Image<Bgr, byte>(loadPic)).Copy(), 4, 3);
                 GV.imgOriginal = GV.imgOriginal_save.Copy();
-                ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
+                ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
                 GV._pictureLoaded = true;
                 GF.UpdateImgInfo();
             }
@@ -383,7 +385,7 @@ namespace ImageProcessing_BSC_WPF
         private void Btn_staticReset_Click(object sender, RoutedEventArgs e)
         {
             if (GV.imgOriginal_save != null) GV.imgOriginal = GV.imgOriginal_save.Copy();
-            ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
+            ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
         }
 
 
@@ -434,11 +436,11 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_setObject_Click(object sender, RoutedEventArgs e)
         {
-            if (ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
+            if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
             {
                 Image<Bgr, byte> Img = GV.imgOriginal;
-                GV.object_img = Img.Copy(ImageCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
-                ibObject.Source = Converter.ToBitmapSource(GV.object_img);
+                GV.object_img = Img.Copy(ImgCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
+                ibObject.Source = ImgConverter.ToBitmapSource(GV.object_img);
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
@@ -449,7 +451,7 @@ namespace ImageProcessing_BSC_WPF
             {
                 //====Processed image==========
                 GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
-                ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
+                ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
             }
             else if (GV.object_img == null)
             {
@@ -539,21 +541,21 @@ namespace ImageProcessing_BSC_WPF
                     PreviewRoutine.stopPreview();
                     BindManager.BindMngr.GMessage.value = "Select the area and hit set area again to confirm";
                 }
-                else if (!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)
+                else if (!PreviewRoutine.IsCapturing && ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
                 {
-                    OCR.croppedOCRArea = ImageCropping.rect;
+                    OCR.croppedOCRArea = ImgCropping.rect;
                     PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
                     BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 }
             }
-            else if(!PreviewRoutine.IsCapturing && ImageCropping.rect.Width * ImageCropping.rect.Height != 0)   //crop static picture
+            else if(!PreviewRoutine.IsCapturing && ImgCropping.rect.Width * ImgCropping.rect.Height != 0)   //crop static picture
             {
-                OCR.croppedOCRArea = ImageCropping.rect;
+                OCR.croppedOCRArea = ImgCropping.rect;
                 BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
-                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgOriginal);
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
                 Image<Bgr, byte> bm = GV.imgOriginal.Copy();
                 bm.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
-                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(bm);
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(bm);
             }
 
         }
@@ -576,7 +578,7 @@ namespace ImageProcessing_BSC_WPF
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
-            MLCore.MLTrainedDataSetSelected = (DataSet)ML_cmb_dataset.SelectedIndex;
+            MLCore.MLTrainedDataSetSelected = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
         }
 
         private void Chk_ML_Checked(object sender, RoutedEventArgs e)
@@ -650,10 +652,21 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
         {
-            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex);
+            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLTrainedDataSetSelected);
             w.ShowDialog();
         }
         #endregion <GUI operation>
 
+        private void TB_sourceImgDir_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (TB_sourceImgDir.Text != "")
+                BindManager.BindMngr.ML_sourceImgDir.value = TB_sourceImgDir.Text;
+        }
+
+        private void TB_resizedImgDir_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (TB_resizedImgDir.Text != "")
+                BindManager.BindMngr.ML_rootDir.value = TB_resizedImgDir.Text;
+        }
     }
 }

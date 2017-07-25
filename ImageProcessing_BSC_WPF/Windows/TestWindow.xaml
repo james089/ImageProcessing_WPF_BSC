@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="TestWindow" Height="300" Width="300" Background="#FF343434">
     <Window.Resources>
-        <ResourceDictionary Source="/mUserControl_BSC_dll;component/Theme/DarkBlue.xaml"/>
+        <ResourceDictionary Source="/mUserControl_BSC_dll_x64;component/Theme/DarkBlue.xaml"/>
     </Window.Resources>
     <StackPanel>
         <CheckBox x:Name="chk1" Content="somthing" Height="35" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked" Style="{x:Null}"/>

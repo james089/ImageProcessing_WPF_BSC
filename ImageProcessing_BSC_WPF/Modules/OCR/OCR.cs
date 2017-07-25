@@ -60,7 +60,7 @@ namespace ImageProcessing_BSC_WPF.Modules.OCR
 
         private static void OCRRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Windows.main.ibOriginal.Source = Converter.ToBitmapSource(GV.imgProcessed);
+            Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
             Windows.main.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
         }
 

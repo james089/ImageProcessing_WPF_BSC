@@ -19,10 +19,10 @@ namespace ImageProcessing_BSC_WPF
         public static void UpdateImgInfo()
         {
             // clear cropping rectangle
-            if (ImageCropping.rect != null)
+            if (ImgCropping.rect != null)
             {
-                ImageCropping.rect.Width = 0;
-                ImageCropping.rect.Height = 0;
+                ImgCropping.rect.Width = 0;
+                ImgCropping.rect.Height = 0;
             }
             if (GV.mCamera != null && GV.mCamera.IsConnected)
             {
@@ -44,7 +44,7 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgWidth = GV.imgOriginal.Width;
             }
 
-            GV._zoomFactor = ImageCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, Windows.main.ibOriginal);
+            GV._zoomFactor = ImgCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, Windows.main.ibOriginal);
             Windows.main.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
                                   "PictureBox size: (" + Windows.main.ibOriginal.ActualWidth.ToString("0.#") + "," +
                                   Windows.main.ibOriginal.ActualHeight.ToString("0.#") + ") " +

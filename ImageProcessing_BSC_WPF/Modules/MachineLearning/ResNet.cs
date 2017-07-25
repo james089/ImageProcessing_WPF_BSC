@@ -238,16 +238,16 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         private static void showResult<T>(int sampleSize, IList<IList<T>> outputBuffer, double outputValue)
         {
             int predictedIndex = 0;
-            switch (MLCore.MLTrainedDataSetSelected)
+            switch (MLCore.MLTrainedDataSetSelectedIndex)
             {
-                case DataSet.CIFAR10:
+                case 0:
                     predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
-                    OutputString = ((CIFAR10)predictedIndex).ToString();
+                    OutputString = DataSet.labelSet[0][predictedIndex];
                     OutputProbablility = outputValue;
                     break;
-                case DataSet.Bag:
+                case 1:
                     predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
-                    OutputString = ((Bag)predictedIndex).ToString();
+                    OutputString = DataSet.labelSet[1][predictedIndex];
                     OutputProbablility = outputValue;
                     break;
             }

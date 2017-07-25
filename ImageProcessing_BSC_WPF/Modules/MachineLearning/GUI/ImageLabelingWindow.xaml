@@ -16,7 +16,7 @@
             <RowDefinition Height="7*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" CornerRadius="15" Grid.RowSpan="3" Grid.ColumnSpan="2">
+        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" CornerRadius="10" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
             </Border.Effect>
@@ -65,10 +65,18 @@
             <Label Content="Labeling img from: " Margin="5,5,0,5" HorizontalAlignment="Left" />
             <Label x:Name="lbl_imgFolder" Style="{DynamicResource Label_frame}" Content="" Grid.Column="1" Margin="5" Grid.ColumnSpan="2"/>
 
-            <Label Content="Set label: " Margin="5,5,0,5" Grid.Row="1" HorizontalAlignment="Left"/>
-            <TextBox x:Name="TB_currentLabel" Grid.Column="1" Grid.Row="1" Text="" Margin="5" TextChanged="TB_currentLabel_TextChanged" Grid.ColumnSpan="2"/>
+            <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Set label: " Margin="5,5,0,5" HorizontalAlignment="Left"/>
+                <WrapPanel x:Name="Wrap_radios" Grid.Column="1" >
 
-            <Grid x:Name="Grid_mapDir" Grid.Row="2" Grid.ColumnSpan="3">
+                </WrapPanel>
+            </Grid>
+
+            <Grid x:Name="Grid_mapDir" Grid.Row="2" Grid.ColumnSpan="3" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="4*"/>

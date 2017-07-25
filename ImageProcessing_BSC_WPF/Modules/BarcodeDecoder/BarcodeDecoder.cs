@@ -75,7 +75,7 @@ namespace ImageProcessing_BSC_WPF.Modules.BarcodeDecoder
                 Image<Bgr, Byte> processed = ImgToDecode;
                 //drawDecodeResultInImg(processed);  //can't draw on a roated bitmap...
 
-                Windows.main.ibOriginal.Source = Converter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
             }
             else
             {
