@@ -2,6 +2,13 @@
 linbojun089@gmail.com	
 
 change log:
+
+2017/7/26
+v4.0.0.4
+1. Fixed image thumb loading issue
+2. Finished multi selection function
+3. Visual adj.
+
 2017/7/25
 v4.0.0.3
 1. Auto tag (radio button) populating

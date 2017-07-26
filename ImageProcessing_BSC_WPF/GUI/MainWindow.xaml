@@ -11,13 +11,15 @@
             <Grid x:Name="TitleBar" Margin="0" Background="{DynamicResource SuperTransGrayColor}">
                 <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding GMessage.value}" FontSize="20" Foreground="White" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,2,0">
-                    <Button x:Name="Btn_minimize" Style="{DynamicResource Button_minimize}" Content="-" Margin="1,0" Width="60" FontWeight="Bold" Click="Btn_minimize_Click"/>
-                    <Button x:Name="Btn_close" Content="X" Style="{DynamicResource Button_close}" Margin="1,0" Width="60" Background="#FFD42525" FontWeight="Bold" Click="Btn_close_Click"/>
+                    <Button x:Name="Btn_minimize" Style="{DynamicResource Button_minimize}" Content="-" Margin="0,0,0,5" Width="60" FontWeight="Bold" Click="Btn_minimize_Click"/>
+                    <Button x:Name="Btn_close" Content="X" Style="{DynamicResource Button_close}" Margin="0,0,0,5" Width="60" Background="#FFD42525" FontWeight="Bold" Click="Btn_close_Click"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Height="50" VerticalAlignment="Center" Width="260" Orientation="Horizontal" Margin="10,0,0,0">
                     <Image Width="40" Source="../Resources/fav.ico"/>
                     <Label x:Name="Title" Content="Image Processing 4" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
                 </StackPanel>
+
+                <ProgressBar x:Name="progressBar" Style="{DynamicResource ProgressBar_flat}" Height="5" Value="{Binding Progress.value}" VerticalAlignment="Bottom"/>
             </Grid>
             <Grid x:Name="MainGrid" Margin="0,0,0,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -328,7 +330,7 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <GroupBox Header="Model Training/Evaluating" Grid.Row="4" Margin="5" >
+                                        <GroupBox Header="Model Training/Evaluating" Grid.Row="4" Margin="5" Visibility="Collapsed">
                                             <Grid x:Name="Grid_trainModel" />
                                         </GroupBox>
                                     </Grid>
@@ -361,8 +363,7 @@
                             <ColumnDefinition Width="8*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <ProgressBar x:Name="progressBar" Height="10" Value="{Binding Progress.value}"/>
-                        <TextBlock x:Name="TB_progress" Text="{Binding ProgressString.value}" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" />
+                        <TextBlock x:Name="TB_progress" Text="{Binding ProgressString.value}" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" Grid.Column="1" Visibility="Collapsed"/>
                     </Grid>
                 </Grid>
             </Grid>

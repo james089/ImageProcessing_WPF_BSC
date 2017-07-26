@@ -16,9 +16,9 @@ namespace ImageProcessing_BSC_WPF
         public BindString ML_rootDir { set; get; }           // Mean and map Directory
         public BindString ML_trainImgDir { set; get; }       // Resized Train Image Directory
         public BindString ML_testImgDir { set; get; }        // Resized Test Image Directory
-        public BindString ML_desWidth { set; get; }          // Resized img width
-        public BindString ML_desHeight { set; get; }         // Resized img height
-
+        public BindInt ML_desWidth { set; get; }             // Resized img width
+        public BindInt ML_desHeight { set; get; }            // Resized img height
+        
         public BindManager()
         {
             GMessage = new BindString();                GMessage.value = "";
@@ -31,8 +31,8 @@ namespace ImageProcessing_BSC_WPF
             ML_rootDir = new BindString();              ML_rootDir.value = @"C:\temp\MLRoot";
             ML_trainImgDir = new BindString();          ML_trainImgDir.value = ML_rootDir.value + @"\train";
             ML_testImgDir = new BindString();           ML_testImgDir.value = ML_rootDir.value + @"\test";
-            ML_desWidth = new BindString();             ML_desWidth.value = "32";
-            ML_desHeight = new BindString();            ML_desHeight.value = "32";
+            ML_desWidth = new BindInt();                ML_desWidth.value = 32;
+            ML_desHeight = new BindInt();               ML_desHeight.value = 32;
         }
     }
 }

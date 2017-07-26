@@ -173,10 +173,10 @@
     <Compile Include="Modules\MachineLearning\GUI\ImageLabelingWindow.xaml.cs">
       <DependentUpon>ImageLabelingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LoadingScreen.xaml.cs">
+    <Compile Include="GUI\LoadingScreen.xaml.cs">
       <DependentUpon>LoadingScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\TestWindow.xaml.cs">
+    <Compile Include="GUI\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="UIHelpers\Style\ExpressionDark.xaml">
@@ -187,11 +187,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\LoadingScreen.xaml">
+    <Page Include="GUI\LoadingScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\MainWindow.xaml">
+    <Page Include="GUI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -207,21 +207,21 @@
     <Compile Include="Routines\PreviewRoutine.cs" />
     <Compile Include="Modules\FindMinDistance.cs" />
     <Compile Include="UIHelpers\GV.cs" />
-    <Compile Include="Windows\MainWindow.xaml.cs">
+    <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\Preference.xaml">
+    <Page Include="GUI\Preference.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\TestWindow.xaml">
+    <Page Include="GUI\TestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Windows\Preference.xaml.cs">
+    <Compile Include="GUI\Preference.xaml.cs">
       <DependentUpon>Preference.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">

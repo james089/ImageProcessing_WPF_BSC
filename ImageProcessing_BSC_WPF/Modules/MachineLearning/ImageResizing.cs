@@ -95,10 +95,12 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         private static void ResizingRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            BindManager.BindMngr.GMessage.value = string.Format("Resizing {0} images...", TotalImages - CurrentImageIndex);
-
             BindManager.BindMngr.Progress.value = e.ProgressPercentage;
             BindManager.BindMngr.ProgressString.value = BindManager.BindMngr.Progress.value + "%";
+
+            BindManager.BindMngr.GMessage.value = string.Format("Resizing {0} images...({1})", 
+                TotalImages - CurrentImageIndex,
+                BindManager.BindMngr.ProgressString.value);
         }
 
         private static void ResizingRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -116,7 +118,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 bm.Dispose();
                 rbm.Dispose();
                 ResizingRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / TotalImages));
-                Thread.Sleep(100);
+                Thread.Sleep(1);
 
                 CurrentImageIndex++;
             }
