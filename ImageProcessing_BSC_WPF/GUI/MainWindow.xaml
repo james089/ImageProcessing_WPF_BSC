@@ -232,7 +232,7 @@
                                         <Label Content="DataSet" Grid.Row="1"/>
                                         <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
                                             <ComboBoxItem Content="CIFAR10"/>
-                                            <ComboBoxItem Content="Dental"/>
+                                            <ComboBoxItem Content="Crown and bag"/>
                                         </ComboBox>
                                         <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
                                     </Grid>

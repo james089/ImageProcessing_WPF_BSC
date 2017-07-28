@@ -4,6 +4,13 @@ linbojun089@gmail.com
 change log:
 
 2017/7/26
+v4.0.1.0
+1. Add shuffling to ml folder image. 
+2. Add press shift to multi select many photos
+3. 1 button to resize, shuffle and generate map file
+4. Select a group of source image, tag them together, and resize\ shuffle \ create map file
+5. There is a local map file to save the labeling work (also the original map).
+
 v4.0.0.4
 1. Fixed image thumb loading issue
 2. Finished multi selection function

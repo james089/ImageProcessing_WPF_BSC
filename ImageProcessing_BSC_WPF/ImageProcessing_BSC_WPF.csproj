@@ -161,8 +161,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Modules\MachineLearning\CntkBitmapExtensions.cs" />
-    <Compile Include="Modules\MachineLearning\ImageResizing.cs" />
-    <Compile Include="Modules\MachineLearning\MeanFileGenerator.cs" />
+    <Compile Include="Modules\MachineLearning\Helpers\ImageResizing.cs" />
+    <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />
     <Compile Include="Modules\MachineLearning\MLCore.cs" />
     <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
     <Compile Include="Modules\MachineLearning\ResNet.cs" />

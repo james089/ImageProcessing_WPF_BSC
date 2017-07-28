@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Xml.Linq;
 
-namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
+namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {
     public class MeanFileGenerator
     {

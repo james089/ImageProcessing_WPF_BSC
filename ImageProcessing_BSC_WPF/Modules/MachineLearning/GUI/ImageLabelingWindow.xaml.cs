@@ -29,15 +29,26 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         #region Local Paras
         int totalImgNum = 0;
         int sImgIndex = 0;                 // The labeling img index inside the imglist
-        string[] labels;
+        string[] labelSet;
 
-        List<int> labelList = new List<int>();
+        //List<int> sourcelabelList = new List<int>();
         FileInfo[] sourceImageInfo;
-        FileInfo[] resizedImageInfo;
+        //FileInfo[] resizedImageInfo;
         static string currentImgDir;                                     // Img dir
-        static string mapFileUrl_train = BindManager.BindMngr.ML_rootDir.value + "\\train_map.txt";
-        static string mapFileUrl_test = BindManager.BindMngr.ML_rootDir.value + "\\test_map.txt";
-        string[] mapFileUrlArr = new string[2] { mapFileUrl_train, mapFileUrl_test };
+
+        /// <summary>
+        /// For source image labling use
+        /// </summary>
+        static string sourceMapFile_train = BindManager.BindMngr.ML_sourceImgDir.value + "\\local_train_map.txt";
+        static string sourceMapFile_test = BindManager.BindMngr.ML_sourceImgDir.value + "\\local_test_map.txt";
+        string[] sourceMapFileArr = new string[2] { sourceMapFile_train, sourceMapFile_test };
+
+        /// <summary>
+        /// For ML model use
+        /// </summary>
+        static string mapFile_train = BindManager.BindMngr.ML_rootDir.value + "\\train_map.txt";
+        static string mapFile_test = BindManager.BindMngr.ML_rootDir.value + "\\test_map.txt";
+        string[] mapFileArr = new string[2] { mapFile_train, mapFile_test };
 
         Style radio_tagStyle;
         /// <summary>
@@ -62,6 +73,24 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         int thumb_w = 80, thumb_h = 80;
 
+        /// <summary>
+        /// This is for labbling image
+        /// </summary>
+        private struct imgInfo
+        {
+            public int index;
+            public Bitmap image;
+        }
+
+        private class imgMapStruct
+        {
+            public string dir;
+            public int label;
+        }
+
+        List<imgMapStruct> sourceImgMapList = new List<imgMapStruct>();
+        List<imgMapStruct> resRandImgMapList = new List<imgMapStruct>();
+
         #endregion Local Paras
 
         public ImageLabelingWindow(JobType jt, string[] _labels)
@@ -72,7 +101,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             radio_tagStyle = Application.Current.FindResource("Radio_tag") as Style;
 
             jobType = jt;
-            labels = _labels;
+            labelSet = _labels;
         }
 
         private void Btn_close_Click(object sender, RoutedEventArgs e)
@@ -80,7 +109,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             switch (mMessageBox.ShowYesNoCancel("Save current labeling info?"))
             {
                 case mDialogResult.yes:
-                    createMap(mapFileUrlArr[(int)jobType]);break;
+                    createSourceMapFile(sourceMapFileArr[(int)jobType]);break;
                 case mDialogResult.no:
                     break;
                 case mDialogResult.cancel:
@@ -107,7 +136,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
 
             /// Load img labels from map file if exists
-            loadLabels(mapFileUrlArr[(int)jobType]);
+            loadLabels(sourceMapFileArr[(int)jobType]);
             
             /// Display the first img and the label
             displayImgAndLabel(0);
@@ -116,6 +145,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             loadImgThumbs();
         }
 
+
         private void RadioButton_checked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
@@ -123,10 +153,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             /// Single select
             if (!(bool)Chk_multiseletect.IsChecked)
             {
-                for (int i = 0; i < labels.Length; i++)
+                for (int i = 0; i < labelSet.Length; i++)
                 {
                     if ((bool)radioBtnList[i].IsChecked)
-                        labelList[sImgIndex] = i;
+                        sourceImgMapList[sImgIndex].label = i;
                 }
             }
             /// Multi-select
@@ -134,10 +164,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             {
                 foreach (int m in multiSelectIndex)
                 {
-                    for (int i = 0; i < labels.Length; i++)
+                    for (int i = 0; i < labelSet.Length; i++)
                     {
                         if ((bool)radioBtnList[i].IsChecked)
-                            labelList[m] = i;
+                            sourceImgMapList[m].label = i;
                     }
                 }
             }
@@ -159,28 +189,18 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             displayImgAndLabel(sImgIndex);
         }
 
-
-        private void Btn_resize_Click(object sender, RoutedEventArgs e)
-        {
-            if (TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
-                ImageResizing.ImageBatchResizing(
-                    sourceImgFolderArr[(int)jobType],
-                    mlImgFolderArr[(int)jobType],
-                    Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value),
-                    Convert.ToInt32(BindManager.BindMngr.ML_desHeight.value));
-            else
-                mMessageBox.Show("Empty string");
-        }
-
         private void Btn_createMapFile_Click(object sender, RoutedEventArgs e)
         {
-            createMap(mapFileUrlArr[(int)jobType]);
+            resize_randomize();
         }
 
         private void List_imgs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(bool)Chk_multiseletect.IsChecked)
-                displayImgAndLabel(List_imgs.SelectedIndex);
+            {
+                sImgIndex = List_imgs.SelectedIndex;
+                displayImgAndLabel(sImgIndex);
+            }
             /// Multi select mode
             else if (List_imgs.SelectedItems.Count > 1)
             {
@@ -189,14 +209,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
             else if (List_imgs.SelectedItems.Count == 1)
             {
-                displayImgAndLabel(List_imgs.SelectedIndex);
+                sImgIndex = List_imgs.SelectedIndex;
+                displayImgAndLabel(sImgIndex);
             }
         }
 
         private void disabelPreviewAnddeselectTags()
         {
             Img_viewer.Source = null;
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < labelSet.Length; i++)
             {
                 if ((bool)radioBtnList[i].IsChecked) radioBtnList[i].IsChecked = false;
             }
@@ -204,7 +225,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private void Chk_multiseletect_Checked(object sender, RoutedEventArgs e)
         {
-            List_imgs.SelectionMode = SelectionMode.Multiple;
+            List_imgs.SelectionMode = SelectionMode.Extended;
         }
 
         private void Chk_multiseletect_Unchecked(object sender, RoutedEventArgs e)
@@ -216,11 +237,11 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private void loadDataSetLabelRadioButtons()
         {
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < labelSet.Length; i++)
             {
                 radioBtnList.Add(new RadioButton());
                 radioBtnList[i].Checked += RadioButton_checked;
-                radioBtnList[i].Content = labels[i];
+                radioBtnList[i].Content = labelSet[i];
                 radioBtnList[i].Style = radio_tagStyle;
                 Wrap_radios.Children.Add(radioBtnList[i]);
             }
@@ -238,29 +259,36 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             return total;
         }
 
-        private int scanImgs(string _imgDir)
-        {
-            int total = 0;
-            FileInfo[] fileInfo = new DirectoryInfo(_imgDir).GetFiles();
-            total = fileInfo.Length;
-            return total;
-        }
+        //private int scanImgs(string _imgDir)
+        //{
+        //    int total = 0;
+        //    FileInfo[] fileInfo = new DirectoryInfo(_imgDir).GetFiles();
+        //    total = fileInfo.Length;
+        //    return total;
+        //}
 
         private void loadLabels(string mapFileUrl)
         {
+            sourceImgMapList.Clear();
             if (!File.Exists(mapFileUrl))
             {
                 File.Create(mapFileUrl).Dispose();
                 // Initalize
                 for (int i = 0; i < totalImgNum; i++)
                 {
-                    labelList.Add(0);
+                    imgMapStruct ims = new imgMapStruct() {
+                        dir = string.Format(@"{0}\{1}", sourceImgFolderArr[(int)jobType], sourceImageInfo[i].Name),
+                        label = 0
+                    };
+                    sourceImgMapList.Add(ims);
                 }
                 using (StreamWriter sw = new StreamWriter(mapFileUrl))
                 {
                     for (int i = 0; i < totalImgNum; i++)
                     {
-                        sw.WriteLine(string.Format("{0}\t{1}", string.Format(@"{0}\{1}", mlImgFolderArr[(int)jobType], sourceImageInfo[i].Name), labelList[i]));
+                        sw.WriteLine(string.Format("{0}\t{1}", 
+                            string.Format(@"{0}\{1}", mlImgFolderArr[(int)jobType], sourceImageInfo[i].Name),
+                            sourceImgMapList[i].label));
                     }
                     sw.Dispose();
                 }
@@ -273,7 +301,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     {
                         string[] temp;
                         temp = sr.ReadLine().Split('\t');
-                        labelList.Add(Convert.ToInt32(temp[1]));
+
+                        imgMapStruct ims = new imgMapStruct()
+                        {
+                            dir = temp[0],
+                            label = Convert.ToInt32(temp[1])
+                        };
+                        sourceImgMapList.Add(ims);
                     }
                     sr.Dispose();
                 }
@@ -283,16 +317,11 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         private void displayImgAndLabel(int index)
         {
             Img_viewer.Source = new BitmapImage(new Uri(string.Format(@"{0}\{1}", sourceImgFolderArr[(int)jobType], sourceImageInfo[index].Name)));
-            radioBtnList[labelList[index]].IsChecked = true;
+            radioBtnList[sourceImgMapList[index].label].IsChecked = true;
         }
 
         #region Load image thumbs
         BackgroundWorker loadImgRoutine = new BackgroundWorker();
-        private struct imgInfo
-        {
-            public int index;
-            public Bitmap image;
-        }
 
         //Bitmap bmp_resized;
         private void loadImgThumbs()
@@ -344,24 +373,115 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         }
         #endregion Load image thumbs
 
-        private void createMap(string mapfile)
+        //private void resize()
+        //{
+        //    if (TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
+        //        ImageResizing.ImageBatchResizing(
+        //            sourceImgFolderArr[(int)jobType],
+        //            mlImgFolderArr[(int)jobType],
+        //            Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value),
+        //            Convert.ToInt32(BindManager.BindMngr.ML_desHeight.value));
+        //    else
+        //        mMessageBox.Show("Empty string");
+        //}
+
+        #region Resize and shuffle and create map
+        private static BackgroundWorker ResizingRoutine = new BackgroundWorker();
+        private static int CurrentImageIndex = 0;
+        private void resize_randomize()
         {
-            if (scanImgs(mlImgFolderArr[(int)jobType], out resizedImageInfo) < scanImgs(currentImgDir))
+            ResizingRoutine.DoWork += new DoWorkEventHandler(ResizingRoutine_doWork);
+            ResizingRoutine.ProgressChanged += new ProgressChangedEventHandler(ResizingRoutine_ProgressChanged);
+            ResizingRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ResizingRoutine_WorkerCompleted);
+            ResizingRoutine.WorkerReportsProgress = true;
+            ResizingRoutine.WorkerSupportsCancellation = true;
+
+            if (!ResizingRoutine.IsBusy)
+                ResizingRoutine.RunWorkerAsync();
+        }
+
+        private void ResizingRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            createFinalMapFile(mapFileArr[(int)jobType]);
+            BindManager.BindMngr.GMessage.value = "Map file created";
+        }
+
+        private void ResizingRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            BindManager.BindMngr.Progress.value = e.ProgressPercentage;
+            BindManager.BindMngr.ProgressString.value = BindManager.BindMngr.Progress.value + "%";
+
+            BindManager.BindMngr.GMessage.value = string.Format("Resize and shuffle {0} images...({1})",
+                totalImgNum - CurrentImageIndex,
+                BindManager.BindMngr.ProgressString.value);
+        }
+
+        private void ResizingRoutine_doWork(object sender, DoWorkEventArgs e)
+        {
+            resRandImgMapList.Clear();
+            var rand = new Random();
+            var randomList = sourceImgMapList.OrderBy(x => rand.Next()).ToList();
+
+            for (int i = 0; i < totalImgNum; i++)
             {
-                mNotification.Show("Reszing not done!");
-                return;
+                Bitmap bm = new Bitmap(randomList[i].dir);
+                Bitmap rbm = CntkBitmapExtensions.Resize(
+                    bm,
+                    Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value),
+                    Convert.ToInt32(BindManager.BindMngr.ML_desHeight.value),
+                    true);
+                /// Redo dir, but keep the shuffled label
+                imgMapStruct ims = new imgMapStruct()
+                {
+                    dir = mlImgFolderArr[(int)jobType] + string.Format("\\{0:D5}.jpg", i),
+                    label = randomList[i].label
+                };
+
+                resRandImgMapList.Add(ims);
+
+                rbm.Save(resRandImgMapList[i].dir);
+
+                ResizingRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / totalImgNum));
+                Thread.Sleep(1);
+                bm.Dispose();
+                rbm.Dispose();
             }
+        }
+        #endregion  #region Resize and shuffle and create map
+
+        /// <summary>
+        /// This is for saving labeling work only
+        /// </summary>
+        /// <param name="mapfile"></param>
+        private void createSourceMapFile(string mapfile)
+        {
             using (StreamWriter sw = new StreamWriter(mapfile))
             {
                 for (int i = 0; i < totalImgNum; i++)
                 {
-                    sw.WriteLine(string.Format("{0}\t{1}", string.Format(@"{0}\{1}", mlImgFolderArr[(int)jobType], resizedImageInfo[i].Name), labelList[i]));
+                    sw.WriteLine(string.Format("{0}\t{1}", sourceImgMapList[i].dir, sourceImgMapList[i].label));
+                }
+                sw.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// This is create map file for ML model use
+        /// </summary>
+        /// <param name="mapfile"></param>
+        private void createFinalMapFile(string mapfile)
+        {
+            using (StreamWriter sw = new StreamWriter(mapfile))
+            {
+                for (int i = 0; i < totalImgNum; i++)
+                {
+                    sw.WriteLine(string.Format("{0}\t{1}", resRandImgMapList[i].dir, resRandImgMapList[i].label));
                 }
                 sw.Dispose();
             }
             mNotification.Show("Map file created");
         }
-        #endregion
+        #endregion Functions
 
     }
 }

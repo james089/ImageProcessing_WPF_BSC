@@ -20,6 +20,7 @@ using System.IO;
 using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules.BarcodeDecoder;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -622,6 +623,7 @@ namespace ImageProcessing_BSC_WPF
             else
                 mNotification.Show("Folder exists");
         }
+
         private void Btn_resize_Click(object sender, RoutedEventArgs e)
         {
             if (TB_sourceImgDir.Text != "" && TB_resizedImgDir.Text != "" && TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
@@ -655,7 +657,6 @@ namespace ImageProcessing_BSC_WPF
             ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLTrainedDataSetSelected);
             w.ShowDialog();
         }
-        #endregion <GUI operation>
 
         private void TB_sourceImgDir_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
@@ -668,5 +669,8 @@ namespace ImageProcessing_BSC_WPF
             if (TB_resizedImgDir.Text != "")
                 BindManager.BindMngr.ML_rootDir.value = TB_resizedImgDir.Text;
         }
+
+        #endregion <GUI operation>
+
     }
 }
