@@ -21,6 +21,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         public static string OutputString;
         public static double OutputProbablility;
+        public static List<double> resultList = new List<double>();
+
 
         private static Image<Bgr, byte> _ImgOriginal;
         private static DeviceDescriptor device;               //GPU to Use
@@ -79,7 +81,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         private static void LoadModel()
         {
             // Load the model.
-            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20_BSC.dnn";
+            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20_159.dnn";
             if (!File.Exists(modelFilePath))
             {
                 MLRoutine.ReportProgress((int)ErrCode.ModelNotExists);
@@ -168,7 +170,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
             }
             catch (Exception ex)
             {
-                Windows.main.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
+                //Windows.main.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
                 throw ex;
             }
         }
@@ -218,9 +220,9 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         private static int predictResult<T>(int sampleSize, IList<IList<T>> outputBuffer, out double probability)
         {
+            resultList.Clear();
             probability = 0;
             int outputSampleSize = sampleSize;
-            List<double> resultList = new List<double>();
             // This is for 1 image
             foreach (var seq in outputBuffer)
             {

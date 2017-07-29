@@ -69,7 +69,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void loadProgramSetting()
         {
-            MLCore.MLTrainedDataSetSelected = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
+            MLCore.MLSelectedLabels = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
 
             GV._camSelected = (camType)Properties.Settings.Default.camSelection;
             GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
@@ -566,7 +566,14 @@ namespace ImageProcessing_BSC_WPF
             Windows.main.listBox.Items.Clear();
 
             if (MLCore.MLModelSelected == MLModel.ResNet)
+            {
                 ResNet.EvaluationSingleImage(GV.imgOriginal);
+                for (int i = 0; i < ResNet.resultList.Count; i++)
+                {
+                    Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                }
+                BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
+            }
             else if (MLCore.MLModelSelected == MLModel.FastRCNN)
                 FastRCNN.EvaluateObjectDetectionModel();
         }
@@ -579,7 +586,8 @@ namespace ImageProcessing_BSC_WPF
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
-            MLCore.MLTrainedDataSetSelected = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
+            MLCore.MLSelectedLabels = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
+            MLCore.MLTrainedDataSetSelectedIndex = ML_cmb_dataset.SelectedIndex;
         }
 
         private void Chk_ML_Checked(object sender, RoutedEventArgs e)
@@ -648,13 +656,15 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_calculateMean_Click(object sender, RoutedEventArgs e)
         {
-            string meanFileDir = BindManager.BindMngr.ML_rootDir.value;
-            MeanFileGenerator.GenerateMeanFile(BindManager.BindMngr.ML_trainImgDir.value, meanFileDir);
+            string trainFileDir = @"C:\Users\bojun.lin\Downloads\cifar\train";
+            string meanFileDir = @"C:\Users\bojun.lin\Downloads\cifar";//BindManager.BindMngr.ML_rootDir.value;
+            //MeanFileGenerator.GenerateMeanFile(trainFileDir, meanFileDir); //BindManager.BindMngr.ML_trainImgDir.value, meanFileDir);
+            MeanFileGenerator.GenerateConstMeanFile(meanFileDir);
         }
 
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
         {
-            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLTrainedDataSetSelected);
+            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLSelectedLabels);
             w.ShowDialog();
         }
 

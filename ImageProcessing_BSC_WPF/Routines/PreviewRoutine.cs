@@ -75,7 +75,7 @@ namespace ImageProcessing_BSC_WPF
         public static void GUIUpdates()
         {
             //Windows.main.TB_info.Text = GV.liveViewMessage;
-            //Windows.main.listBox.Items.Clear();
+            Windows.main.listBox.Items.Clear();
             //Detect code
             if (GV._decodeSwitch)
             {
@@ -90,8 +90,16 @@ namespace ImageProcessing_BSC_WPF
 
             if (GV._MLSwitch)
             {
-                if (ResNet.OutputProbablility > 8)
-                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}! [{1:0.00}]",ResNet.OutputString, ResNet.OutputProbablility);
+                for (int i = 0; i < ResNet.resultList.Count; i++)
+                {
+                    Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                }
+                //foreach (double a in ResNet.resultList)
+                //{
+                //    Windows.main.listBox.Items.Add(a);
+                //}
+                if (ResNet.OutputProbablility > 0)
+                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!",ResNet.OutputString, ResNet.OutputProbablility);
                 else
                     BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }

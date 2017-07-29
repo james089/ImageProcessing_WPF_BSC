@@ -2,8 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+2017/7/28
+v4.0.2.0
+1. Add Padding to train image. calculate mean automatically while shuffling
 
-2017/7/26
+2017/7/27
 v4.0.1.0
 1. Add shuffling to ml folder image. 
 2. Add press shift to multi select many photos
@@ -11,6 +14,7 @@ v4.0.1.0
 4. Select a group of source image, tag them together, and resize\ shuffle \ create map file
 5. There is a local map file to save the labeling work (also the original map).
 
+2017/7/26
 v4.0.0.4
 1. Fixed image thumb loading issue
 2. Finished multi selection function

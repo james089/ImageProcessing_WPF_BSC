@@ -403,6 +403,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         private void ResizingRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             createFinalMapFile(mapFileArr[(int)jobType]);
+            generateMeanFile(BindManager.BindMngr.ML_rootDir.value);
             BindManager.BindMngr.GMessage.value = "Map file created";
         }
 
@@ -439,6 +440,11 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
                 resRandImgMapList.Add(ims);
 
+                /// This is for creating mean file
+                RGBList.Add(CntkBitmapExtensions.ExtractCHW(rbm));
+
+                if (jobType == JobType.train) rbm = addPadding(rbm, 4);
+
                 rbm.Save(resRandImgMapList[i].dir);
 
                 ResizingRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / totalImgNum));
@@ -446,6 +452,62 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 bm.Dispose();
                 rbm.Dispose();
             }
+        }
+
+        List<List<float>> RGBList = new List<List<float>>();
+
+        private void generateMeanFile(string _saveDir)
+        {
+            float[] AvgRGBArr;
+            AvgRGBArr = new float[RGBList[0].Count];                // sum is [1, 3072]
+
+            for (int j = 0; j < RGBList[0].Count; j++)
+            {
+                for (int i = 0; i < RGBList.Count; i++)
+                {
+                    AvgRGBArr[j] += RGBList[i][j];
+                }
+            }
+            string[] AvgRGBArrString = new string[RGBList[0].Count];
+            // Save to arr
+            for (int j = 0; j < RGBList[0].Count; j++)
+            {
+                AvgRGBArr[j] = (AvgRGBArr[j] / RGBList.Count);           // AvgRGBList is [1, 3072]
+                AvgRGBArrString[j] = string.Format("{0:E2}", AvgRGBArr[j]);
+            }
+            string str = String.Join(" ", AvgRGBArrString);
+
+            // Save to xml
+            string file_xml = _saveDir + "\\Custom_mean.xml";
+            if (!File.Exists(file_xml)) File.Create(file_xml).Dispose();
+            using (StreamWriter sw1 = new StreamWriter(file_xml))
+            {
+                sw1.WriteLine("<?xml version=\"1.0\" ?>");
+                sw1.WriteLine("<opencv_storage>");
+                sw1.WriteLine("  <Channel>3</Channel>");
+                sw1.WriteLine("  <Row>32</Row>");
+                sw1.WriteLine("  <Col>32</Col>");
+                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
+                sw1.WriteLine("    <rows>1</rows>");
+                sw1.WriteLine("    <cols>3072</cols>");
+                sw1.WriteLine("    <dt>f</dt>");
+                sw1.WriteLine("    <data>" + str + "</data>");
+                sw1.WriteLine("  </MeanImg>");
+                sw1.WriteLine("</opencv_storage>");
+            }
+
+            mNotification.Show("Mean file generated!");
+            BindManager.BindMngr.GMessage.value = "Mean file generated.";
+        }
+
+        private Bitmap addPadding(Bitmap rbm, int pad)
+        {
+            Bitmap output = new Bitmap(rbm.Width + pad * 2, rbm.Height + pad * 2);
+            Graphics g = Graphics.FromImage(output);
+            g.FillRectangle(new SolidBrush(System.Drawing.Color.FromArgb(128,128,128)), 0, 0, output.Width, output.Height);
+
+            g.DrawImage(rbm, new PointF(pad, pad));
+            return output;
         }
         #endregion  #region Resize and shuffle and create map
 
