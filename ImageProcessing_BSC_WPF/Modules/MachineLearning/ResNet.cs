@@ -1,7 +1,8 @@
 ﻿using CNTK;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using mUserControl_BSC_dll_x64;
+using mUserControl_BSC_dll;
+using mUserControl_BSC_dll.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,7 +37,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         public static void MLSetup()
         {
             device = DeviceDescriptor.GPUDevice(0);
-            LoadModel();
+            LoadModel("resnet20.dnn");
+            //LoadModel("resnet20_159.dnn");
             MLRoutine.DoWork += new DoWorkEventHandler(MLRoutine_doWork);
             MLRoutine.ProgressChanged += new ProgressChangedEventHandler(MLRoutine_ProgressChanged);
             MLRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MLRoutine_WorkerCompleted);
@@ -78,10 +80,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         /// This is a one time process
         /// </summary>
         /// <param name="device"></param>
-        private static void LoadModel()
+        private static void LoadModel(string modelFile)
         {
             // Load the model.
-            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + "resnet20_159.dnn";
+            string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + modelFile;
             if (!File.Exists(modelFilePath))
             {
                 MLRoutine.ReportProgress((int)ErrCode.ModelNotExists);

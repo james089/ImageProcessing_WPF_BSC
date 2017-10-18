@@ -104,30 +104,27 @@
     <Reference Include="Cntk.Eval.Wrapper-2.0">
       <HintPath>Dlls\Cntk.Eval.Wrapper-2.0.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.CV, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\Emgu.CV.dll</HintPath>
+    <Reference Include="Emgu.CV">
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\Emgu.CV.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.CV.GPU, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\Emgu.CV.GPU.dll</HintPath>
+    <Reference Include="Emgu.CV.GPU">
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\Emgu.CV.GPU.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.CV.OCR, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\Emgu.CV.OCR.dll</HintPath>
+    <Reference Include="Emgu.CV.OCR">
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\Emgu.CV.OCR.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.Util, Version=2.9.0.1922, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\Emgu.Util.dll</HintPath>
+    <Reference Include="Emgu.Util">
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="FlyCap2CameraControl_v140">
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\FlyCap2CameraControl_v140.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\FlyCap2CameraControl_v140.dll</HintPath>
     </Reference>
     <Reference Include="FlyCapture2Managed_v140">
-      <HintPath>\\glidewelllab.local\shares\IT\IDS\Engineering\Users\Bojun Lin\_sharedlib\x64\Reference\FlyCapture2Managed_v140.dll</HintPath>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\FlyCapture2Managed_v140.dll</HintPath>
     </Reference>
-    <Reference Include="mUserControl_BSC_dll_x64">
-      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\mUserControl_BSC_dll_x64.dll</HintPath>
+    <Reference Include="mUserControl_BSC_dll, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\mUserControl_BSC_dll.dll</HintPath>
     </Reference>
     <Reference Include="OpenCV_BSC_dll_x64">
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\OpenCV_BSC_dll_x64.dll</HintPath>
@@ -160,13 +157,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Modules\Decoder\DataMatrixDecoder.cs" />
     <Compile Include="Modules\MachineLearning\CntkBitmapExtensions.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\ImageResizing.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />
     <Compile Include="Modules\MachineLearning\MLCore.cs" />
     <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
     <Compile Include="Modules\MachineLearning\ResNet.cs" />
-    <Compile Include="Modules\BarcodeDecoder\ZxingFunctions.cs" />
+    <Compile Include="Modules\Decoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
     <Compile Include="UIHelpers\Binds.cs" />
     <Compile Include="UIHelpers\BindManager.cs" />
@@ -202,7 +200,7 @@
     <Compile Include="Routines\ConnectRoutine.cs" />
     <Compile Include="UIHelpers\GF.cs" />
     <Compile Include="Modules\CheckCenter.cs" />
-    <Compile Include="Modules\BarcodeDecoder\BarcodeDecoder.cs" />
+    <Compile Include="Modules\Decoder\BarcodeDecoder.cs" />
     <Compile Include="Modules\NormalCVFunctions.cs" />
     <Compile Include="Routines\PreviewRoutine.cs" />
     <Compile Include="Modules\FindMinDistance.cs" />
@@ -249,31 +247,31 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.bigrams">
+    <None Include="Modules\Decoder\tessdata\eng.cube.bigrams">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.fold">
+    <None Include="Modules\Decoder\tessdata\eng.cube.fold">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.lm">
+    <None Include="Modules\Decoder\tessdata\eng.cube.lm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.nn">
+    <None Include="Modules\Decoder\tessdata\eng.cube.nn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.params">
+    <None Include="Modules\Decoder\tessdata\eng.cube.params">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.size">
+    <None Include="Modules\Decoder\tessdata\eng.cube.size">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.cube.word-freq">
+    <None Include="Modules\Decoder\tessdata\eng.cube.word-freq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.tesseract_cube.nn">
+    <None Include="Modules\Decoder\tessdata\eng.tesseract_cube.nn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Modules\BarcodeDecoder\tessdata\eng.traineddata">
+    <None Include="Modules\Decoder\tessdata\eng.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

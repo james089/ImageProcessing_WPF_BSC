@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZXing;
 
-namespace ImageProcessing_BSC_WPF.Modules.BarcodeDecoder
+namespace ImageProcessing_BSC_WPF.Modules.Decoder
 {
     /// <summary>
     /// A barcode reader which accepts an Image instance from EmguCV

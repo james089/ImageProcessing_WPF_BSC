@@ -10,14 +10,15 @@ using Emgu.CV.Structure;
 using System.ComponentModel;
 using CameraToImage_dll_x64;
 using System.Threading;
-using mUserControl_BSC_dll_x64;
+using mUserControl_BSC_dll;
 using Utilities_BSC_dll_x64;
 using OpenCV_BSC_dll_x64.Windows;
 using OpenCV_BSC_dll_x64.General;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning;
-using ImageProcessing_BSC_WPF.Modules.BarcodeDecoder;
+using ImageProcessing_BSC_WPF.Modules.Decoder;
 using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules;
+using mUserControl_BSC_dll.UserControls;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -79,7 +80,8 @@ namespace ImageProcessing_BSC_WPF
             //Detect code
             if (GV._decodeSwitch)
             {
-                if (BarcodeDecoder.outputStringList[0] != null) Windows.main.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
+                if (BarcodeDecoder.outputStringList != null && BarcodeDecoder.outputStringList.Count != 0)
+                    Windows.main.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
             }
 
             if (GV._OCRSwitch)

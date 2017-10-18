@@ -8,7 +8,7 @@ using Utilities_BSC_dll_x64;
 using ZXing;
 using ZXing.Common;
 
-namespace ImageProcessing_BSC_WPF.Modules.BarcodeDecoder
+namespace ImageProcessing_BSC_WPF.Modules.Decoder
 {
     public enum decodeMode
     {
@@ -45,6 +45,7 @@ namespace ImageProcessing_BSC_WPF.Modules.BarcodeDecoder
             reader.Options.TryHarder = true;
             reader.Options.PossibleFormats = new List<BarcodeFormat>();
             reader.Options.PossibleFormats.Add(BarcodeFormat.CODE_93);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.DATA_MATRIX);
 
             decodeRoutine.DoWork += new DoWorkEventHandler(decodeRoutine_doWork);
             decodeRoutine.ProgressChanged += new ProgressChangedEventHandler(decodeRoutine_ProgressChanged);

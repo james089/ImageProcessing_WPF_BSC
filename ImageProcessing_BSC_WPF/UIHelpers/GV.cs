@@ -58,7 +58,7 @@ namespace ImageProcessing_BSC_WPF
 
         public static Graphics mGraphics;
 
-        public static CameraConnection mCamera = null;
+        public static CameraConnection mCamera = new CameraConnection();
         public static CameraToImage_dll_x64.Windows.Conversion mConvert;
 
         public static Setting mSetting = new Setting();  //This will load the newest setting

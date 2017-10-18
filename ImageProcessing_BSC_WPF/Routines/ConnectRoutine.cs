@@ -1,7 +1,8 @@
 ﻿using CameraToImage_dll_x64;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using mUserControl_BSC_dll_x64;
+using mUserControl_BSC_dll;
+using mUserControl_BSC_dll.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -80,7 +81,7 @@ namespace ImageProcessing_BSC_WPF
             if (!GV.mCamera.connect(ct))
             {
                 GV._cameraConnected = false;
-                mMessageBox.Show("No " + ct.ToString() + " found!");
+                //mMessageBox.Show("No " + ct.ToString() + " found!");
             }
             else
                 GV._cameraConnected = true;

@@ -6,8 +6,9 @@ using System.Xml;
 using System.Text;
 using System.Threading;
 using System.Xml.Linq;
-using mUserControl_BSC_dll_x64;
+using mUserControl_BSC_dll;
 using System.ComponentModel;
+using mUserControl_BSC_dll.UserControls;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {

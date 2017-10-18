@@ -11,16 +11,17 @@ using System.Threading;
 using System.Reflection;
 using CameraToImage_dll_x64;
 using ImageProcessing_BSC_WPF.Modules;
-using mUserControl_BSC_dll_x64;
+using mUserControl_BSC_dll;
 using System.Drawing;
 using OpenCV_BSC_dll_x64.Windows;
 using CameraToImage_dll_x64.Windows;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning;
 using System.IO;
 using ImageProcessing_BSC_WPF.Modules.OCR;
-using ImageProcessing_BSC_WPF.Modules.BarcodeDecoder;
+using ImageProcessing_BSC_WPF.Modules.Decoder;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
+using mUserControl_BSC_dll.UserControls;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -222,6 +223,12 @@ namespace ImageProcessing_BSC_WPF
 
         private void Setting_camera_Click(object sender, RoutedEventArgs e)
         {
+            if (GV.mCamera == null)
+            {
+                mMessageBox.Show("Connect a camera first!");
+                return;
+            }
+
             if (GV._camSelected == camType.PointGreyCam)
             {
                 if (GV.mCamera.m_camCtlDlg.IsVisible())
@@ -681,6 +688,5 @@ namespace ImageProcessing_BSC_WPF
         }
 
         #endregion <GUI operation>
-
     }
 }

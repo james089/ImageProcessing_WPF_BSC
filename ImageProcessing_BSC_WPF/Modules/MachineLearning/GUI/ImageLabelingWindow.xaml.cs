@@ -1,4 +1,5 @@
-﻿using mUserControl_BSC_dll_x64;
+﻿using mUserControl_BSC_dll;
+using mUserControl_BSC_dll.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

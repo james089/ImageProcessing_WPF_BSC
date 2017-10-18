@@ -3,6 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="/GUI/MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source="/mUserControl_BSC_dll_x64;component/Theme/DarkBlue.xaml"/>
+        <ResourceDictionary Source="/mUserControl_BSC_dll;component/Themes/DarkBlue.xaml"/>
     </Application.Resources>
 </Application>
