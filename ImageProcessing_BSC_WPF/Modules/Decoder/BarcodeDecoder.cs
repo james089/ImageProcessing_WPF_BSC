@@ -34,7 +34,7 @@ namespace ImageProcessing_BSC_WPF.Modules.Decoder
 
         public static BackgroundWorker decodeRoutine = new BackgroundWorker();
 
-        public static void decoderSetup()
+        public static void DecoderSetup()
         {
             //reader = new BarcodeReaderImage();
             reader = new BarcodeReader(null,
@@ -53,14 +53,17 @@ namespace ImageProcessing_BSC_WPF.Modules.Decoder
             decodeRoutine.WorkerReportsProgress = true;
         }
 
-        public static void decoding()
+        /// <summary>
+        /// This is for live decoding
+        /// </summary>
+        public static void Decoding()
         {
             detectCode(GV.imgOriginal.Convert<Gray, byte>(), decodeMode.SINGLE, out outputStringList, out loc);
         }
 
         #region Decode Routine
 
-        public static void startDecodeRoutine()
+        public static void StartDecodeRoutine()
         {
             if (!decodeRoutine.IsBusy)
             {

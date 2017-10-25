@@ -157,7 +157,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Modules\Decoder\DataMatrixDecoder.cs" />
     <Compile Include="Modules\MachineLearning\CntkBitmapExtensions.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\ImageResizing.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />

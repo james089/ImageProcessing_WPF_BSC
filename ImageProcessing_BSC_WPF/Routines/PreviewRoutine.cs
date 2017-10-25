@@ -165,7 +165,7 @@ namespace ImageProcessing_BSC_WPF
             // Decoding
             else if (GV._decodeSwitch)
             {
-                BarcodeDecoder.decoding();
+                BarcodeDecoder.Decoding();
             }
 
             // OCR detection

@@ -45,7 +45,7 @@ namespace ImageProcessing_BSC_WPF
             PreviewRoutine.previewSetup();
             ConnectRoutine.connectionSetup();
 
-            BarcodeDecoder.decoderSetup();
+            BarcodeDecoder.DecoderSetup();
             OCR.OCRSetup(OCRMode.NUMBERS);
 
             ResNet.MLSetup();
@@ -520,7 +520,7 @@ namespace ImageProcessing_BSC_WPF
         private void Btn_decode_Click(object sender, RoutedEventArgs e)
         {
             PreviewRoutine.stopPreview();
-            BarcodeDecoder.startDecodeRoutine();
+            BarcodeDecoder.StartDecodeRoutine();
         }
 
         private void Chk_OCR_live_Checked(object sender, RoutedEventArgs e)
