@@ -38,8 +38,8 @@
                     <RowDefinition Height="480*"/>
                     <RowDefinition Height="300*"/>
                 </Grid.RowDefinitions>
-                <Menu Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="0" Background="{x:Null}" Foreground="White" VerticalAlignment="Top">
-                    <MenuItem Header="FILE" Margin="0" Background="#FF5D5555" >
+                <Menu Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="0" Background="{x:Null}" VerticalAlignment="Top">
+                    <MenuItem Header="FILE" Margin="0" >
                         <MenuItem x:Name="File_loadImg" Header="Load Image" Click="File_loadImg_Click"/>
                         <MenuItem x:Name="File_loadContour" Header="Load Contour" Click="File_loadContour_Click"/>
                     </MenuItem>
@@ -400,10 +400,6 @@
                     </Grid.RowDefinitions>
                     <TextBlock x:Name="TB_info_camera" HorizontalAlignment="Left" TextWrapping="Wrap" Text="(,)" VerticalAlignment="Center" Foreground="{DynamicResource FontColor}" Margin="10,0,0,0"/>
                     <ListBox x:Name="listBox" Margin="10" Grid.Row="1">
-                        <ListBoxItem Content="df"/>
-                        <ListBoxItem Content="vvv"/>
-                        <ListBoxItem Content="vasv"/>
-                        <ListBoxItem Content="vasde"/>
                     </ListBox>
 
 
