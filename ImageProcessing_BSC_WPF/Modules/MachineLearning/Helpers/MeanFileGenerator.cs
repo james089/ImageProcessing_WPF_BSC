@@ -36,15 +36,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
             {
                 sw1.WriteLine("<?xml version=\"1.0\" ?>");
                 sw1.WriteLine("<opencv_storage>");
-                sw1.WriteLine("  <Channel>3</Channel>");
-                sw1.WriteLine("  <Row>32</Row>");
-                sw1.WriteLine("  <Col>32</Col>");
-                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
-                sw1.WriteLine("    <rows>1</rows>");
-                sw1.WriteLine("    <cols>3072</cols>");
-                sw1.WriteLine("    <dt>f</dt>");
-                sw1.WriteLine("    <data>" + str + "</data>");
-                sw1.WriteLine("  </MeanImg>");
+                sw1.WriteLine("\t<Channel>3</Channel>");
+                sw1.WriteLine("\t<Row>32</Row>");
+                sw1.WriteLine("\t<Col>32</Col>");
+                sw1.WriteLine("\t<MeanImg type_id=\"opencv-matrix\">");
+                sw1.WriteLine("\t\t<rows>1</rows>");
+                sw1.WriteLine("\t\t<cols>3072</cols>");
+                sw1.WriteLine("\t\t<dt>f</dt>");
+                sw1.WriteLine("\t\t<data>" + str + "</data>");
+                sw1.WriteLine("\t</MeanImg>");
                 sw1.WriteLine("</opencv_storage>");
             }
         }
@@ -120,15 +120,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
             {
                 sw1.WriteLine("<?xml version=\"1.0\" ?>");
                 sw1.WriteLine("<opencv_storage>");
-                sw1.WriteLine("  <Channel>3</Channel>");
-                sw1.WriteLine("  <Row>32</Row>");
-                sw1.WriteLine("  <Col>32</Col>");
-                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
-                sw1.WriteLine("    <rows>1</rows>");
-                sw1.WriteLine("    <cols>3072</cols>");
-                sw1.WriteLine("    <dt>f</dt>");
-                sw1.WriteLine("    <data>" + str + "</data>");
-                sw1.WriteLine("  </MeanImg>");
+                sw1.WriteLine("\t<Channel>3</Channel>");
+                sw1.WriteLine("\t<Row>32</Row>");
+                sw1.WriteLine("\t<Col>32</Col>");
+                sw1.WriteLine("\t<MeanImg type_id=\"opencv-matrix\">");
+                sw1.WriteLine("\t\t<rows>1</rows>");
+                sw1.WriteLine("\t\t<cols>3072</cols>");
+                sw1.WriteLine("\t\t<dt>f</dt>");
+                sw1.WriteLine("\t\t<data>" + str + "</data>");
+                sw1.WriteLine("\t</MeanImg>");
                 sw1.WriteLine("</opencv_storage>");
             }
         }

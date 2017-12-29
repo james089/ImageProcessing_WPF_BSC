@@ -356,7 +356,14 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
             BindManager.BindMngr.GMessage.value = string.Format("Loading images...({0})", BindManager.BindMngr.ProgressString.value);
 
-            imgThumbList[((imgInfo)e.UserState).index].Source = ImgConverter.ToBitmapSource(((imgInfo)e.UserState).image);
+            try
+            {
+                imgThumbList[((imgInfo)e.UserState).index].Source = ImgConverter.ToBitmapSource(((imgInfo)e.UserState).image);
+            }
+            catch (Exception)
+            {;
+            }
+
             ((imgInfo)e.UserState).image.Dispose();
         }
 

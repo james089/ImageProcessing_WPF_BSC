@@ -2,14 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:userControls="clr-namespace:mUserControl_BSC_dll.UserControls;assembly=mUserControl_BSC_dll"
-        Title="ImageProcessing_BSC" Height="870" Width="1295" WindowStyle="None" ResizeMode="NoResize" Background="{DynamicResource Background_darkgray}" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="ImageProcessing_BSC" Height="870" Width="1295" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="#FFD8D8D8" Offset="1"/>
+            <GradientStop Color="#FFF7F7F7" Offset="0.445"/>
+        </LinearGradientBrush>
+    </Window.Background>
     <Border>
         <Grid Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="15*"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="TitleBar" Margin="0" Background="{DynamicResource SuperTransGrayColor}">
+            <Grid x:Name="TitleBar" Margin="0" Background="{DynamicResource Background_titleBar}" Effect="{DynamicResource SmallShadow}">
                 <TextBlock x:Name="TB_info" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding GMessage.value}" FontSize="20" Foreground="White" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,2,0">
                     <Button x:Name="Btn_minimize" Style="{DynamicResource Button_minimize}" Content="-" Margin="0,0,0,5" Width="60" FontWeight="Bold" Click="Btn_minimize_Click"/>
@@ -17,10 +24,8 @@
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Height="50" VerticalAlignment="Center" Width="260" Orientation="Horizontal" Margin="10,0,0,0">
                     <Image Width="40" Source="../Resources/fav.ico"/>
-                    <Label x:Name="Title" Content="Image Processing 4" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
+                    <Label x:Name="Title" Content="Image Processing 4" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
-
-                <ProgressBar x:Name="progressBar" Style="{DynamicResource ProgressBar_flat}" Height="5" Value="{Binding Progress.value}" VerticalAlignment="Bottom"/>
             </Grid>
             <Grid x:Name="MainGrid" Margin="0,0,0,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -34,16 +39,16 @@
                     <RowDefinition Height="300*"/>
                 </Grid.RowDefinitions>
                 <Menu Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="0" Background="{x:Null}" Foreground="White" VerticalAlignment="Top">
-                    <MenuItem Header="FILE" Margin="0" Foreground="White" Background="{x:Null}">
+                    <MenuItem Header="FILE" Margin="0" Background="#FF5D5555" >
                         <MenuItem x:Name="File_loadImg" Header="Load Image" Click="File_loadImg_Click"/>
                         <MenuItem x:Name="File_loadContour" Header="Load Contour" Click="File_loadContour_Click"/>
                     </MenuItem>
-                    <MenuItem Header="SETTING" Margin="0" Foreground="White">
+                    <MenuItem Header="SETTING" Margin="0" >
                         <MenuItem x:Name="Setting_openCV" Header="OpenCV" Click="Setting_openCV_Click" />
                         <MenuItem x:Name="Setting_camera" Header="Camera" Click="Setting_camera_Click" />
                         <MenuItem x:Name="Setting_preference" Header="Preference" HorizontalAlignment="Left" Click="Setting_preference_Click"/>
                     </MenuItem>
-                    <MenuItem Header="TOOLS" Margin="0" Foreground="White" VerticalContentAlignment="Center">
+                    <MenuItem Header="TOOLS" Margin="0" VerticalContentAlignment="Center">
                         <MenuItem x:Name="Menu_conversion" Header="Conversion" Click="Menu_conversion_Click" />
                         <MenuItem x:Name="Menu_testing" Header="Testing Page" Click="Menu_testing_Click" />
                     </MenuItem>
@@ -58,7 +63,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Expander Header="General" Margin="0" IsExpanded="True" RenderTransformOrigin="0.5,0.5" ToolTip="Video control" IsHitTestVisible="True" ExpandDirection="Down">
+                    <Expander Header="General" Margin="0,0,0,5" IsExpanded="True" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="True" ExpandDirection="Down">
                         <Grid >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="4*"/>
@@ -66,7 +71,7 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0" Margin="5,0,0,0" Grid.RowSpan="1" >
                                 <Grid.ColumnDefinitions>
@@ -77,29 +82,39 @@
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
-                                <Label Content="Choose your cam" Height="25" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5"/>
-                                <DockPanel HorizontalAlignment="Right" Margin="0,5,5,5" Grid.Column="1">
-                                    <RadioButton x:Name="Radio_webcam" Style="{DynamicResource Radio_left}" Content="WebCam" VerticalAlignment="Top" Checked="Radio_webcam_Checked" Width="70"/>
-                                    <RadioButton x:Name="Radio_PTcam" Style="{DynamicResource Radio_right}" Content="PTCam" VerticalAlignment="Top" Width="70" Checked="Radio_PTcam_Checked"/>
-                                </DockPanel>
-                                <DockPanel Grid.Row="1" Grid.ColumnSpan="2">
-                                    <CheckBox x:Name="Chk_connectCam" Content="Connect camera" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="35" Margin="0,5,5,5" HorizontalContentAlignment="Left"/>
-                                    <ToggleButton x:Name="Tools_cropView" Margin="5" Content="Cropped View" Checked="Tools_cropView_Checked" Unchecked="Tools_cropView_Unchecked"/>
-                                </DockPanel>
+                                <Label Content="Choose your cam" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5,10,5" VerticalAlignment="Center"/>
 
-                                <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" Grid.Row="2" Width="200" IsHitTestVisible="True" Click="Button_Click" Margin="54,5,53,5" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Btn_staticProcess" Content="Process Static Image" Height="35" Grid.Row="3" Width="Auto" IsHitTestVisible="True" Click="Btn_staticProcess_Click" Grid.ColumnSpan="1" Margin="5"/>
-                                <Button x:Name="Btn_staticReset" Content="Reset Static Image" Height="35" Grid.Row="3" Width="Auto" IsHitTestVisible="True" Click="Btn_staticReset_Click" Grid.Column="1" Margin="5"/>
+                                <Grid Margin="0,5,5,5" Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <RadioButton x:Name="Radio_webcam" Content="WebCam" VerticalAlignment="Center" Checked="Radio_webcam_Checked" Margin="5,5,0,5"/>
+                                    <RadioButton x:Name="Radio_PTcam" Content="PTCam" VerticalAlignment="Center" Checked="Radio_PTcam_Checked" Margin="0,5" Grid.Column="1"/>
+                                </Grid>
+                                <CheckBox x:Name="Chk_connectCam" Content="Connect camera" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Margin="0,5,5,5" HorizontalContentAlignment="Left" VerticalAlignment="Center" Grid.Row="1"/>
+                                <CheckBox x:Name="Tools_cropView" Margin="5" Content="Enable Cropped View" Checked="Tools_cropView_Checked" Unchecked="Tools_cropView_Unchecked" Grid.Column="1" Grid.Row="1"/>
+
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" IsHitTestVisible="True" Click="Button_Click"/>
+                                    <Button x:Name="Btn_staticProcess" Content="Process Static Image" Height="35" Grid.Column="1" IsHitTestVisible="True" Click="Btn_staticProcess_Click" Grid.ColumnSpan="1" Margin="5"/>
+                                    <Button x:Name="Btn_staticReset" Content="Reset Static Image" Height="35" Grid.Column="2" IsHitTestVisible="True" Click="Btn_staticReset_Click" Margin="5"/>
+                                </Grid>
+
                             </Grid>
-                            <GroupBox Header="Take static photo" Grid.Column="1" Margin="0,0,0,10" Grid.RowSpan="1">
+                            <GroupBox Header="Take static photo" Grid.Column="1" Margin="0,0,0,10" Grid.RowSpan="1" Visibility="Collapsed">
                                 <Grid Margin="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="1*"/>
                                         <RowDefinition Height="2*"/>
                                     </Grid.RowDefinitions>
-                                    <ComboBox x:Name="Combo_saveOption" Margin="0" SelectedIndex="0" Height="35">
+                                    <ComboBox x:Name="Combo_saveOption" Margin="5" SelectedIndex="0" Height="35">
                                         <ComboBoxItem x:Name="Combo_originalImage" Content="Original Image"/>
                                         <ComboBoxItem x:Name="Combo_processedImage" Content="Processed Image"/>
                                     </ComboBox>
@@ -109,17 +124,18 @@
                         </Grid>
                     </Expander>
                     <TabControl Grid.Row="1" Margin="0,5,0,0">
-                        <TabItem x:Name="Expander_feature" Header="Feature Detect" Height="35" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect features" IsHitTestVisible="True" >
+                        <TabItem x:Name="Expander_feature" Header="Feature Detect" Height="35" Grid.Row="3" Margin="0" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="True" >
                             <Grid>
-                                <WrapPanel Margin="5" HorizontalAlignment="Left">
-                                    <RadioButton x:Name="Radio_original" Style="{DynamicResource Radio_left}" Content="None" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_original_Checked" Margin="0" Width="100"/>
-                                    <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="100"/>
-                                    <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="100"/>
-                                    <RadioButton x:Name="Radio_line" Style="{DynamicResource Radio_right}" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="100"/>
-                                </WrapPanel>
+                                <StackPanel Margin="5" HorizontalAlignment="Left">
+                                    <RadioButton x:Name="Radio_original" Content="None" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_original_Checked" Margin="0" Width="120"/>
+                                    <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0" Width="120"/>
+                                    <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0" Width="120"/>
+                                    <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0" Width="120"/>
+
+                                </StackPanel>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="Expander_object" Header="Object Detect" Margin="0" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" Grid.Row="4" Height="35">
+                        <TabItem x:Name="Expander_object" Header="Object Detect" Margin="0" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="True" Grid.Row="4" Height="35">
                             <Grid Margin="5" VerticalAlignment="Top">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -144,14 +160,14 @@
                                     <CheckBox x:Name="Chk_enableObjectDetect" Content="Enable this panel" Unchecked="Chk_enableObjectD_Unchecked" Checked="Chk_enableObjectD_Checked" Margin="5" VerticalAlignment="Bottom" Grid.Row="3" Height="35"/>
                                 </Grid>
                                 <DockPanel x:Name="Dock_objectType" LastChildFill="False" Margin="5,0,0,0" Grid.Column="1">
-                                    <RadioButton x:Name="Radio_FFT" Style="{DynamicResource Radio_top}" Content="FFT" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_FFT_Checked"/>
-                                    <RadioButton x:Name="Radio_Color" Style="{DynamicResource Radio_bottom}" Content="Color" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_Color_Checked"/>
+                                    <RadioButton x:Name="Radio_FFT" Content="FFT" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_FFT_Checked"/>
+                                    <RadioButton x:Name="Radio_Color" Content="Color" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_Color_Checked"/>
                                     <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="80" VerticalAlignment="Top"/>
                                 </DockPanel>
 
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="Expander_Decode" Header="Barcode" RenderTransformOrigin="0.5,0.5" ToolTip="Detect objects" IsHitTestVisible="True" Grid.Row="5" Margin="0" Height="35">
+                        <TabItem x:Name="Expander_Decode" Header="Barcode" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="True" Grid.Row="5" Margin="0" Height="35">
                             <Grid  Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
@@ -206,40 +222,58 @@
                         </TabItem>
 
                         <TabItem x:Name="MachineLearning" Header="Machine Learning" Grid.Row="7" Margin="0" Height="35" >
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="1*"/>
-                                </Grid.RowDefinitions>
-                                <GroupBox Header="General" Margin="5">
-                                    <Grid  Margin="5" VerticalAlignment="Top">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.5*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="3*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Content="Model" Grid.RowSpan="1"/>
-                                        <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged">
-                                            <ComboBoxItem Content="ResNet"/>
-                                            <ComboBoxItem Content="FastRCNN"/>
-                                        </ComboBox>
-                                        <Button x:Name="Btn_runML" Grid.Column="2"  Width="150" Content="Run" Click="Btn_runML_Click" Grid.RowSpan="1" Margin="5"/>
+                            <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="1*"/>
+                                    </Grid.RowDefinitions>
+                                    <DockPanel>
+                                        <GroupBox Header="General" Margin="5">
+                                            <Grid  Margin="5" VerticalAlignment="Top">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Content="Model Type" Grid.RowSpan="1"/>
+                                                <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged" Height="35" Width="100">
+                                                    <ComboBoxItem Content="ResNet"/>
+                                                    <ComboBoxItem Content="FastRCNN"/>
+                                                </ComboBox>
+                                                <Label Content="DataSet" Grid.Row="1"/>
+                                                <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged" Height="35" Width="100">
+                                                    <ComboBoxItem Content="CIFAR10"/>
+                                                    <ComboBoxItem Content="MNIST"/>
+                                                    <ComboBoxItem Content="Custom"/>
+                                                </ComboBox>
+                                                <Grid Grid.Column="2" Grid.RowSpan="2" >
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <DockPanel Margin="5">
+                                                        <Label Content="Model Name" />
+                                                        <TextBox x:Name="TB_ML_modelName" Height="35" Text="resnet20.dnn" TextChanged="TB_ML_modelName_TextChanged"/>
+                                                    </DockPanel>
+                                                    <Button x:Name="Btn_ML_modelLoad" Content="Load Model"  Margin="5" Click="Btn_ML_modelLoad_Click" Grid.Row="1" Height="35" />
+                                                </Grid>
 
-                                        <Label Content="DataSet" Grid.Row="1"/>
-                                        <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged">
-                                            <ComboBoxItem Content="CIFAR10"/>
-                                            <ComboBoxItem Content="Custom"/>
-                                        </ComboBox>
-                                        <CheckBox x:Name="Chk_ML" Grid.Column="2"  Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
-                                    </Grid>
-                                </GroupBox>
+                                            </Grid>
+                                        </GroupBox>
 
-                                <GroupBox x:Name="Group_modelPreparation" Header="Prepare Data" Grid.Row="1" Margin="5">
+                                        <GroupBox x:Name="GB_ML_operation" Header="Start" Grid.Column="3" Grid.RowSpan="2" Margin="5" IsEnabled="False">
+                                            <StackPanel>
+                                                <Button x:Name="Btn_runML" Width="150" Content="Run Once" Click="Btn_runML_Click" Grid.RowSpan="1" Margin="5"/>
+                                                <ToggleButton x:Name="Chk_ML" Width="150" Content="Real Time" Grid.Row="1" Margin="5" Checked="Chk_ML_Checked" Unchecked="Chk_ML_Checked"/>
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </DockPanel>
                                     <Grid Grid.Row="1">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -249,7 +283,7 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <GroupBox x:Name="Grid_FileDirectory" Header="File Directory" Margin="5" >
+                                        <Expander x:Name="Grid_FileDirectory" Header="File Directory" Margin="5" Grid.Row="1">
                                             <Grid >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="10*"/>
@@ -272,9 +306,9 @@
                                                 <Button x:Name="Btn_generateImgFolder_MLRoot" Content="Create Sub Image Folder" Grid.Row="1" Grid.Column="3" Margin="5" Click="Btn_generateImgFolder_MLRoot_Click" Height="27" VerticalAlignment="Top"/>
 
                                             </Grid>
-                                        </GroupBox>
+                                        </Expander>
 
-                                        <GroupBox Header="Labeling" Grid.Row="1" Margin="5" >
+                                        <GroupBox Header="Labeling" Grid.Row="0" Margin="5" >
                                             <Grid x:Name="Grid_labeling" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="1*"/>
@@ -290,7 +324,7 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <GroupBox Header="Image Resizing" Grid.Row="2" Visibility="Collapsed">
+                                        <Expander Header="Image Resizing (Optional)" Grid.Row="2" Visibility="Visible" Margin="5">
                                             <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="10*"/>
@@ -316,35 +350,41 @@
                                                     <Button x:Name="Btn_resize" Content="Resize" Click="Btn_resize_Click" Grid.Column="4" Margin="5" />
                                                 </Grid>
                                             </Grid>
-                                        </GroupBox>
+                                        </Expander>
 
-                                        <GroupBox Header="Mean Calculation" Grid.Row="3" Margin="5" Visibility="Collapsed">
+                                        <Expander Header="Mean Calculation (Optional)[Calculate source train image mean]" Grid.Row="3" Margin="5" Visibility="Visible">
                                             <Grid x:Name="Grid_mean" >
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*"/>
-                                                    <ColumnDefinition Width="1*"/>
-                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Button x:Name="Btn_calculateMean" Height="35" Content="Calculate Mean" Click="Btn_calculateMean_Click" Grid.ColumnSpan="1" Margin="5"/>
-                                                <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
-                                                <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_rootDir.value}" Grid.Column="2" Margin="5"/>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <Label Content="ImgFolder" />
+                                                    <TextBox x:Name="TB_meanCalImgDir" MinWidth="100"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2">
+                                                    <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
+                                                    <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_rootDir.value}" Grid.Column="2" Margin="5"/>
+                                                </StackPanel>
                                             </Grid>
-                                        </GroupBox>
+                                        </Expander>
 
                                         <GroupBox Header="Model Training/Evaluating" Grid.Row="4" Margin="5" Visibility="Collapsed">
                                             <Grid x:Name="Grid_trainModel" />
                                         </GroupBox>
                                     </Grid>
-                                </GroupBox>
-
-                            </Grid>
+                                </Grid>
+                            </ScrollViewer>
                         </TabItem>
-                        <TabItem x:Name="Expander_test" Header="Test" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35">
+                        <TabItem x:Name="Expander_test" Header="Mis." Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35">
                             <Grid Margin="5">
-                                <WrapPanel>
+                                <StackPanel>
                                     <CheckBox x:Name="Chk_findMin" Content="Find Min Distance" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findMin_Checked" Unchecked="Chk_findMin_Checked" Height="35"/>
                                     <CheckBox x:Name="Chk_findCenter" Content="Find center of bright object" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findCenter_Checked" Unchecked="Chk_findCenter_Checked" Height="35"/>
-                                </WrapPanel>
+                                    <CheckBox x:Name="Chk_showRGB" Content="Show RGB at current mouse position" Margin="0,10,0,0" VerticalAlignment="Top" />
+                                </StackPanel>
                             </Grid>
                         </TabItem>
                     </TabControl>
@@ -355,11 +395,19 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.5*"/>
                         <RowDefinition Height="5*"/>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="TB_info_camera" HorizontalAlignment="Left" TextWrapping="Wrap" Text="(,)" VerticalAlignment="Center" Foreground="White" Margin="10,0,0,0"/>
-                    <ListBox x:Name="listBox" Margin="10" Foreground="White" Background="{x:Null}" Grid.Row="1"/>
+                    <TextBlock x:Name="TB_info_camera" HorizontalAlignment="Left" TextWrapping="Wrap" Text="(,)" VerticalAlignment="Center" Foreground="{DynamicResource FontColor}" Margin="10,0,0,0"/>
+                    <ListBox x:Name="listBox" Margin="10" Grid.Row="1">
+                        <ListBoxItem Content="df"/>
+                        <ListBoxItem Content="vvv"/>
+                        <ListBoxItem Content="vasv"/>
+                        <ListBoxItem Content="vasde"/>
+                    </ListBox>
 
+
+                    <ProgressBar x:Name="progressBar" Style="{DynamicResource ProgressBar_flat}" Height="5" Value="{Binding Progress.value}" VerticalAlignment="Bottom" Grid.Row="2"/>
                     <Grid x:Name="ProgressBarPanel" Margin="10" Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="8*"/>

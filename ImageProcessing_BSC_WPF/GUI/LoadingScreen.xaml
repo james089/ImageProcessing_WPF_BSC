@@ -12,14 +12,14 @@
             <Image Source="../Resources/title.png" DockPanel.Dock="Left"/>
             <Label DockPanel.Dock="Right" Content="Image Processing" FontFamily="Impact" FontSize="24"/>
         </DockPanel>
-        <Border Background="{DynamicResource Background_darkgray}" CornerRadius="{DynamicResource CornerRadius_big}" Panel.ZIndex="-1">
+        <Border Background="{DynamicResource Background_white}" CornerRadius="{DynamicResource CornerRadius_big}" Panel.ZIndex="-1">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
             </Border.Effect>
         </Border>
         <Label x:Name="lbl_version" VerticalAlignment="Center" Content="ver. " FontSize="14" Opacity="0.5" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,59,55,0"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-            <Label VerticalAlignment="Bottom" Content="Copyright by Bojun Lin" Margin="0,0,0,10" />
+            <Label VerticalAlignment="Bottom" Content="Copyright by Bojun Lin" FontSize="14" Opacity="0.5" Margin="0,0,0,10" />
         </StackPanel>
     </Grid>
 </Window>

@@ -29,6 +29,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -95,11 +97,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CameraToImage_dll_x64">
+    <Reference Include="CameraToImage_dll_x64, Version=3.0.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\CameraToImage_dll_x64.dll</HintPath>
     </Reference>
-    <Reference Include="Cntk.Core.Managed-2.0">
-      <HintPath>Dlls\Cntk.Core.Managed-2.0.dll</HintPath>
+    <Reference Include="Cntk.Core.Managed-2.2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a82c1f3f67b62253, processorArchitecture=AMD64">
+      <HintPath>..\packages\CNTK.GPU.2.2.0\lib\net45\x64\Cntk.Core.Managed-2.2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Cntk.Eval.Wrapper-2.0">
       <HintPath>Dlls\Cntk.Eval.Wrapper-2.0.dll</HintPath>
@@ -122,11 +126,12 @@
     <Reference Include="FlyCapture2Managed_v140">
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\FlyCapture2Managed_v140.dll</HintPath>
     </Reference>
-    <Reference Include="mUserControl_BSC_dll, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="mUserControl_BSC_dll, Version=3.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\mUserControl_BSC_dll.dll</HintPath>
     </Reference>
-    <Reference Include="OpenCV_BSC_dll_x64">
+    <Reference Include="OpenCV_BSC_dll_x64, Version=3.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\OpenCV_BSC_dll_x64.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -141,7 +146,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Utilities_BSC_dll_x64">
+    <Reference Include="Utilities_BSC_dll_x64, Version=3.0.0.2, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\VSProjects\BSC_dll_pack_x64\BSC_dll_pack\bin\Release\Utilities_BSC_dll_x64.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -162,6 +168,7 @@
     <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />
     <Compile Include="Modules\MachineLearning\MLCore.cs" />
     <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
+    <Compile Include="Modules\MachineLearning\MNIST.cs" />
     <Compile Include="Modules\MachineLearning\ResNet.cs" />
     <Compile Include="Modules\Decoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
@@ -238,9 +245,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Modules\MachineLearning\TrainedModels\resnet20.dnn">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -327,12 +332,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Modules\MachineLearning\TrainedModels\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\CNTK.GPU.2.2.0\build\net45\CNTK.GPU.targets" Condition="Exists('..\packages\CNTK.GPU.2.2.0\build\net45\CNTK.GPU.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\CNTK.GPU.2.2.0\build\net45\CNTK.GPU.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CNTK.GPU.2.2.0\build\net45\CNTK.GPU.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

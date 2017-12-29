@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageProcessing_BSC_WPF"
         mc:Ignorable="d"
-        Title="TestWindow" Height="300" Width="300" Background="#FF343434">
+        Title="TestWindow" Height="300" Width="300" Background="White">
     <Window.Resources>
-        <ResourceDictionary Source="/mUserControl_BSC_dll;component/Theme/DarkBlue.xaml"/>
+        <ResourceDictionary Source="/mUserControl_BSC_dll;component/Themes/CloudPoint.xaml"/>
     </Window.Resources>
     <StackPanel>
-        <CheckBox x:Name="chk1" Content="somthing" Height="35" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked" Style="{x:Null}"/>
-        <CheckBox x:Name="chk2" Content="somthing2" Height="35" Checked="chk2_Checked" Unchecked="chk2_Unchecked"/>
         <ToggleButton Content="Sth"/>
+        <Expander Header="344" Width="200" Background="White" >
+            <GroupBox Header="GroupBox" FontSize="20" >
+                <Button Content="22" />
+            </GroupBox>
+        </Expander>
     </StackPanel>
 </Window>

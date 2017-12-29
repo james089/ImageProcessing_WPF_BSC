@@ -44,11 +44,11 @@ namespace ImageProcessing_BSC_WPF
 
             PreviewRoutine.previewSetup();
             ConnectRoutine.connectionSetup();
+            ResNet.MLSetup();
 
             BarcodeDecoder.DecoderSetup();
             OCR.OCRSetup(OCRMode.NUMBERS);
 
-            ResNet.MLSetup();
             //Static MainWindow
 
             Windows.main = this;
@@ -171,7 +171,14 @@ namespace ImageProcessing_BSC_WPF
                 {
                     CheckCenter.centerChkBarPos_y = (int)e.GetPosition(ibOriginal).Y;
                 }
-                
+
+            }
+            else if ((bool)Chk_showRGB.IsChecked && GV.imgOriginal != null)
+            {
+                Color clr = GV.imgOriginal.ToBitmap().GetPixel((int)e.GetPosition(ibOriginal).X, (int)e.GetPosition(ibOriginal).Y);
+
+                listBox.Items.Clear();
+                listBox.Items.Add(string.Format("R:{0}, G:{1}, B:{2}", clr.R, clr.G, clr.B));
             }
             else if (GV.imgOriginal != null)
             {
@@ -568,33 +575,58 @@ namespace ImageProcessing_BSC_WPF
 
         }
 
+        #region Machine Learning
+        private void Btn_ML_modelLoad_Click(object sender, RoutedEventArgs e)
+        {
+            switch (MLCore.MLModelSelected)
+            {
+                case MLModel.ResNet:
+                    ResNet.LoadModel(TB_ML_modelName.Text);
+                    break;
+                case MLModel.FastRCNN:
+                    break;
+            }
+            GB_ML_operation.IsEnabled = true;
+
+        }
+
         private void Btn_runML_Click(object sender, RoutedEventArgs e)
         {
             Windows.main.listBox.Items.Clear();
-
-            if (MLCore.MLModelSelected == MLModel.ResNet)
+            switch (MLCore.MLModelSelected)
             {
-                ResNet.EvaluationSingleImage(GV.imgOriginal);
-                for (int i = 0; i < ResNet.resultList.Count; i++)
-                {
-                    Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
-                }
-                BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
+                case MLModel.ResNet:
+                    ResNet.EvaluationSingleImage(GV.imgOriginal);
+                    for (int i = 0; i < ResNet.resultList.Count; i++)
+                    {
+                        Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                    }
+                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
+                    break;
+                case MLModel.FastRCNN:
+                    FastRCNN.EvaluateObjectDetectionModel();
+                    break;
             }
-            else if (MLCore.MLModelSelected == MLModel.FastRCNN)
-                FastRCNN.EvaluateObjectDetectionModel();
         }
 
         private void ML_cmb_model_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
+            GB_ML_operation.IsEnabled = false;
             MLCore.MLModelSelected = (MLModel)ML_cmb_model.SelectedIndex;
         }
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
+            GB_ML_operation.IsEnabled = false;
             MLCore.MLSelectedLabels = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
             MLCore.MLTrainedDataSetSelectedIndex = ML_cmb_dataset.SelectedIndex;
+        }
+
+        private void TB_ML_modelName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!this.IsLoaded) return;
+            GB_ML_operation.IsEnabled = false;
         }
 
         private void Chk_ML_Checked(object sender, RoutedEventArgs e)
@@ -663,10 +695,10 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_calculateMean_Click(object sender, RoutedEventArgs e)
         {
-            string trainFileDir = @"C:\Users\bojun.lin\Downloads\cifar\train";
-            string meanFileDir = @"C:\Users\bojun.lin\Downloads\cifar";//BindManager.BindMngr.ML_rootDir.value;
-            //MeanFileGenerator.GenerateMeanFile(trainFileDir, meanFileDir); //BindManager.BindMngr.ML_trainImgDir.value, meanFileDir);
-            MeanFileGenerator.GenerateConstMeanFile(meanFileDir);
+            //string trainFileDir = @"C:\Users\bojun.lin\Downloads\cifar\train";
+            //string meanFileDir = @"C:\Users\bojun.lin\Downloads\cifar";//BindManager.BindMngr.ML_rootDir.value;
+            MeanFileGenerator.GenerateMeanFile(TB_meanCalImgDir.Text, BindManager.BindMngr.ML_rootDir.value);
+           // MeanFileGenerator.GenerateConstMeanFile(meanFileDir);
         }
 
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
@@ -687,6 +719,9 @@ namespace ImageProcessing_BSC_WPF
                 BindManager.BindMngr.ML_rootDir.value = TB_resizedImgDir.Text;
         }
 
+        #endregion Machine Learning
+
         #endregion <GUI operation>
+
     }
 }

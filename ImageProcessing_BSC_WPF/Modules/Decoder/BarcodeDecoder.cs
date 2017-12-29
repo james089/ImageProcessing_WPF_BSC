@@ -45,7 +45,12 @@ namespace ImageProcessing_BSC_WPF.Modules.Decoder
             reader.Options.TryHarder = true;
             reader.Options.PossibleFormats = new List<BarcodeFormat>();
             reader.Options.PossibleFormats.Add(BarcodeFormat.CODE_93);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.CODE_128);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.All_1D);
             reader.Options.PossibleFormats.Add(BarcodeFormat.DATA_MATRIX);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.MAXICODE);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.AZTEC);
+            reader.Options.PossibleFormats.Add(BarcodeFormat.QR_CODE);
 
             decodeRoutine.DoWork += new DoWorkEventHandler(decodeRoutine_doWork);
             decodeRoutine.ProgressChanged += new ProgressChangedEventHandler(decodeRoutine_ProgressChanged);

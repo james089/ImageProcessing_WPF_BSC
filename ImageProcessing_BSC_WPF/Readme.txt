@@ -2,6 +2,10 @@
 linbojun089@gmail.com	
 
 change log:
+2017/12/28
+v4.1.0.0
+1. New theme applied
+
 2017/7/28
 v4.0.2.0
 1. Add Padding to train image. calculate mean automatically while shuffling

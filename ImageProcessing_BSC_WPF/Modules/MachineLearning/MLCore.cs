@@ -30,9 +30,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
     public struct DataSet
     {
         static string[] CIFAR10 = new string[] { "airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck" };
-        static string[] Custom1 = new string[] { "crown", "bag", "cat" };
+        static string[] MNIST = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+        static string[] Custom1 = new string[] { "0", "1", "2" };
 
-        public static List<string[]> labelSet = new List<string[]>() { CIFAR10, Custom1 };
+        public static List<string[]> labelSet = new List<string[]>() { CIFAR10, MNIST, Custom1 };
     }
 
     public class MLCore

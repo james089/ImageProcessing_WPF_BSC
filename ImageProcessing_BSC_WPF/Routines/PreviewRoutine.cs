@@ -146,7 +146,7 @@ namespace ImageProcessing_BSC_WPF
         {
             //====Display Processed image========== 
             if (NCVFuns._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
-            else GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
+            else if(GV.imgOriginal != null) GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
 
             if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
 

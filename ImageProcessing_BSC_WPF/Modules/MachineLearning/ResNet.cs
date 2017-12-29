@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Utilities_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
@@ -37,8 +38,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         public static void MLSetup()
         {
             device = DeviceDescriptor.GPUDevice(0);
-            LoadModel("resnet20.dnn");
-            //LoadModel("resnet20_159.dnn");
+
             MLRoutine.DoWork += new DoWorkEventHandler(MLRoutine_doWork);
             MLRoutine.ProgressChanged += new ProgressChangedEventHandler(MLRoutine_ProgressChanged);
             MLRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MLRoutine_WorkerCompleted);
@@ -80,17 +80,26 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         /// This is a one time process
         /// </summary>
         /// <param name="device"></param>
-        private static void LoadModel(string modelFile)
+        public static void LoadModel(string modelFile)
         {
             // Load the model.
             string modelFilePath = Environment.CurrentDirectory + @"\Modules\MachineLearning\TrainedModels\" + modelFile;
+
             if (!File.Exists(modelFilePath))
             {
-                MLRoutine.ReportProgress((int)ErrCode.ModelNotExists);
+                mNotification.Show("Model not exists");
                 return;
             }
 
-            modelFunc = Function.Load(modelFilePath, device);
+            try
+            {
+                modelFunc = Function.Load(modelFilePath, device);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error");
+                IsModelLoaded = false;
+            }
             IsModelLoaded = true;
         }
 
@@ -105,6 +114,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         /// <param name="device">Specify on which device to run the evaluation.</param>
         public static void EvaluationSingleImage(Image<Bgr, byte> Img)
         {
+            if (Img == null) return;
+
             DateTime startTime = DateTime.Now;
             if (!IsModelLoaded)
             {
@@ -122,8 +133,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 NDShape inputShape = inputVar.Shape;
                 int imageWidth = inputShape[0];
                 int imageHeight = inputShape[1];
-                int imageChannels = inputShape[2];
-                int imageSize = inputShape.TotalSize;
+                //int imageChannels = inputShape[2];
+                //int imageSize = inputShape.TotalSize;
 
                 // The model has only one output.
                 // If the model have more than one output, use the following way to get output variable by name.
@@ -133,13 +144,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 var inputDataMap = new Dictionary<Variable, Value>();
                 var outputDataMap = new Dictionary<Variable, Value>();
 
-                // Image preprocessing to match input requirements of the model.
-                // This program uses images from the CIFAR-10 dataset for evaluation.
-                // Please see README.md in <CNTK>/Examples/Image/DataSets/CIFAR-10 about how to download the CIFAR-10 dataset.
-                //string sampleImage = @"C:\Users\bojun.lin\Documents\VSProjects\CNTKTest\CNTKTest\bin\Debug\" + "000186.jpg";
-                //mNotification.Show("No image");
-                //Bitmap bmp = new Bitmap(Bitmap.FromFile(sampleImage));
-
                 Bitmap bmp = _ImgOriginal.CopyBlank().ToBitmap();
                 if (_ImgOriginal == null)
                 {
@@ -148,6 +152,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 }
                 else
                     bmp = _ImgOriginal.Copy().ToBitmap();
+
                 var resized = bmp.Resize((int)imageWidth, (int)imageHeight, true);
                 List<float> resizedCHW = resized.ParallelExtractCHW();
 
@@ -252,6 +257,11 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 case 1:
                     predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
                     OutputString = DataSet.labelSet[1][predictedIndex];
+                    OutputProbablility = outputValue;
+                    break;
+                case 2:
+                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
+                    OutputString = DataSet.labelSet[2][predictedIndex];
                     OutputProbablility = outputValue;
                     break;
             }
