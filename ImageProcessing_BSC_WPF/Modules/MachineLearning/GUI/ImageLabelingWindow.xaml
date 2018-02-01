@@ -5,9 +5,9 @@
              xmlns:local="clr-namespace:ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="900" d:DesignWidth="1366" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
+             d:DesignHeight="1000" d:DesignWidth="1600" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
 
-    <Grid Height="800" Width="1200" >
+    <Grid Height="900" Width="1400" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="2*"/>
@@ -17,22 +17,22 @@
             <RowDefinition Height="7*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <Border x:Name="background" Background="{DynamicResource Background_darkgray}" CornerRadius="{DynamicResource CornerRadius_big}" Grid.RowSpan="3" Grid.ColumnSpan="2">
+        <Border x:Name="background" Background="{DynamicResource Background_main}" CornerRadius="20" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
             </Border.Effect>
         </Border>
 
         <Grid x:Name="Grid_title" Grid.ColumnSpan="2">
-            <Border Background="{DynamicResource SuperTransGrayColor}" CornerRadius="15,15,0,0"/>
+            <Border Background="{DynamicResource Background_titleBar}" CornerRadius="15,15,0,0"/>
             <Label x:Name="lbl_title" Content="{Binding GMessage.value}" FontSize="20"/>
             <ProgressBar x:Name="progressBar" Style="{DynamicResource ProgressBar_flat}" Height="5" Value="{Binding Progress.value}" VerticalAlignment="Bottom"/>
         </Grid>
 
         <Grid x:Name="Grid_ImageViewer" Grid.Row="1" Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
                 <RowDefinition Height="2*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -60,7 +60,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
-                <CheckBox x:Name="Chk_multiseletect" Content="Multiselect" Checked="Chk_multiseletect_Checked" Unchecked="Chk_multiseletect_Unchecked" HorizontalAlignment="Right"/>
+                <CheckBox x:Name="Chk_multiseletect" Content="Multiselect" Checked="Chk_multiseletect_Checked" Unchecked="Chk_multiseletect_Unchecked" HorizontalAlignment="Left"/>
                 <ListBox x:Name="List_imgs" Background="{x:Null}" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="List_imgs_SelectionChanged" Grid.Row="1">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -95,7 +95,7 @@
                     <WrapPanel x:Name="Wrap_radios" Grid.Column="1" ></WrapPanel>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="Resize Image" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" >
+            <GroupBox Header="Resize Parameter" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" >
                 <Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
@@ -111,8 +111,13 @@
             </GroupBox>
 
 
-            <GroupBox Header="Generate Map File" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" >
-                 <Button x:Name="Btn_createMapFile" Content="Resize,rand,generate Map File"  Margin="5" Click="Btn_createMapFile_Click" />
+            <GroupBox Header="Final Touch" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" >
+                <StackPanel>
+                    <Button x:Name="Btn_createMapFile" Content="Process"  Margin="5" Click="Btn_createMapFile_Click" />
+                    <TextBlock Text="This will resize, randomize all images in current source folder and put them into destination folder, and create map file and mean file" 
+                               Foreground="{DynamicResource BorderBrush}" TextWrapping="Wrap" FontSize="16" Margin="5"/>
+                </StackPanel>
+                 
             </GroupBox>
            
         </Grid>
@@ -136,8 +141,8 @@
                 <Label Style="{DynamicResource Label_frame}" x:Name="TB_ML_supportFileDir" Content="{Binding ML_rootDir.value}" Margin="5" Grid.Column="1" Opacity="0.5"/>
             </Grid>
         </StackPanel>
-        
 
-        <Button x:Name="Btn_close" Content="Close" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Height="35" Width="150"/>
+        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <Button x:Name="Btn_close" Content="Save Result" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Background="{x:Null}" Foreground="{DynamicResource ActiveColor}"/>
     </Grid>
 </Window>

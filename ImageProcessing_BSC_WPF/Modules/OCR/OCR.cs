@@ -30,7 +30,7 @@ namespace ImageProcessing_BSC_WPF.Modules.OCR
 
         public static void OCRSetup(OCRMode mode)
         {
-            string dir = Environment.CurrentDirectory + @"\Modules\Decoder\tessdata";
+            string dir = Environment.CurrentDirectory + @"\Modules\ZxingDecoder\tessdata";
 
             switch (mode)
             {

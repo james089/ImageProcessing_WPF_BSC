@@ -23,6 +23,12 @@ namespace ImageProcessing_BSC_WPF
         SearchColor_Fail
     }
 
+    public enum DecoderEngine
+    {
+        Zxing,
+        Cortex
+    }
+
     public class Windows
     {
         public static MainWindow main = null;
@@ -30,6 +36,8 @@ namespace ImageProcessing_BSC_WPF
 
     public class GV
     {
+        public static DecoderEngine mDecoderEngine = DecoderEngine.Zxing;
+
         public static int _pictureBoxWidthRatio = 4;
         public static int _pictureBoxHeightRatio = 3;
 

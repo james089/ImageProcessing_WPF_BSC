@@ -1,0 +1,37 @@
+﻿<ToggleButton x:Class="ImageProcessing_BSC_WPF.GUI.Panels.CameraConnectIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageProcessing_BSC_WPF.GUI.Panels"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300">
+    <ToggleButton.Template >
+        <ControlTemplate TargetType="{x:Type ToggleButton}">
+            <Border x:Name="Whole" Margin="5" Background="{DynamicResource Background_panel}" Effect="{DynamicResource SmallShadow}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/ImageProcessing_BSC_WPF;component/Resources/camera_1.png" />
+                    <Image x:Name="Img_uncheck" Source="/ImageProcessing_BSC_WPF;component/Resources/Uncheck_mark.png" />
+                    <Label x:Name="label" Content="Disconnected" Grid.Column="1" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Img_uncheck" Property="Visibility" Value="Hidden"/>
+                    <Setter TargetName="label" Property="Content" Value="Connected"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="Img_uncheck" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="label" Property="Content" Value="Disconnected"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Whole" Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </ToggleButton.Template>
+</ToggleButton>

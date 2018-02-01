@@ -12,6 +12,11 @@ using mUserControl_BSC_dll.UserControls;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {
+    public enum ImageColorType
+    {
+        RGB,
+        Mono
+    }
     public class MeanFileGenerator
     {
         static DirectoryInfo Folder;
@@ -19,16 +24,18 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
         static string imgDir;
         static string saveDir;
 
-        public static void GenerateConstMeanFile(string _saveDir)
+        public static void GenerateConstMeanFile(string _saveDir, ImageColorType colorType)
         {
-            string[] AvgRGBArrString = new string[3072];
+            int totalPixels = (colorType == ImageColorType.RGB) ? 3072 : 1024;
+            int totalChannels = (colorType == ImageColorType.RGB) ? 3 : 1;
+
+            string[] AvgRGBArrString = new string[totalPixels];
             // Save to arr
-            for (int j = 0; j < 3072; j++)
+            for (int j = 0; j < totalPixels; j++)
             {
                 AvgRGBArrString[j] = string.Format("{0:E2}", 128);
             }
-            string str = String.Join(" ", AvgRGBArrString);
-
+            string dataContentAll = String.Join(" ", AvgRGBArrString);
             // Save to xml
             string file_xml = _saveDir + "\\Custom_mean.xml";
             if (!File.Exists(file_xml)) File.Create(file_xml).Dispose();
@@ -36,15 +43,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
             {
                 sw1.WriteLine("<?xml version=\"1.0\" ?>");
                 sw1.WriteLine("<opencv_storage>");
-                sw1.WriteLine("\t<Channel>3</Channel>");
-                sw1.WriteLine("\t<Row>32</Row>");
-                sw1.WriteLine("\t<Col>32</Col>");
-                sw1.WriteLine("\t<MeanImg type_id=\"opencv-matrix\">");
-                sw1.WriteLine("\t\t<rows>1</rows>");
-                sw1.WriteLine("\t\t<cols>3072</cols>");
-                sw1.WriteLine("\t\t<dt>f</dt>");
-                sw1.WriteLine("\t\t<data>" + str + "</data>");
-                sw1.WriteLine("\t</MeanImg>");
+                sw1.WriteLine($"  <Channel>{totalChannels}</Channel>");
+                sw1.WriteLine("  <Row>32</Row>");
+                sw1.WriteLine("  <Col>32</Col>");
+                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
+                sw1.WriteLine("    <rows>1</rows>");
+                sw1.WriteLine($"    <cols>{totalPixels}</cols>");
+                sw1.WriteLine("    <dt>f</dt>");
+                sw1.WriteLine("    <data>" + dataContentAll + "</data>");
+                sw1.WriteLine("  </MeanImg>");
                 sw1.WriteLine("</opencv_storage>");
             }
         }
@@ -120,15 +127,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
             {
                 sw1.WriteLine("<?xml version=\"1.0\" ?>");
                 sw1.WriteLine("<opencv_storage>");
-                sw1.WriteLine("\t<Channel>3</Channel>");
-                sw1.WriteLine("\t<Row>32</Row>");
-                sw1.WriteLine("\t<Col>32</Col>");
-                sw1.WriteLine("\t<MeanImg type_id=\"opencv-matrix\">");
-                sw1.WriteLine("\t\t<rows>1</rows>");
-                sw1.WriteLine("\t\t<cols>3072</cols>");
-                sw1.WriteLine("\t\t<dt>f</dt>");
-                sw1.WriteLine("\t\t<data>" + str + "</data>");
-                sw1.WriteLine("\t</MeanImg>");
+                sw1.WriteLine("  <Channel>3</Channel>");
+                sw1.WriteLine("  <Row>32</Row>");
+                sw1.WriteLine("  <Col>32</Col>");
+                sw1.WriteLine("  <MeanImg type_id=\"opencv-matrix\">");
+                sw1.WriteLine("    <rows>1</rows>");
+                sw1.WriteLine("    <cols>3072</cols>");
+                sw1.WriteLine("    <dt>f</dt>");
+                sw1.WriteLine("    <data>" + str + "</data>");
+                sw1.WriteLine("  </MeanImg>");
                 sw1.WriteLine("</opencv_storage>");
             }
         }

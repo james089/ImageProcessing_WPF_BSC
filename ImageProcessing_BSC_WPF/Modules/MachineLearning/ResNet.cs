@@ -1,7 +1,7 @@
 ﻿using CNTK;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using mUserControl_BSC_dll;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 using mUserControl_BSC_dll.UserControls;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using Utilities_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {
@@ -27,6 +24,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
 
         private static Image<Bgr, byte> _ImgOriginal;
+        private static Image<Gray, byte> _ImgOriginal_mono;
         private static DeviceDescriptor device;               //GPU to Use
         private static Function modelFunc;
 
@@ -73,7 +71,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         {
             EvaluationSingleImage(GV.imgOriginal);
         }
-
 
 
         /// <summary>
@@ -133,8 +130,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                 NDShape inputShape = inputVar.Shape;
                 int imageWidth = inputShape[0];
                 int imageHeight = inputShape[1];
-                //int imageChannels = inputShape[2];
-                //int imageSize = inputShape.TotalSize;
+                int imageChannels = inputShape[2];
+                int imageSize = inputShape.TotalSize;
 
                 // The model has only one output.
                 // If the model have more than one output, use the following way to get output variable by name.
@@ -154,10 +151,20 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
                     bmp = _ImgOriginal.Copy().ToBitmap();
 
                 var resized = bmp.Resize((int)imageWidth, (int)imageHeight, true);
-                List<float> resizedCHW = resized.ParallelExtractCHW();
+                List<float> resizedImgDataList = new List<float>();
+
+                if (imageChannels == 3)
+                {
+                    resizedImgDataList = resized.ParallelExtractCHW();
+                }
+                else if (imageChannels == 1)
+                {
+                    resized = (new Image<Bgr, byte>(resized)).Convert<Gray, byte>().ToBitmap();
+                    resizedImgDataList = resized.ExtractMono();
+                }
 
                 // Create input data map
-                var inputVal = Value.CreateBatch(inputVar.Shape, resizedCHW, device);
+                var inputVal = Value.CreateBatch(inputVar.Shape, resizedImgDataList, device);
                 inputDataMap.Add(inputVar, inputVal);
 
                 // Create ouput data map. Using null as Value to indicate using system allocated memory.
@@ -182,49 +189,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
             }
         }
 
-        /*
-        /// <summary>
-        /// Print out the evalaution results.
-        /// </summary>
-        /// <typeparam name="T">The data value type</typeparam>
-        /// <param name="sampleSize">The size of each sample.</param>
-        /// <param name="outputBuffer">The evaluation result data.</param>
-        internal static void printOutput<T>(int sampleSize, IList<IList<T>> outputBuffer)
-        {
-            Windows.main.listBox.Items.Add("\nThe number of sequences in the batch: " + outputBuffer.Count);
-            int seqNo = 0;
-            int outputSampleSize = sampleSize;
-            foreach (var seq in outputBuffer)
-            {
-                if (seq.Count % outputSampleSize != 0)
-                {
-                    throw new ApplicationException("The number of elements in the sequence is not a multiple of sample size");
-                }
-
-                Windows.main.listBox.Items.Add(String.Format("\nSequence {0} contains {1} samples.", seqNo++, seq.Count / outputSampleSize));
-                int i = 0;
-                int sampleNo = 0;
-                foreach (var element in seq)
-                {
-                    if (i++ % outputSampleSize == 0)
-                    {
-                        Windows.main.listBox.Items.Add(String.Format("\n    sample {0}: ", sampleNo));
-                    }
-                    Windows.main.listBox.Items.Add(element + "(" + (CIFAR10)(i-1) + ")");
-                    if (i % outputSampleSize == 0)
-                    {
-                        Windows.main.listBox.Items.Add("." + " (" + timeSpent + " ms)");
-                        sampleNo++;
-                    }
-                    else
-                    {
-                        Windows.main.listBox.Items.Add(",");
-                    }
-                }
-            }
-        }
-        */
-
         private static int predictResult<T>(int sampleSize, IList<IList<T>> outputBuffer, out double probability)
         {
             resultList.Clear();
@@ -247,26 +211,14 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         private static void showResult<T>(int sampleSize, IList<IList<T>> outputBuffer, double outputValue)
         {
             int predictedIndex = 0;
-            switch (MLCore.MLTrainedDataSetSelectedIndex)
-            {
-                case 0:
-                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
-                    OutputString = DataSet.labelSet[0][predictedIndex];
-                    OutputProbablility = outputValue;
-                    break;
-                case 1:
-                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
-                    OutputString = DataSet.labelSet[1][predictedIndex];
-                    OutputProbablility = outputValue;
-                    break;
-                case 2:
-                    predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
-                    OutputString = DataSet.labelSet[2][predictedIndex];
-                    OutputProbablility = outputValue;
-                    break;
-            }
+
+            predictedIndex = predictResult<T>(sampleSize, outputBuffer, out outputValue);
+            OutputString = DataSet.labelSet[MLCore.MLTrainedDataSetSelectedIndex][predictedIndex];
+            OutputProbablility = outputValue;
         }
 
 
+
+        
     }
 }

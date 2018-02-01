@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.MSR.CNTK.Extensibility.Managed;
 using System.Drawing;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 {

@@ -1,4 +1,5 @@
-﻿using mUserControl_BSC_dll;
+﻿using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
+using mUserControl_BSC_dll;
 using mUserControl_BSC_dll.UserControls;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
             jobType = jt;
             labelSet = _labels;
+
+            ResizingRoutine.DoWork += new DoWorkEventHandler(ResizingRoutine_doWork);
+            ResizingRoutine.ProgressChanged += new ProgressChangedEventHandler(ResizingRoutine_ProgressChanged);
+            ResizingRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ResizingRoutine_WorkerCompleted);
+            ResizingRoutine.WorkerReportsProgress = true;
+            ResizingRoutine.WorkerSupportsCancellation = true;
+
         }
 
         private void Btn_close_Click(object sender, RoutedEventArgs e)
@@ -243,7 +251,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 radioBtnList.Add(new RadioButton());
                 radioBtnList[i].Checked += RadioButton_checked;
                 radioBtnList[i].Content = labelSet[i];
-                radioBtnList[i].Style = radio_tagStyle;
+                //radioBtnList[i].Style = radio_tagStyle;
                 Wrap_radios.Children.Add(radioBtnList[i]);
             }
         }
@@ -394,16 +402,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         //}
 
         #region Resize and shuffle and create map
-        private static BackgroundWorker ResizingRoutine = new BackgroundWorker();
-        private static int CurrentImageIndex = 0;
+        private BackgroundWorker ResizingRoutine = new BackgroundWorker();
+        private int CurrentImageIndex = 0;
         private void resize_randomize()
         {
-            ResizingRoutine.DoWork += new DoWorkEventHandler(ResizingRoutine_doWork);
-            ResizingRoutine.ProgressChanged += new ProgressChangedEventHandler(ResizingRoutine_ProgressChanged);
-            ResizingRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ResizingRoutine_WorkerCompleted);
-            ResizingRoutine.WorkerReportsProgress = true;
-            ResizingRoutine.WorkerSupportsCancellation = true;
-
             if (!ResizingRoutine.IsBusy)
                 ResizingRoutine.RunWorkerAsync();
         }
@@ -433,7 +435,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
             for (int i = 0; i < totalImgNum; i++)
             {
-                Bitmap bm = new Bitmap(randomList[i].dir);
+                Bitmap bm = null;
+                try
+                {
+                    bm = new Bitmap(randomList[i].dir);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
                 Bitmap rbm = CntkBitmapExtensions.Resize(
                     bm,
                     Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value),

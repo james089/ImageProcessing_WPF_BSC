@@ -2,6 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+
+2018/2/1
+v4.2.0.0
+1. Cortex Decoder Added
+
 2017/12/28
 v4.1.0.0
 1. New theme applied

@@ -6,3 +6,4 @@
         <ResourceDictionary Source="/mUserControl_BSC_dll;component/Themes/CloudPoint.xaml"/>
     </Application.Resources>
 </Application>
+ 

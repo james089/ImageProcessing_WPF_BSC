@@ -15,10 +15,11 @@ using Utilities_BSC_dll_x64;
 using OpenCV_BSC_dll_x64.Windows;
 using OpenCV_BSC_dll_x64.General;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning;
-using ImageProcessing_BSC_WPF.Modules.Decoder;
+using ImageProcessing_BSC_WPF.Modules.ZxingDecoder;
 using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll.UserControls;
+using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -33,6 +34,7 @@ namespace ImageProcessing_BSC_WPF
     {
         public static BackgroundWorker previewRoutine = new BackgroundWorker();
         public static bool IsCropViewEnabled = false;
+        public static bool IsMonoViewEnabled = false;
         public static bool IsCapturing = false;
         public static previewFPS _previewFPS;
 
@@ -49,7 +51,7 @@ namespace ImageProcessing_BSC_WPF
         {
             Windows.main.Btn_PR.Content = "Pause";
             IsCapturing = true;
-            Windows.main.Btn_staticProcess.IsEnabled = false;
+            Windows.main.Panel_staticImageOperation.IsEnabled = false;
             previewRoutine.RunWorkerAsync(previewFPS);
         }
 
@@ -57,7 +59,7 @@ namespace ImageProcessing_BSC_WPF
         {
             Windows.main.Btn_PR.Content = "Resume";
             IsCapturing = false;
-            Windows.main.Btn_staticProcess.IsEnabled = true;
+            Windows.main.Panel_staticImageOperation.IsEnabled = true;
             previewRoutine.CancelAsync();
         }
 
@@ -77,11 +79,27 @@ namespace ImageProcessing_BSC_WPF
         {
             //Windows.main.TB_info.Text = GV.liveViewMessage;
             Windows.main.listBox.Items.Clear();
+            Windows.main.lbl_barcodeDetectResult.Content = "";
+
             //Detect code
             if (GV._decodeSwitch)
             {
-                if (BarcodeDecoder.outputStringList != null && BarcodeDecoder.outputStringList.Count != 0)
-                    Windows.main.lbl_barcodeDetectResult.Content = BarcodeDecoder.outputStringList[0];
+                if (GV.mDecoderEngine == DecoderEngine.Zxing)
+                {
+                    if (ZxingDecoder.outputStringList != null && ZxingDecoder.outputStringList.Count != 0)
+                        Windows.main.lbl_barcodeDetectResult.Content = ZxingDecoder.outputStringList[0];
+                }
+                else if (GV.mDecoderEngine == DecoderEngine.Cortex)
+                {
+                    Windows.main.lbl_barcodeDetectResult.Content = CortexDecoder.ResultString;
+                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner0);
+                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner1);
+                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner2);
+                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner3);
+                    Windows.main.listBox.Items.Add(CortexDecoder.BondRec);
+
+                    GV.imgProcessed.Draw(CortexDecoder.BondRec, new Bgr(0, 0, 255), 3);
+                }
             }
 
             if (GV._OCRSwitch)
@@ -165,7 +183,12 @@ namespace ImageProcessing_BSC_WPF
             // Decoding
             else if (GV._decodeSwitch)
             {
-                BarcodeDecoder.Decoding();
+                if (GV.mDecoderEngine == DecoderEngine.Zxing)
+                    ZxingDecoder.Decode(GV.imgOriginal.ToBitmap());
+                else if (GV.mDecoderEngine == DecoderEngine.Cortex)
+                {
+                    CortexDecoder.Decode(GV.imgOriginal.ToBitmap());
+                }
             }
 
             // OCR detection
@@ -200,6 +223,10 @@ namespace ImageProcessing_BSC_WPF
             // Cropped View
             if (ImgCropping.rect.Size != new System.Drawing.Size(0, 0) && IsCropViewEnabled)
                 GV.imgOriginal = GV.imgOriginal.Copy(ImgCropping.rect);
+
+            // Black and white View
+            if (IsMonoViewEnabled)
+                GV.imgOriginal = GV.imgOriginal.Convert<Gray, byte>().Convert<Bgr, byte>();
         }
     }
 }

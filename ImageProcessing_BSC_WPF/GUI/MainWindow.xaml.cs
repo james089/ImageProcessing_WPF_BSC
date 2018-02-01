@@ -18,10 +18,11 @@ using CameraToImage_dll_x64.Windows;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning;
 using System.IO;
 using ImageProcessing_BSC_WPF.Modules.OCR;
-using ImageProcessing_BSC_WPF.Modules.Decoder;
+using ImageProcessing_BSC_WPF.Modules.ZxingDecoder;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 using mUserControl_BSC_dll.UserControls;
+using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -46,7 +47,20 @@ namespace ImageProcessing_BSC_WPF
             ConnectRoutine.connectionSetup();
             ResNet.MLSetup();
 
-            BarcodeDecoder.DecoderSetup();
+            ZxingDecoder.DecoderSetup();
+            if (Properties.Settings.Default.useCortexDecoder)
+            {
+                Radio_cortex.IsEnabled = true;
+                Radio_cortex.IsChecked = true;
+                CortexDecoder.DecoderSetup();
+            }
+            else
+            {
+                Radio_cortex.IsEnabled = false;
+                Radio_cortex.IsChecked = false;
+                Radio_zxing.IsChecked = true;
+            }
+
             OCR.OCRSetup(OCRMode.NUMBERS);
 
             //Static MainWindow
@@ -280,17 +294,6 @@ namespace ImageProcessing_BSC_WPF
         }
 
 
-        private void Tools_cropView_Checked(object sender, RoutedEventArgs e)
-        {
-            PreviewRoutine.IsCropViewEnabled = true;
-            if (!PreviewRoutine.IsCapturing) PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
-        }
-
-        private void Tools_cropView_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PreviewRoutine.IsCropViewEnabled = false;
-        }
-
         #endregion  <Menu operation>
 
 
@@ -349,6 +352,8 @@ namespace ImageProcessing_BSC_WPF
                 case camType.PointGreyCam:
                     ConnectRoutine.connectPointGreyCam(); break;
             }
+
+            Panel_liveViewOptions.IsEnabled = true;
         }
 
         private void Chk_connectCam_Unchecked(object sender, RoutedEventArgs e)
@@ -360,9 +365,10 @@ namespace ImageProcessing_BSC_WPF
             if (GV.mCamera.IsConnected)                                           //if there is a camera, dispose and reconnect.
             {
                 GV.mCamera.disposeCam();
-                mNotification.Show("Disconnected");
                 GV.mCamera.IsConnected = false;
             }
+
+            Panel_liveViewOptions.IsEnabled = false;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)                    //Preview Button
@@ -424,6 +430,27 @@ namespace ImageProcessing_BSC_WPF
                 }
             }
 
+        }
+
+        private void Tools_cropView_Checked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsCropViewEnabled = true;
+            if (!PreviewRoutine.IsCapturing) PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+        }
+
+        private void Tools_cropView_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsCropViewEnabled = false;
+        }
+
+        private void Chk_mono_Checked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsMonoViewEnabled = true;
+        }
+
+        private void Chk_mono_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PreviewRoutine.IsMonoViewEnabled = false;
         }
 
         #region Feature Detection
@@ -519,6 +546,7 @@ namespace ImageProcessing_BSC_WPF
             GV._findCenterSwitch = (bool)Chk_findCenter.IsChecked;
         }
 
+        #region Barcode Decoder
         private void Chk_liveDecoding_Checked(object sender, RoutedEventArgs e)
         {
             GV._decodeSwitch = (bool)Chk_liveDecoding.IsChecked;
@@ -527,9 +555,27 @@ namespace ImageProcessing_BSC_WPF
         private void Btn_decode_Click(object sender, RoutedEventArgs e)
         {
             PreviewRoutine.stopPreview();
-            BarcodeDecoder.StartDecodeRoutine();
+            if (GV.mDecoderEngine == DecoderEngine.Zxing)
+                ZxingDecoder.StartDecodeRoutine();
+            else if (GV.mDecoderEngine == DecoderEngine.Cortex)
+            {
+                CortexDecoder.Decode(GV.imgOriginal.ToBitmap());
+                lbl_barcodeDetectResult.Content = CortexDecoder.ResultString;
+            }
         }
 
+        private void Radio_zxing_Checked(object sender, RoutedEventArgs e)
+        {
+            GV.mDecoderEngine = DecoderEngine.Zxing;
+        }
+
+        private void Radio_cortex_Checked(object sender, RoutedEventArgs e)
+        {
+            GV.mDecoderEngine = DecoderEngine.Cortex;
+        }
+        #endregion Barcode Decoder
+
+        #region OCR
         private void Chk_OCR_live_Checked(object sender, RoutedEventArgs e)
         {
             GV._OCRSwitch = (bool)Chk_OCR_live.IsChecked;
@@ -575,6 +621,8 @@ namespace ImageProcessing_BSC_WPF
 
         }
 
+        #endregion OCR
+
         #region Machine Learning
         private void Btn_ML_modelLoad_Click(object sender, RoutedEventArgs e)
         {
@@ -597,6 +645,7 @@ namespace ImageProcessing_BSC_WPF
             {
                 case MLModel.ResNet:
                     ResNet.EvaluationSingleImage(GV.imgOriginal);
+
                     for (int i = 0; i < ResNet.resultList.Count; i++)
                     {
                         Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
@@ -701,6 +750,16 @@ namespace ImageProcessing_BSC_WPF
            // MeanFileGenerator.GenerateConstMeanFile(meanFileDir);
         }
 
+        private void Btn_calculateConstMean_Click(object sender, RoutedEventArgs e)
+        {
+            MeanFileGenerator.GenerateConstMeanFile(BindManager.BindMngr.ML_rootDir.value, ImageColorType.RGB);
+        }
+
+        private void Btn_calculateConstMeanMono_Click(object sender, RoutedEventArgs e)
+        {
+            MeanFileGenerator.GenerateConstMeanFile(BindManager.BindMngr.ML_rootDir.value, ImageColorType.Mono);
+        }
+
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
         {
             ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLSelectedLabels);
@@ -722,6 +781,5 @@ namespace ImageProcessing_BSC_WPF
         #endregion Machine Learning
 
         #endregion <GUI operation>
-
     }
 }
