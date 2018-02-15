@@ -61,7 +61,7 @@ namespace ImageProcessing_BSC_WPF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool useCortexDecoder {
             get {
                 return ((bool)(this["useCortexDecoder"]));

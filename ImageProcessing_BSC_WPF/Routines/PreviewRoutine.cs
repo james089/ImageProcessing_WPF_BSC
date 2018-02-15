@@ -81,6 +81,18 @@ namespace ImageProcessing_BSC_WPF
             Windows.main.listBox.Items.Clear();
             Windows.main.lbl_barcodeDetectResult.Content = "";
 
+            // Motion Detection
+            if (GV._motionDetectSwitch)
+            {
+                if (MotionDetection.checkMotion(GV.imgOriginal))
+                {
+                    GV.CaptureSound.Play();
+                    stopPreview();
+                    if (mMessageBox.showNotification("Motion Detected") == mDialogResult.yes)
+                        startPreview(_previewFPS);
+                }
+
+            }
             //Detect code
             if (GV._decodeSwitch)
             {
@@ -160,6 +172,7 @@ namespace ImageProcessing_BSC_WPF
             }
         }
 
+
         public static void processedImageDisplaying()
         {
             //====Display Processed image========== 
@@ -168,6 +181,7 @@ namespace ImageProcessing_BSC_WPF
 
             if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
 
+            #region == MIS ==
             // Checking center
             if (GV._findCenterSwitch)
             {
@@ -179,6 +193,8 @@ namespace ImageProcessing_BSC_WPF
             {
                 FindMinDistance.findMinDistance();
             }
+
+            #endregion == MIS ==
 
             // Decoding
             else if (GV._decodeSwitch)

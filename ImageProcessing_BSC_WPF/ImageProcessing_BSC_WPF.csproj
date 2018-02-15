@@ -176,6 +176,7 @@
     <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
     <Compile Include="Modules\MachineLearning\MNIST.cs" />
     <Compile Include="Modules\MachineLearning\ResNet.cs" />
+    <Compile Include="Modules\MotionDetection.cs" />
     <Compile Include="Modules\ZxingDecoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
     <Compile Include="UIHelpers\Binds.cs" />

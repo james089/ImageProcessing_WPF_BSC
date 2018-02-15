@@ -33,8 +33,6 @@ namespace ImageProcessing_BSC_WPF
     public partial class MainWindow : Window
     {
         #region Local setup
-        SoundPlayer sound = new SoundPlayer(System.Environment.CurrentDirectory + @"\Resources\camera-shutter-click-03.wav");
-
         LoadingScreen loadingScreen = new LoadingScreen();
         #endregion Local setup
 
@@ -417,14 +415,14 @@ namespace ImageProcessing_BSC_WPF
                 if (Combo_saveOption.SelectedItem == Combo_originalImage)
                 {
                     ibOriginal.Source = null;
-                    sound.Play();
+                    GV.CaptureSound.Play();
                     Thread.Sleep(200);
                     Tools.savePicture_withDialog(GV.imgOriginal.ToBitmap());
                 }
                 else
                 {
                     ibOriginal.Source = null;
-                    sound.Play();
+                    GV.CaptureSound.Play();
                     Thread.Sleep(200);
                     Tools.savePicture_withDialog(GV.imgProcessed.ToBitmap());
                 }
@@ -535,7 +533,7 @@ namespace ImageProcessing_BSC_WPF
             Dock_objectType.IsEnabled = bb;
         }
 
-
+        #region MIS
         private void Chk_findMin_Checked(object sender, RoutedEventArgs e)
         {
             GV._findMinSwitch = (bool)Chk_findMin.IsChecked;
@@ -545,6 +543,12 @@ namespace ImageProcessing_BSC_WPF
         {
             GV._findCenterSwitch = (bool)Chk_findCenter.IsChecked;
         }
+
+        private void Chk_motionDetect_Checked(object sender, RoutedEventArgs e)
+        {
+            GV._motionDetectSwitch = (bool)Chk_motionDetect.IsChecked;
+        }
+        #endregion
 
         #region Barcode Decoder
         private void Chk_liveDecoding_Checked(object sender, RoutedEventArgs e)
@@ -781,5 +785,6 @@ namespace ImageProcessing_BSC_WPF
         #endregion Machine Learning
 
         #endregion <GUI operation>
+
     }
 }

@@ -11,6 +11,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using OpenCV_BSC_dll_x64.Windows;
 using CameraToImage_dll_x64;
+using System.Media;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -36,6 +37,8 @@ namespace ImageProcessing_BSC_WPF
 
     public class GV
     {
+        public static SoundPlayer CaptureSound = new SoundPlayer(System.Environment.CurrentDirectory + @"\Resources\camera-shutter-click-03.wav");
+
         public static DecoderEngine mDecoderEngine = DecoderEngine.Zxing;
 
         public static int _pictureBoxWidthRatio = 4;
@@ -55,7 +58,8 @@ namespace ImageProcessing_BSC_WPF
         public static bool _findCenterSwitch;
         public static bool _decodeSwitch;                       //turn on code decoding.
         public static bool _OCRSwitch;                          //turn on OCR decoding.
-        public static bool _MLSwitch;                          //turn on machine learning.
+        public static bool _MLSwitch;                           //turn on machine learning.
+        public static bool _motionDetectSwitch;                 //turn on motion detection.
 
         public static bool maxmized = false;
         public static Image<Bgr, byte> imgOriginal;

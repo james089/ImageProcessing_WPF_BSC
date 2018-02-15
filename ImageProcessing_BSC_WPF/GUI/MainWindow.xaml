@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:userControls="clr-namespace:mUserControl_BSC_dll.UserControls;assembly=mUserControl_BSC_dll"
         xmlns:panels="clr-namespace:ImageProcessing_BSC_WPF.GUI.Panels"
-        Title="ImageProcessing_BSC" Height="870" Width="1295" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="ImageProcessing_BSC" Height="1000" Width="1650" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" MouseDown="Window_MouseDown" Icon="../Resources/fav.ico" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="White" Offset="0"/>
@@ -84,10 +84,10 @@
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
-                                <panels:CameraConnectIcon x:Name="Chk_connectCam" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="50" />
+                                <panels:CameraConnectIcon x:Name="Chk_connectCam" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="50" Margin="0,5"/>
 
                                 <DockPanel Grid.Column="1">
-                                    <Label Content="" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5,10,5" VerticalAlignment="Center" Width="120"/>
+                                    <Label Content="" Grid.Row="0" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120"/>
                                     <Grid Margin="0,5,5,5" Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -102,7 +102,7 @@
                                 <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" IsHitTestVisible="True" Click="Button_Click" Grid.Row="1" Margin="5"/>
 
                                 <WrapPanel x:Name="Panel_liveViewOptions" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-                                    <Label Content="" Grid.Row="1" HorizontalAlignment="Left" Width="120" />
+            
                                     <CheckBox x:Name="Tools_cropView" Margin="5" Content="Cropped View" Checked="Tools_cropView_Checked" Unchecked="Tools_cropView_Unchecked" Grid.Column="1" />
                                     <CheckBox x:Name="Chk_mono" Margin="5" Content="Black and white" Grid.Column="1" Checked="Chk_mono_Checked" Unchecked="Chk_mono_Unchecked" />
 
@@ -422,6 +422,7 @@
                                     <CheckBox x:Name="Chk_findMin" Content="Find Min Distance" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findMin_Checked" Unchecked="Chk_findMin_Checked" Height="35"/>
                                     <CheckBox x:Name="Chk_findCenter" Content="Find center of bright object" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findCenter_Checked" Unchecked="Chk_findCenter_Checked" Height="35"/>
                                     <CheckBox x:Name="Chk_showRGB" Content="Show RGB at current mouse position" Margin="0,10,0,0" VerticalAlignment="Top" />
+                                    <CheckBox x:Name="Chk_motionDetect" Content="Turn on motion detection" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_motionDetect_Checked" Unchecked="Chk_motionDetect_Checked" />
                                 </StackPanel>
                             </Grid>
                         </TabItem>

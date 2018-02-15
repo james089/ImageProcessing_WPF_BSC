@@ -3,6 +3,10 @@ linbojun089@gmail.com
 
 change log:
 
+2018/2/14
+v4.3.0.0
+1. Motion detection added
+
 2018/2/1
 v4.2.0.0
 1. Cortex Decoder Added
