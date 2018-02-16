@@ -52,7 +52,8 @@ namespace ImageProcessing_BSC_WPF
             Windows.main.Btn_PR.Content = "Pause";
             IsCapturing = true;
             Windows.main.Panel_staticImageOperation.IsEnabled = false;
-            previewRoutine.RunWorkerAsync(previewFPS);
+            if(!previewRoutine.IsBusy)
+                previewRoutine.RunWorkerAsync(previewFPS);
         }
 
         public static void stopPreview()
