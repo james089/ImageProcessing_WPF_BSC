@@ -29,7 +29,7 @@ namespace ImageProcessing_BSC_WPF.Modules
             if (dis > threshold)
                 BindManager.BindMngr.GMessage.value = dis.ToString();
             else if (dis != 0)
-                mMessageBox.Show("Hit the wall!");
+                BindManager.BindMngr.GMessage.value = "Hit the wall!";
             GV.imgOriginal = originalImage;
         }
 

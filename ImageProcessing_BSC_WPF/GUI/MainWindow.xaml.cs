@@ -38,6 +38,8 @@ namespace ImageProcessing_BSC_WPF
 
         public MainWindow()
         {
+            //Static MainWindow
+            Windows.main = this;
             loadingScreen.Show();
             InitializeComponent();
 
@@ -61,9 +63,6 @@ namespace ImageProcessing_BSC_WPF
 
             OCR.OCRSetup(OCRMode.NUMBERS);
 
-            //Static MainWindow
-
-            Windows.main = this;
 
             //DataContext = Windows.main;                         // This is neccessary
             //GMessage = new BindString();
@@ -92,11 +91,10 @@ namespace ImageProcessing_BSC_WPF
         private void applyProgramSetting()
         {
             Chk_connectCam.IsChecked = GV._camConnectAtStartup;
-            //Chk_connectCam.IsEnabled = !GV._camConnectAtStartup;
             selectCam(GV._camSelected);
 
             Radio_original.IsChecked = true;
-            Radio_FFT.IsChecked = true;
+            Radio_SURF.IsChecked = true;
             toggleExpander_object(false);
         } 
 
@@ -474,6 +472,7 @@ namespace ImageProcessing_BSC_WPF
 
         #endregion Feature Detection
 
+        #region Object Detection
         private void Btn_setObject_Click(object sender, RoutedEventArgs e)
         {
             if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
@@ -481,7 +480,9 @@ namespace ImageProcessing_BSC_WPF
                 Image<Bgr, byte> Img = GV.imgOriginal;
                 GV.object_img = Img.Copy(ImgCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
                 ibObject.Source = ImgConverter.ToBitmapSource(GV.object_img);
-                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+
+                if(GV.mCamera.IsConnected)
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
 
@@ -499,6 +500,11 @@ namespace ImageProcessing_BSC_WPF
             }
 
             BindManager.BindMngr.GMessage.value = GV._err.ToString();
+        }
+
+        private void Radio_SURF_Checked(object sender, RoutedEventArgs e)
+        {
+            NCVFuns._objectType = objectDetectionType.SURF;
         }
 
         private void Radio_FFT_Checked(object sender, RoutedEventArgs e)
@@ -532,6 +538,7 @@ namespace ImageProcessing_BSC_WPF
             Btn_apply_object.IsEnabled = bb;
             Dock_objectType.IsEnabled = bb;
         }
+        #endregion Object Detection
 
         #region MIS
         private void Chk_findMin_Checked(object sender, RoutedEventArgs e)

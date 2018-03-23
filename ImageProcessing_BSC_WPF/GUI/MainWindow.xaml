@@ -170,6 +170,7 @@
                                     <CheckBox x:Name="Chk_enableObjectDetect" Content="Enable this panel" Unchecked="Chk_enableObjectD_Unchecked" Checked="Chk_enableObjectD_Checked" Margin="5" VerticalAlignment="Bottom" Grid.Row="3" Height="35"/>
                                 </Grid>
                                 <DockPanel x:Name="Dock_objectType" LastChildFill="False" Margin="5,0,0,0" Grid.Column="1">
+                                    <RadioButton x:Name="Radio_SURF" Content="SURF" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_SURF_Checked"/>
                                     <RadioButton x:Name="Radio_FFT" Content="FFT" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_FFT_Checked"/>
                                     <RadioButton x:Name="Radio_Color" Content="Color" VerticalAlignment="Top" DockPanel.Dock="Top" Height="25" Checked="Radio_Color_Checked"/>
                                     <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="80" VerticalAlignment="Top"/>

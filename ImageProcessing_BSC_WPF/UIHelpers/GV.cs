@@ -20,6 +20,7 @@ namespace ImageProcessing_BSC_WPF
         Normal,
         No_picture_found,
         No_object_image,
+        SearchSURF_Fail,
         SearchFFT_Fail,
         SearchColor_Fail
     }

@@ -18,8 +18,8 @@ namespace ImageProcessing_BSC_WPF
         public BindString ML_rootDir { set; get; }           // Mean and map Directory
         public BindString ML_trainImgDir { set; get; }       // Resized Train Image Directory
         public BindString ML_testImgDir { set; get; }        // Resized Test Image Directory
-        public BindInt ML_desWidth { set; get; }             // Resized img width
-        public BindInt ML_desHeight { set; get; }            // Resized img height
+        public BindInt    ML_desWidth { set; get; }          // Resized img width
+        public BindInt    ML_desHeight { set; get; }         // Resized img height
         
         public BindManager()
         {

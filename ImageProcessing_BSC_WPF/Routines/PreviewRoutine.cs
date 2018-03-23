@@ -137,6 +137,7 @@ namespace ImageProcessing_BSC_WPF
                     BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
             // Normal
+            if (GV.imgProcessed == null) GV.imgProcessed = GV.imgOriginal;
             Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
             // Error reporting
             if (GV._err != ErrorCode.Normal) BindManager.BindMngr.GMessage.value = GV._err.ToString();

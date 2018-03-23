@@ -44,13 +44,23 @@ namespace ImageProcessing_BSC_WPF.Modules
                         Image<Bgr, byte> outPutImg = GV.imgOriginal;
                         switch (_objectType)
                         {
+                            case objectDetectionType.SURF:
+                                if (!SURF.SearchObject_SURF(GV.imgOriginal.Convert<Gray, byte>(), GV.object_img.Convert<Gray, byte>(), out outPutImg))
+                                    Err = ErrorCode.SearchSURF_Fail;
+                                else
+                                    BindManager.BindMngr.GMessage.value = "Found using SURF";
+                                b = outPutImg; break;
                             case objectDetectionType.FFT:
                                 if (!FFT.searchObject_FFT(GV.imgOriginal, GV.object_img, out outPutImg))
                                     Err = ErrorCode.SearchFFT_Fail;
+                                else
+                                    BindManager.BindMngr.GMessage.value = "Found using FFT";
                                 b = outPutImg; break;
                             case objectDetectionType.color:
                                 if (!ColorDetect.Color_detection(GV.imgOriginal, GV.object_img, out outPutImg))
                                     Err = ErrorCode.SearchColor_Fail;
+                                else
+                                    BindManager.BindMngr.GMessage.value = "Displaying matching colors";
                                 b = outPutImg; break;
                         }
                     }
