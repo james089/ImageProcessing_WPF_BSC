@@ -56,7 +56,7 @@ namespace ImageProcessing_BSC_WPF
                 previewRoutine.RunWorkerAsync(previewFPS);
         }
 
-        public static void stopPreview()
+        public static void StopPreview()
         {
             Windows.main.Btn_PR.Content = "Resume";
             IsCapturing = false;
@@ -73,6 +73,7 @@ namespace ImageProcessing_BSC_WPF
 
         private static void previewRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            if (GV.imgOriginal == null) return;
             GUIUpdates();
         }
 
@@ -88,7 +89,7 @@ namespace ImageProcessing_BSC_WPF
                 if (MotionDetection.checkMotion(GV.imgOriginal))
                 {
                     GV.CaptureSound.Play();
-                    stopPreview();
+                    StopPreview();
                     if (mMessageBox.showNotification("Motion Detected") == mDialogResult.yes)
                         startPreview(_previewFPS);
                 }
@@ -163,6 +164,9 @@ namespace ImageProcessing_BSC_WPF
                     case camType.PointGreyCam:
                         GV.imgOriginal = GV.mCamera.capture(); break;
                 }
+
+                if(GV.imgOriginal != null)
+                    GV.imgOriginal_pure = GV.imgOriginal.Copy();
 
                 originalImageProcessing();
 

@@ -62,8 +62,13 @@ namespace ImageProcessing_BSC_WPF
         public static bool _MLSwitch;                           //turn on machine learning.
         public static bool _motionDetectSwitch;                 //turn on motion detection.
 
+        // Color detection, multi points select
+        public static int _remainColorPoints = 3;               //total interest points in color detection
+        public static int _colorRegionSize = 10;                //pixels
+
         public static bool maxmized = false;
         public static Image<Bgr, byte> imgOriginal;
+        public static Image<Bgr, byte> imgOriginal_pure;
         public static Image<Bgr, byte> imgOriginal_save;
         public static Image<Bgr, byte> imgProcessed;
         public static Image<Bgr, byte> OCROutputImg;

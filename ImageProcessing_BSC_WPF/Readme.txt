@@ -2,6 +2,10 @@
 linbojun089@gmail.com	
 
 change log:
+2018/4/18
+v4.1.4.0
+1. New color detection algorithmn added, could tell angle, show bounding box
+
 2018/3/23
 v4.1.3.0
 1. SURF Added

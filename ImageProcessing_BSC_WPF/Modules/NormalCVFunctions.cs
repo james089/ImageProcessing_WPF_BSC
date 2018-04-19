@@ -1,5 +1,7 @@
 ﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using OpenCV_BSC_dll_x64;
 using OpenCV_BSC_dll_x64.FeatureDetection;
 using OpenCV_BSC_dll_x64.ObjectDetection;
@@ -7,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,10 +60,17 @@ namespace ImageProcessing_BSC_WPF.Modules
                                     BindManager.BindMngr.GMessage.value = "Found using FFT";
                                 b = outPutImg; break;
                             case objectDetectionType.color:
-                                if (!ColorDetect.Color_detection(GV.imgOriginal, GV.object_img, out outPutImg))
+                                if (!ColorDetection2.Color_detection(GV.imgOriginal, GV.object_img, out outPutImg, Parameters._colorTolerance))
                                     Err = ErrorCode.SearchColor_Fail;
                                 else
-                                    BindManager.BindMngr.GMessage.value = "Displaying matching colors";
+                                {
+                                    //outPutImg = ContourDetection.contourDetection(outPutImg);
+                                    PointF[] pts = FindWhitePoints(outPutImg.Convert<Gray, byte>());
+
+                                    MCvBox2D box = PointCollection.MinAreaRect(pts);
+                                    outPutImg.Draw(box, new Bgr(Color.Green), 2);
+                                    BindManager.BindMngr.GMessage.value = $"Displaying matching colors. Angle [{box.angle}deg]";
+                                }
                                 b = outPutImg; break;
                         }
                     }
@@ -73,5 +83,47 @@ namespace ImageProcessing_BSC_WPF.Modules
             }
             return b;
         }
+
+
+        public static PointF[] FindWhitePoints(Image<Gray, byte> img)
+        {
+            var points = new List<PointF>();
+            for (int i = 0; i < img.Width; i++)
+            {
+                for (int j = 0; j < img.Height; j++)
+                {
+                    if (img.Data[j, i, 0] == 255)
+
+                        points.Add(new PointF(i, j));
+                }
+            }
+            return points.ToArray();
+        }
+
+        /// <summary>
+        /// Fit an ellipse to the points collection
+        /// </summary>
+        /// <param name="points">The points to be fitted</param>
+        /// <returns>An ellipse</returns>
+        //public static Ellipse EllipseLeastSquareFitting(PointF[] points)
+        //{
+        //    IntPtr seq = Marshal.AllocHGlobal(StructSize.MCvSeq);
+        //    IntPtr block = Marshal.AllocHGlobal(StructSize.MCvSeqBlock);
+        //    GCHandle handle = GCHandle.Alloc(points, GCHandleType.Pinned);
+        //    CvInvoke.cvMakeSeqHeaderForArray(
+        //       CvInvoke.CV_MAKETYPE((int)MAT_DEPTH.CV_32F, 2),
+        //       StructSize.MCvSeq,
+        //       StructSize.PointF,
+        //       handle.AddrOfPinnedObject(),
+        //       points.Length,
+        //       seq,
+        //       block);
+        //    Ellipse e = new Ellipse(CvInvoke.cvFitEllipse2(seq));
+        //    handle.Free();
+        //    Marshal.FreeHGlobal(seq);
+        //    Marshal.FreeHGlobal(block);
+        //    return e;
+
+        //}
     }
 }

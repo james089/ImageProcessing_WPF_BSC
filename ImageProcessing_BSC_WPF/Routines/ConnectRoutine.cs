@@ -40,7 +40,7 @@ namespace ImageProcessing_BSC_WPF
 
         private static void connectRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (GV._cameraConnected) GF.UpdateImgInfo();
+            if (GV.mCamera.IsConnected) GF.UpdateImgInfo();
         }
 
         private static void connectRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)

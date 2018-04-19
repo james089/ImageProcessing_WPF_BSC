@@ -23,6 +23,7 @@ using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 using mUserControl_BSC_dll.UserControls;
 using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
+using static ImageProcessing_BSC_WPF.BindManager;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -96,7 +97,7 @@ namespace ImageProcessing_BSC_WPF
             Radio_original.IsChecked = true;
             Radio_SURF.IsChecked = true;
             toggleExpander_object(false);
-        } 
+        }
 
         private void selectCam(camType index)
         {
@@ -117,7 +118,7 @@ namespace ImageProcessing_BSC_WPF
         {
             Properties.Settings.Default.camSelection = (int)GV._camSelected;
             Properties.Settings.Default.camConnect = GV._camConnectAtStartup;
-            Properties.Settings.Default.previewFPS = (int) PreviewRoutine._previewFPS;
+            Properties.Settings.Default.previewFPS = (int)PreviewRoutine._previewFPS;
 
             Properties.Settings.Default.Save();
         }
@@ -142,10 +143,12 @@ namespace ImageProcessing_BSC_WPF
         {
             this.WindowState = WindowState.Minimized;
         }
-        
+
         #region Img original Panel
-       
+
         bool _mouseDown = false;
+        Image<Bgr, byte>[] regionImgSet = new Image<Bgr, byte>[3]{new Image<Bgr, byte>(0 , 0), new Image<Bgr, byte>(0, 0), new Image<Bgr, byte>(0, 0)};
+        Image<Bgr, byte> finalColorRegionImg;
         private void ibOriginal_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _mouseDown = true;
@@ -154,12 +157,33 @@ namespace ImageProcessing_BSC_WPF
             }
             else if (GV.imgOriginal != null)
             {
-                PreviewRoutine.stopPreview();
+                PreviewRoutine.StopPreview();
                 ibOriginal.Cursor = Cursors.Cross;
                 System.Drawing.Point p = new System.Drawing.Point();
                 p.X = (int)e.GetPosition(ibOriginal).X;
                 p.Y = (int)e.GetPosition(ibOriginal).Y;
-                ImgCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, GV._zoomFactor);
+
+                if ((bool)Radio_Color.IsChecked && (bool)Chk_multiColorPoints.IsChecked)
+                {
+                    if (GV._remainColorPoints > 0)
+                    {
+                        Rectangle bond = new Rectangle(
+                            p.X - GV._colorRegionSize / 2, p.Y - GV._colorRegionSize / 2, 
+                            GV._colorRegionSize, GV._colorRegionSize);
+
+                        GV.imgOriginal.Draw(bond, new Bgr(Color.AliceBlue), 1);
+
+                        Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
+
+                        regionImgSet[GV._remainColorPoints - 1] = GV.imgOriginal_pure.Copy(bond);
+
+                        GV._remainColorPoints--;
+                    }
+                }
+                else
+                {
+                    ImgCropping.WPF_mouseDown(GV.imgOriginal, ibOriginal, p, GV._zoomFactor);
+                }
             }
         }
 
@@ -204,11 +228,53 @@ namespace ImageProcessing_BSC_WPF
             _mouseDown = false;
             if (GV.imgOriginal != null)
             {
-                ibOriginal.Cursor = Cursors.Arrow;
-                ImgCropping.WPF_mouseUp(ibOriginal, GV._zoomFactor);
+                if ((bool)Radio_Color.IsChecked && (bool)Chk_multiColorPoints.IsChecked)
+                {
+                    if (GV._remainColorPoints == 0)
+                    {
+                        finalColorRegionImg =
+                            imageCombine(imageCombine(regionImgSet[0], regionImgSet[1]), regionImgSet[2]);
+                        Chk_multiColorPoints.IsChecked = false;
+                        Windows.main.ibObject.Source = ImgConverter.ToBitmapSource(finalColorRegionImg);
+                    }
+                }
+                else
+                {
+                    ibOriginal.Cursor = Cursors.Arrow;
+                    ImgCropping.WPF_mouseUp(ibOriginal, GV._zoomFactor);
+                }
             }
-        }   
-        
+        }
+
+        private Image<Bgr, Byte> imageCombine(Image<Bgr, Byte> image1, Image<Bgr, Byte> image2)
+        {
+            int ImageWidth = 0;
+            int ImageHeight = 0;
+
+            //get max width
+            if (image1.Width > image2.Width)
+                ImageWidth = image1.Width;
+            else
+                ImageWidth = image2.Width;
+
+            //calculate new height
+            ImageHeight = image1.Height + image2.Height;
+
+            //declare new image (large image).
+            Image<Bgr, Byte> imageResult = new Image<Bgr, Byte>(ImageWidth, ImageHeight);
+
+
+            imageResult.ROI = new Rectangle(0, 0, image1.Width, image1.Height);
+            image1.CopyTo(imageResult);
+            imageResult.ROI = new Rectangle(0, image1.Height, image2.Width, image2.Height);
+            image2.CopyTo(imageResult);
+
+            imageResult.ROI = Rectangle.Empty;
+
+
+            return imageResult;
+        }
+
         #endregion Img original Panel
 
         #endregion</Window operation>
@@ -265,7 +331,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void Setting_preference_Click(object sender, RoutedEventArgs e)
         {
-            PreviewRoutine.stopPreview();
+            PreviewRoutine.StopPreview();
             Preference preferenceWindow = new Preference();
             preferenceWindow.preferenceUpdated += preferenceWindow_preferenceUpdated;
             preferenceWindow.Show();
@@ -280,7 +346,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (GV.mCamera != null && GV.mCamera.IsConnected)
             {
-                PreviewRoutine.stopPreview();
+                PreviewRoutine.StopPreview();
 
                 GV.mConvert = new Conversion(GV.mCamera, GV.imgWidth, GV.imgHeight);
                 GV.mConvert.ShowDialog();
@@ -301,7 +367,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (!Radio_webcam.IsLoaded) return;
 
-            PreviewRoutine.stopPreview();
+            PreviewRoutine.StopPreview();
             GV._camSelected = camType.WebCam;
             if (GV._camConnectAtStartup)                                          //connect cam automatically
             {
@@ -321,16 +387,14 @@ namespace ImageProcessing_BSC_WPF
         {
             if (!Radio_PTcam.IsLoaded) return;
 
-            PreviewRoutine.stopPreview();
+            PreviewRoutine.StopPreview();
             GV._camSelected = camType.PointGreyCam;
             if (GV._camConnectAtStartup)
             {
                 ConnectRoutine.connectPointGreyCam();
-                //Chk_connectCam.IsEnabled = false;                              //disable chk box for connecting the camera
             }
             else
             {
-                //Chk_connectCam.IsEnabled = true;
                 Chk_connectCam.IsChecked = false;
             }
 
@@ -357,7 +421,7 @@ namespace ImageProcessing_BSC_WPF
             if (!IsLoaded) return;
 
             if (PreviewRoutine.IsCapturing)
-                PreviewRoutine.stopPreview();
+                PreviewRoutine.StopPreview();
             if (GV.mCamera.IsConnected)                                           //if there is a camera, dispose and reconnect.
             {
                 GV.mCamera.disposeCam();
@@ -373,7 +437,7 @@ namespace ImageProcessing_BSC_WPF
             {
                 if (PreviewRoutine.IsCapturing == true)
                 {
-                    PreviewRoutine.stopPreview();                    //stop capturing 
+                    PreviewRoutine.StopPreview();                    //stop capturing 
                     //Chk_connectCam.IsEnabled = false;
                     if (GV.imgOriginal != null)
                     {
@@ -475,13 +539,21 @@ namespace ImageProcessing_BSC_WPF
         #region Object Detection
         private void Btn_setObject_Click(object sender, RoutedEventArgs e)
         {
-            if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
+            if (finalColorRegionImg != null)
+            {
+                GV.object_img = finalColorRegionImg.Copy();
+                finalColorRegionImg.Dispose();
+
+                if (GV.mCamera.IsConnected)
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+            }
+            else if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
             {
                 Image<Bgr, byte> Img = GV.imgOriginal;
                 GV.object_img = Img.Copy(ImgCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
                 ibObject.Source = ImgConverter.ToBitmapSource(GV.object_img);
 
-                if(GV.mCamera.IsConnected)
+                if (GV.mCamera.IsConnected)
                     PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
@@ -499,7 +571,7 @@ namespace ImageProcessing_BSC_WPF
                 GV._err = ErrorCode.No_object_image;
             }
 
-            BindManager.BindMngr.GMessage.value = GV._err.ToString();
+            BindMngr.GMessage.value = GV._err.ToString();
         }
 
         private void Radio_SURF_Checked(object sender, RoutedEventArgs e)
@@ -515,6 +587,27 @@ namespace ImageProcessing_BSC_WPF
         private void Radio_Color_Checked(object sender, RoutedEventArgs e)
         {
             NCVFuns._objectType = objectDetectionType.color;
+            Chk_multiColorPoints.Visibility = Visibility.Visible;
+
+        }
+        private void Radio_Color_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Chk_multiColorPoints.Visibility = Visibility.Collapsed;
+        }
+
+        private void Chk_multiColorPoints_Checked(object sender, RoutedEventArgs e)
+        {
+            if (PreviewRoutine.IsCapturing)
+            {
+                PreviewRoutine.StopPreview();
+                Thread.Sleep(300);
+                if (GV.imgOriginal_pure == null)
+                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal_pure);
+            }
+        }
+        private void Chk_multiColorPoints_Unchecked(object sender, RoutedEventArgs e)
+        {
+            GV._remainColorPoints = 3;
         }
 
         private void Chk_enableObjectD_Checked(object sender, RoutedEventArgs e)
@@ -565,7 +658,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_decode_Click(object sender, RoutedEventArgs e)
         {
-            PreviewRoutine.stopPreview();
+            PreviewRoutine.StopPreview();
             if (GV.mDecoderEngine == DecoderEngine.Zxing)
                 ZxingDecoder.StartDecodeRoutine();
             else if (GV.mDecoderEngine == DecoderEngine.Cortex)
@@ -594,7 +687,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_ocrOneTime_Click(object sender, RoutedEventArgs e)
         {
-            PreviewRoutine.stopPreview();
+            PreviewRoutine.StopPreview();
             OCR.startOCRRoutine();
         }
 
@@ -610,7 +703,7 @@ namespace ImageProcessing_BSC_WPF
             {
                 if (PreviewRoutine.IsCapturing)
                 {
-                    PreviewRoutine.stopPreview();
+                    PreviewRoutine.StopPreview();
                     BindManager.BindMngr.GMessage.value = "Select the area and hit set area again to confirm";
                 }
                 else if (!PreviewRoutine.IsCapturing && ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
