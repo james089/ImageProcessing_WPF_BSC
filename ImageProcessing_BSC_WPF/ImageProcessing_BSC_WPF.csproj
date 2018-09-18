@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -166,6 +167,8 @@
     <Compile Include="GUI\Panels\CameraConnectIcon.xaml.cs">
       <DependentUpon>CameraConnectIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modules\BlobDetection.cs" />
+    <Compile Include="Modules\CheckBoundry.cs" />
     <Compile Include="Modules\ColorDetection.cs" />
     <Compile Include="Modules\ColorDetection2.cs" />
     <Compile Include="Modules\CortexDecoder\CortexDecoderFunctions.cs" />
@@ -178,6 +181,7 @@
     <Compile Include="Modules\MachineLearning\FastRCNN.cs" />
     <Compile Include="Modules\MachineLearning\MNIST.cs" />
     <Compile Include="Modules\MachineLearning\ResNet.cs" />
+    <Compile Include="Modules\mMath.cs" />
     <Compile Include="Modules\MotionDetection.cs" />
     <Compile Include="Modules\ZxingDecoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
@@ -217,7 +221,6 @@
     </Compile>
     <Compile Include="Routines\ConnectRoutine.cs" />
     <Compile Include="UIHelpers\GF.cs" />
-    <Compile Include="Modules\CheckCenter.cs" />
     <Compile Include="Modules\ZxingDecoder\ZxingDecoder.cs" />
     <Compile Include="Modules\NormalCVFunctions.cs" />
     <Compile Include="Routines\PreviewRoutine.cs" />

@@ -152,10 +152,7 @@ namespace ImageProcessing_BSC_WPF
         private void ibOriginal_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _mouseDown = true;
-            if ((bool)Chk_findCenter.IsChecked)
-            {
-            }
-            else if (GV.imgOriginal != null)
+            if (GV.imgOriginal != null)
             {
                 PreviewRoutine.StopPreview();
                 ibOriginal.Cursor = Cursors.Cross;
@@ -189,25 +186,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void ibOriginal_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((bool)Chk_findCenter.IsChecked)
-            {
-                if (!_mouseDown)
-                {
-                    int yOffset = 1;
-                    if (e.GetPosition(ibOriginal).Y >= CheckCenter.centerChkBarPos_y - yOffset && e.GetPosition(ibOriginal).Y <= CheckCenter.centerChkBarPos_y + yOffset)
-                    {
-                        ibOriginal.Cursor = Cursors.No;
-                    }
-                    else
-                        ibOriginal.Cursor = Cursors.Arrow;
-                }
-                else
-                {
-                    CheckCenter.centerChkBarPos_y = (int)e.GetPosition(ibOriginal).Y;
-                }
-
-            }
-            else if ((bool)Chk_showRGB.IsChecked && GV.imgOriginal != null)
+            if ((bool)Chk_showRGB.IsChecked && GV.imgOriginal != null)
             {
                 Color clr = GV.imgOriginal.ToBitmap().GetPixel((int)e.GetPosition(ibOriginal).X, (int)e.GetPosition(ibOriginal).Y);
 
@@ -639,11 +618,6 @@ namespace ImageProcessing_BSC_WPF
             GV._findMinSwitch = (bool)Chk_findMin.IsChecked;
         }
 
-        private void Chk_findCenter_Checked(object sender, RoutedEventArgs e)
-        {
-            GV._findCenterSwitch = (bool)Chk_findCenter.IsChecked;
-        }
-
         private void Chk_motionDetect_Checked(object sender, RoutedEventArgs e)
         {
             GV._motionDetectSwitch = (bool)Chk_motionDetect.IsChecked;
@@ -886,5 +860,19 @@ namespace ImageProcessing_BSC_WPF
 
         #endregion <GUI operation>
 
+        private void Chk_checkBoundry_Checked(object sender, RoutedEventArgs e)
+        {
+            GV._checkBoundry = true;
+        }
+
+        private void Chk_checkBoundry_Unchecked(object sender, RoutedEventArgs e)
+        {
+            GV._checkBoundry = false;
+        }
+
+        private void Chk_fitEllipse_Click(object sender, RoutedEventArgs e)
+        {
+            GV._fitEllipse = (bool)Chk_fitEllipse.IsChecked;
+        }
     }
 }

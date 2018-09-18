@@ -56,11 +56,12 @@ namespace ImageProcessing_BSC_WPF
         public static ErrorCode _err;
 
         public static bool _findMinSwitch;
-        public static bool _findCenterSwitch;
         public static bool _decodeSwitch;                       //turn on code decoding.
         public static bool _OCRSwitch;                          //turn on OCR decoding.
         public static bool _MLSwitch;                           //turn on machine learning.
         public static bool _motionDetectSwitch;                 //turn on motion detection.
+        public static bool _checkBoundry;                       //turn on boundry check.
+        public static bool _fitEllipse;                         //turn on ellipse fitting.
 
         // Color detection, multi points select
         public static int _remainColorPoints = 3;               //total interest points in color detection

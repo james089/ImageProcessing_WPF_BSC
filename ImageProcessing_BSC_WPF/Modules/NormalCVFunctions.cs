@@ -67,7 +67,7 @@ namespace ImageProcessing_BSC_WPF.Modules
                                     //outPutImg = ContourDetection.contourDetection(outPutImg);
                                     PointF[] pts = FindWhitePoints(outPutImg.Convert<Gray, byte>());
 
-                                    MCvBox2D box = PointCollection.MinAreaRect(pts);
+                                    MCvBox2D box = SquareFittingWithAngle(pts);
                                     outPutImg.Draw(box, new Bgr(Color.Green), 2);
                                     BindManager.BindMngr.GMessage.value = $"Displaying matching colors. Angle [{box.angle}deg]";
                                 }
@@ -100,30 +100,54 @@ namespace ImageProcessing_BSC_WPF.Modules
             return points.ToArray();
         }
 
+        //public static PointF[] ReduceNoise(PointF[] whitePoints, Image<Gray, byte> img)
+        //{
+        //    for (int i = 0; i < img.Width; i++)
+        //    {
+        //        for (int j = 0; j < img.Height; j++)
+        //        {
+        //            if()
+        //        }
+        //    }
+        //}
+
+
         /// <summary>
         /// Fit an ellipse to the points collection
         /// </summary>
         /// <param name="points">The points to be fitted</param>
         /// <returns>An ellipse</returns>
-        //public static Ellipse EllipseLeastSquareFitting(PointF[] points)
-        //{
-        //    IntPtr seq = Marshal.AllocHGlobal(StructSize.MCvSeq);
-        //    IntPtr block = Marshal.AllocHGlobal(StructSize.MCvSeqBlock);
-        //    GCHandle handle = GCHandle.Alloc(points, GCHandleType.Pinned);
-        //    CvInvoke.cvMakeSeqHeaderForArray(
-        //       CvInvoke.CV_MAKETYPE((int)MAT_DEPTH.CV_32F, 2),
-        //       StructSize.MCvSeq,
-        //       StructSize.PointF,
-        //       handle.AddrOfPinnedObject(),
-        //       points.Length,
-        //       seq,
-        //       block);
-        //    Ellipse e = new Ellipse(CvInvoke.cvFitEllipse2(seq));
-        //    handle.Free();
-        //    Marshal.FreeHGlobal(seq);
-        //    Marshal.FreeHGlobal(block);
-        //    return e;
+        public static Ellipse EllipseLeastSquareFitting(PointF[] points)
+        {
+            IntPtr seq = Marshal.AllocHGlobal(StructSize.MCvSeq);
+            IntPtr block = Marshal.AllocHGlobal(StructSize.MCvSeqBlock);
+            GCHandle handle = GCHandle.Alloc(points, GCHandleType.Pinned);
+            CvInvoke.cvMakeSeqHeaderForArray(
+               CvInvoke.CV_MAKETYPE((int)MAT_DEPTH.CV_32F, 2),
+               StructSize.MCvSeq,
+               StructSize.PointF,
+               handle.AddrOfPinnedObject(),
+               points.Length,
+               seq,
+               block);
+            Ellipse e = new Ellipse(CvInvoke.cvFitEllipse2(seq));
+            handle.Free();
+            Marshal.FreeHGlobal(seq);
+            Marshal.FreeHGlobal(block);
+            return e;
+        }
 
-        //}
+        public static Rectangle SquareFitting(PointF[] points)
+        {
+            MCvBox2D box = PointCollection.MinAreaRect(points);
+            return box.MinAreaRect();
+        }
+
+        public static MCvBox2D SquareFittingWithAngle(PointF[] points)
+        {
+            MCvBox2D box = PointCollection.MinAreaRect(points);
+                return box;
+        }
+
     }
 }

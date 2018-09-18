@@ -83,18 +83,6 @@ namespace ImageProcessing_BSC_WPF
             Windows.main.listBox.Items.Clear();
             Windows.main.lbl_barcodeDetectResult.Content = "";
 
-            // Motion Detection
-            if (GV._motionDetectSwitch)
-            {
-                if (MotionDetection.checkMotion(GV.imgOriginal))
-                {
-                    GV.CaptureSound.Play();
-                    StopPreview();
-                    if (mMessageBox.showNotification("Motion Detected") == mDialogResult.yes)
-                        startPreview(_previewFPS);
-                }
-
-            }
             //Detect code
             if (GV._decodeSwitch)
             {
@@ -137,9 +125,26 @@ namespace ImageProcessing_BSC_WPF
                 else
                     BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
+
+            // Motion Detection
+            if (GV._motionDetectSwitch)
+            {
+                if (MotionDetection.checkMotion(GV.imgOriginal))
+                {
+                    GV.CaptureSound.Play();
+                    StopPreview();
+                    if (mMessageBox.showNotification("Motion Detected") == mDialogResult.yes)
+                        startPreview(_previewFPS);
+                }
+
+            }
+
+
             // Normal
             if (GV.imgProcessed == null) GV.imgProcessed = GV.imgOriginal;
             Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
+
+
             // Error reporting
             if (GV._err != ErrorCode.Normal) BindManager.BindMngr.GMessage.value = GV._err.ToString();
         }
@@ -182,22 +187,34 @@ namespace ImageProcessing_BSC_WPF
         public static void processedImageDisplaying()
         {
             //====Display Processed image========== 
-            if (NCVFuns._featureType != featureDetectionType.original) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
-            else if(GV.imgOriginal != null) GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
+            if (NCVFuns._featureType != featureDetectionType.original)
+                GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, NCVFuns._detectionType, out GV._err);
+            else if(GV.imgOriginal != null)
+                GV.imgProcessed = GV.imgOriginal.Copy(new Rectangle(new System.Drawing.Point(), GV.imgOriginal.Size));
 
             if (NCVFuns._detectionType == DetectionType.Object) GV.imgProcessed = NCVFuns.Detection(GV.imgOriginal, DetectionType.Object, out GV._err);
 
             #region == MIS ==
-            // Checking center
-            if (GV._findCenterSwitch)
-            {
-                CheckCenter.checkCenter();
-            }
-
             // Checking distance
-            else if (GV._findMinSwitch)
+            if (GV._findMinSwitch)
             {
                 FindMinDistance.findMinDistance();
+            }
+
+            // Find Boundry
+            else if (GV._checkBoundry && ImgCropping.rect.Size != new Size(0, 0))
+            {
+                if (CheckBoundry.mCheckBoundry(GV.imgOriginal, ImgCropping.rect))
+                {
+                    GV.imgProcessed.Draw(ImgCropping.rect, new Bgr(Color.Green), 2);
+                }
+                else
+                    GV.imgProcessed.Draw(ImgCropping.rect, new Bgr(Color.Red), 2);
+            }
+            else if (GV._fitEllipse)
+            {
+                Rectangle box = NCVFuns.SquareFitting(NCVFuns.FindWhitePoints(GV.imgProcessed.Convert<Gray, byte>()));
+                GV.imgProcessed.Draw(box, new Bgr(Color.Blue), 2);
             }
 
             #endregion == MIS ==
@@ -230,7 +247,6 @@ namespace ImageProcessing_BSC_WPF
             else if (GV._MLSwitch)
             {
                 ResNet.startMLRoutine();
-
             }
         }
 

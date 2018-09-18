@@ -2,6 +2,10 @@
 linbojun089@gmail.com	
 
 change log:
+2018/9/18
+v4.1.4.1
+1. Add fit ellipse
+
 2018/4/18
 v4.1.4.0
 1. New color detection algorithmn added, could tell angle, show bounding box

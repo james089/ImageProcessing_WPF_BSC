@@ -30,10 +30,12 @@ namespace ImageProcessing_BSC_WPF
                 {
                     case camType.WebCam:
                         Image<Bgr, byte> b = GV.mCamera.capture();
+                        if (b == null) return;
                         GV.imgHeight = b.Height;
                         GV.imgWidth = b.Width; break;
                     case camType.PointGreyCam:
                         Image<Bgr, byte> c = GV.mCamera.capture();
+                        if (c == null) return;
                         GV.imgHeight = c.Height;
                         GV.imgWidth = c.Width; break;
                 }

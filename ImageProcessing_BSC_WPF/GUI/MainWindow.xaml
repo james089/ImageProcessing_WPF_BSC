@@ -141,7 +141,6 @@
                                     <RadioButton x:Name="Radio_cannyEdge" Content="CannyEdge" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_cannyEdge_Checked" Margin="0"/>
                                     <RadioButton x:Name="Radio_contour" Content="Contour" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_contour_Checked" Margin="0"/>
                                     <RadioButton x:Name="Radio_line" Content="Line" VerticalAlignment="Top" DockPanel.Dock="Top" Height="35" Checked="Radio_line_Checked" Margin="0"/>
-
                                 </StackPanel>
                             </Grid>
                         </TabItem>
@@ -175,7 +174,7 @@
                                     <RadioButton x:Name="Radio_Color" DockPanel.Dock="Left" Content="Color" VerticalAlignment="Top" Height="25" Checked="Radio_Color_Checked" Unchecked="Radio_Color_Unchecked"/>
 
                                     <CheckBox x:Name="Chk_multiColorPoints" Content="Multipoints (select 3 interest points)" Visibility="Collapsed" Unchecked="Chk_multiColorPoints_Unchecked" Checked="Chk_multiColorPoints_Checked"/>
-                                    <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="80" VerticalAlignment="Top"/>
+                                    <Button x:Name="Btn_apply_object" Content="Apply once" DockPanel.Dock="Top" Height="25" Margin="0,30,0,0" ToolTip="Apply to static photo" Click="Btn_apply_object_Click" Width="120" VerticalAlignment="Top"/>
                                 </StackPanel>
 
                             </Grid>
@@ -423,9 +422,10 @@
                             <Grid Margin="5">
                                 <StackPanel>
                                     <CheckBox x:Name="Chk_findMin" Content="Find Min Distance" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findMin_Checked" Unchecked="Chk_findMin_Checked" Height="35"/>
-                                    <CheckBox x:Name="Chk_findCenter" Content="Find center of bright object" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_findCenter_Checked" Unchecked="Chk_findCenter_Checked" Height="35"/>
-                                    <CheckBox x:Name="Chk_showRGB" Content="Show RGB at current mouse position" Margin="0,10,0,0" VerticalAlignment="Top" />
-                                    <CheckBox x:Name="Chk_motionDetect" Content="Turn on motion detection" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_motionDetect_Checked" Unchecked="Chk_motionDetect_Checked" />
+                                    <CheckBox x:Name="Chk_showRGB" Content="Show RGB at current mouse position" Margin="0,10,0,0" VerticalAlignment="Top"  Height="35"/>
+                                    <CheckBox x:Name="Chk_motionDetect" Content="Turn on motion detection" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_motionDetect_Checked" Unchecked="Chk_motionDetect_Checked" Height="35"/>
+                                    <CheckBox x:Name="Chk_checkBoundry" Content="Check Boundry" Margin="0,10,0,0" VerticalAlignment="Top" Checked="Chk_checkBoundry_Checked" Unchecked="Chk_checkBoundry_Unchecked" Height="35"/>
+                                    <CheckBox x:Name="Chk_fitEllipse" Content="Fit Ellipse To Bright Blob" Margin="0,10,0,0" VerticalAlignment="Top" Height="35" Click="Chk_fitEllipse_Click"/>
                                 </StackPanel>
                             </Grid>
                         </TabItem>

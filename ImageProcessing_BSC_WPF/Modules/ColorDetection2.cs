@@ -8,6 +8,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using System.Runtime.InteropServices;
 using Emgu.CV.Util;
+using OpenCV_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
@@ -39,7 +40,7 @@ namespace ImageProcessing_BSC_WPF.Modules
                     colorValue[1] = data[j, i, 1];
                     colorValue[2] = data[j, i, 2];
 
-                    if (Distance3D(colorValue, meanValue) <= Tolerance)
+                    if (mMath.Distance3D(colorValue, meanValue) <= Tolerance)
                     {
                         _outPutImg.Data[j, i, 0] = 255;
                         _outPutImg.Data[j, i, 1] = 255;
@@ -77,11 +78,6 @@ namespace ImageProcessing_BSC_WPF.Modules
             mean_r = mean_r / (img.Width * img.Height);
 
             return new byte[3] { (byte)mean_b, (byte)mean_g, (byte)mean_r };
-        }
-
-        private static double Distance3D(byte[] p1, byte[] p2)
-        {
-            return Math.Sqrt(Math.Pow(p1[0] - p2[0], 2) + Math.Pow(p1[1] - p2[1], 2) + Math.Pow(p1[2] - p2[2], 2));
         }
     }
 }

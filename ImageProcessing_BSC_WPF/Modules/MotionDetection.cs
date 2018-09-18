@@ -11,30 +11,35 @@ namespace ImageProcessing_BSC_WPF.Modules
 {
     public class MotionDetection
     {
-        static Image<Bgr, byte> imgOriginal_history;
-        static DateTime startTime;
-
+        static Image<Bgr, byte> img_hist = null;
+        static int counter = 0;
         public static bool checkMotion(Image<Bgr, byte> inputImage)
         {
-            if (imgOriginal_history == null)
+
+            if (img_hist == null)
             {
-                startTime = DateTime.Now;
-                imgOriginal_history = inputImage;
+                img_hist = inputImage;
+                return false;
             }
-            if ((DateTime.Now - startTime).TotalSeconds > 2)
+            else
             {
-                startTime = DateTime.Now;
-                if (FFT.searchObject_FFT(inputImage, imgOriginal_history))   // means picture doesn't change 
+                if (FFT.searchObject_FFT(inputImage, img_hist))   // means picture doesn't change 
                 {
-                    return false;
+                    counter++;
+                    if (counter >= (int)PreviewRoutine._previewFPS * 1)                           // 1s still image               
+                    {
+                        counter = 0;
+                        return false;
+                    }
+                    return true;
                 }
                 else
                 {
-                    imgOriginal_history = inputImage;
+                    img_hist = inputImage;
                     return true;
                 }
             }
-            return false;
+
         }
     }
 }
