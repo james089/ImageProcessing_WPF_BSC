@@ -20,6 +20,8 @@ using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll.UserControls;
 using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
+using static ImageProcessing_BSC_WPF.Modules.PTCam;
+using static ImageProcessing_BSC_WPF.Properties.Settings;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -167,7 +169,10 @@ namespace ImageProcessing_BSC_WPF
                     case camType.WebCam:
                         GV.imgOriginal = GV.mCamera.capture(); break;
                     case camType.PointGreyCam:
-                        GV.imgOriginal = GV.mCamera.capture(); break;
+                        if (Default.isEthernet)
+                            GV.imgOriginal = mPTCam.capture(mPTCam.mCameras[0], 0);
+                        else
+                            GV.imgOriginal = GV.mCamera.capture(); break;
                 }
 
                 if(GV.imgOriginal != null)

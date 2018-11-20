@@ -1,6 +1,7 @@
 ﻿using CameraToImage_dll_x64;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FlyCapture2Managed;
 using mUserControl_BSC_dll;
 using mUserControl_BSC_dll.UserControls;
 using System;
@@ -12,11 +13,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Utilities_BSC_dll_x64;
+using static ImageProcessing_BSC_WPF.Modules.PTCam;
+using static ImageProcessing_BSC_WPF.Properties.Settings;
 
 namespace ImageProcessing_BSC_WPF
 {
     class ConnectRoutine
     {
+        static camType ct;
         public static BackgroundWorker connectRoutine = new BackgroundWorker();
         public static void connectionSetup()
         {
@@ -59,12 +63,17 @@ namespace ImageProcessing_BSC_WPF
                 Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connecting);
                 Windows.main.Btn_PR.IsEnabled = false;
             }
+
+
             if (e.ProgressPercentage == 100)
             {
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
-                //mNotification.Show("Connected");
-                Windows.main.Btn_PR.IsEnabled = true;
-                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+                if (mPTCam.mCameras[0].IsConnected())
+                {
+                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
+                    //mNotification.Show("Connected");
+                    Windows.main.Btn_PR.IsEnabled = true;
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+                }
             }
         }
 
@@ -72,20 +81,36 @@ namespace ImageProcessing_BSC_WPF
         {
             connectRoutine.ReportProgress(0);
 
-            GV.mCamera = new CameraConnection();
+            ct = (camType)e.Argument;
 
-            camType ct = (camType)e.Argument;
-            if (GV.mCamera != null)                                           //if there is a camera, dispose and reconnect.
-                GV.mCamera.disposeCam();
-
-            if (!GV.mCamera.connect(ct))
+            if (ct == camType.PointGreyCam && Default.isEthernet)
             {
-                GV._cameraConnected = false;
-                //mMessageBox.Show("No " + ct.ToString() + " found!");
+                if (mPTCam.mCameras[0] != null)
+                    mPTCam.mCameras[0].Disconnect();
+                
+                if (mPTCam.CamConnection(mPTCam.CamSerialList))
+                {
+                    mPTCam.SetModeAndStartCapture(mPTCam.mCameras[0], Mode.Mode1);
+                    connectRoutine.ReportProgress(100);
+                }
             }
             else
-                GV._cameraConnected = true;
-            connectRoutine.ReportProgress(100);
+            {
+                GV.mCamera = new CameraConnection();
+                if (GV.mCamera != null)                                           //if there is a camera, dispose and reconnect.
+                    GV.mCamera.disposeCam();
+                if (!GV.mCamera.connect(ct))
+                {
+                    GV._cameraConnected = false;
+                    //mMessageBox.Show("No " + ct.ToString() + " found!");
+                }
+                else
+                {
+                    GV._cameraConnected = true;
+                    connectRoutine.ReportProgress(100);
+                }
+            }
+
         }
     }
 }

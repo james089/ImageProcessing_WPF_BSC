@@ -35,7 +35,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
 
         public static void MLSetup()
         {
-            device = DeviceDescriptor.GPUDevice(0);
+            //device = DeviceDescriptor.GPUDevice(0);
 
             MLRoutine.DoWork += new DoWorkEventHandler(MLRoutine_doWork);
             MLRoutine.ProgressChanged += new ProgressChangedEventHandler(MLRoutine_ProgressChanged);

@@ -183,6 +183,7 @@
     <Compile Include="Modules\MachineLearning\ResNet.cs" />
     <Compile Include="Modules\mMath.cs" />
     <Compile Include="Modules\MotionDetection.cs" />
+    <Compile Include="Modules\PTCam.cs" />
     <Compile Include="Modules\ZxingDecoder\ZxingFunctions.cs" />
     <Compile Include="Modules\OCR\OCR.cs" />
     <Compile Include="UIHelpers\BindManager.cs" />

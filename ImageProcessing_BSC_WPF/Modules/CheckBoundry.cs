@@ -25,7 +25,8 @@ namespace ImageProcessing_BSC_WPF.Modules
             Image<Gray, byte> grayImg = inputImage.Convert<Gray, byte>();
             grayImg = ImageProcessing.colorFilter(grayImg);
 
-            ContourDetection.contourDetection(grayImg.Convert<Bgr, byte>(), out Rectangle[] rect);
+            Rectangle[] rect;
+            ContourDetection.contourDetection(grayImg.Convert<Bgr, byte>(), out rect);
             return (rectInsideRect(rect[0], boundry));
         }
 

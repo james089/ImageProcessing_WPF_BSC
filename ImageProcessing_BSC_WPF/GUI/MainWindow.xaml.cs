@@ -24,6 +24,8 @@ using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
 using mUserControl_BSC_dll.UserControls;
 using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
 using static ImageProcessing_BSC_WPF.BindManager;
+using static ImageProcessing_BSC_WPF.Modules.PTCam;
+using static ImageProcessing_BSC_WPF.Properties.Settings;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -97,6 +99,8 @@ namespace ImageProcessing_BSC_WPF
             Radio_original.IsChecked = true;
             Radio_SURF.IsChecked = true;
             toggleExpander_object(false);
+
+            Chk_isEthernet.IsChecked = Default.isEthernet;
         }
 
         private void selectCam(camType index)
@@ -389,7 +393,8 @@ namespace ImageProcessing_BSC_WPF
                 case camType.WebCam:
                     ConnectRoutine.connectWebCam(); break;
                 case camType.PointGreyCam:
-                    ConnectRoutine.connectPointGreyCam(); break;
+                    ConnectRoutine.connectPointGreyCam();
+                    break;
             }
 
             Panel_liveViewOptions.IsEnabled = true;
@@ -873,6 +878,12 @@ namespace ImageProcessing_BSC_WPF
         private void Chk_fitEllipse_Click(object sender, RoutedEventArgs e)
         {
             GV._fitEllipse = (bool)Chk_fitEllipse.IsChecked;
+        }
+
+        private void Chk_isEthernet_Click(object sender, RoutedEventArgs e)
+        {
+            Default.isEthernet = (bool)Chk_isEthernet.IsChecked;
+            Default.Save();
         }
     }
 }
