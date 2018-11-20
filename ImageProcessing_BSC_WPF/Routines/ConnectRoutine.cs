@@ -67,13 +67,10 @@ namespace ImageProcessing_BSC_WPF
 
             if (e.ProgressPercentage == 100)
             {
-                if (mPTCam.mCameras[0].IsConnected())
-                {
-                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
-                    //mNotification.Show("Connected");
-                    Windows.main.Btn_PR.IsEnabled = true;
-                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
-                }
+                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
+                //mNotification.Show("Connected");
+                Windows.main.Btn_PR.IsEnabled = true;
+                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }
 
