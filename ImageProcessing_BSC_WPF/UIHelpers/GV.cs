@@ -74,6 +74,7 @@ namespace ImageProcessing_BSC_WPF
         public static Image<Bgr, byte> imgProcessed;
         public static Image<Bgr, byte> OCROutputImg;
         public static Image<Bgr, byte> object_img = null;
+        public static Image<Bgr, byte> ref_img = null;
 
         public static Graphics mGraphics;
 

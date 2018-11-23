@@ -171,6 +171,7 @@
     <Compile Include="Modules\CheckBoundry.cs" />
     <Compile Include="Modules\ColorDetection.cs" />
     <Compile Include="Modules\ColorDetection2.cs" />
+    <Compile Include="Modules\ContrastDetection.cs" />
     <Compile Include="Modules\CortexDecoder\CortexDecoderFunctions.cs" />
     <Compile Include="Modules\CortexDecoder\CortexDecoder.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\CntkBitmapExtensions.cs" />

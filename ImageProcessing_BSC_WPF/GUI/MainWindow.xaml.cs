@@ -534,7 +534,7 @@ namespace ImageProcessing_BSC_WPF
             else if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
             {
                 Image<Bgr, byte> Img = GV.imgOriginal;
-                GV.object_img = Img.Copy(ImgCropping.rect).Convert<Bgr, Byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
+                GV.object_img = Img.Copy(ImgCropping.rect).Convert<Bgr, byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
                 ibObject.Source = ImgConverter.ToBitmapSource(GV.object_img);
 
                 if (GV.mCamera.IsConnected)
@@ -885,5 +885,26 @@ namespace ImageProcessing_BSC_WPF
             Default.isEthernet = (bool)Chk_isEthernet.IsChecked;
             Default.Save();
         }
+
+        #region Difference Detect
+        private void Btn_setReference_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
+            {
+                Image<Bgr, byte> Img = GV.imgOriginal_pure;
+                GV.ref_img = Img.Copy(ImgCropping.rect).Convert<Bgr, byte>(); //new Image<Gray, Byte>(mCrop.cropBitmap(imgOriginal.ToBitmap(), mCrop.rect));
+                ibReference.Source = ImgConverter.ToBitmapSource(GV.ref_img);
+
+                if (GV.mCamera.IsConnected)
+                    PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+            }
+        }
+
+        private void Btn_contrastDetect_Click(object sender, RoutedEventArgs e)
+        {
+            lbl_contrast_result.Content = ContrastDetection.mContrastDetection(GV.imgOriginal, GV.ref_img).ToString();
+        }
+
+        #endregion Difference Detect
     }
 }

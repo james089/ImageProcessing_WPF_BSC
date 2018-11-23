@@ -105,7 +105,7 @@
                                 <Button x:Name="Btn_PR" Content="Start Live Feed" Height="35" IsHitTestVisible="True" Click="Button_Click" Grid.Row="1" Margin="5"/>
 
                                 <WrapPanel x:Name="Panel_liveViewOptions" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-            
+
                                     <CheckBox x:Name="Tools_cropView" Margin="5" Content="Cropped View" Checked="Tools_cropView_Checked" Unchecked="Tools_cropView_Unchecked" Grid.Column="1" />
                                     <CheckBox x:Name="Chk_mono" Margin="5" Content="Black and white" Grid.Column="1" Checked="Chk_mono_Checked" Unchecked="Chk_mono_Unchecked" />
 
@@ -153,8 +153,6 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                </Grid.RowDefinitions>
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="7*"/>
@@ -182,6 +180,37 @@
 
                             </Grid>
                         </TabItem>
+                        <TabItem x:Name="Expander_difference" Header="Difference Detect" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35">
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel >
+                                    <Label Content="Reference Image" />
+                                    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="5"  Grid.Row="1">
+                                        <Viewbox Height="150">
+                                            <Image x:Name="ibReference" Margin="0" Grid.Row="1" />
+                                        </Viewbox>
+                                    </Border>
+                                    <Button x:Name="Btn_setReference" Content="Set reference image" Grid.Row="2" Margin="5" IsHitTestVisible="True" Click="Btn_setReference_Click"/>
+                                </StackPanel>
+                                <Grid Grid.Column="1">
+                                    <StackPanel>
+                                        <Button x:Name="Btn_contrastDetect" Content="Detect" Width="100" Height="50" HorizontalAlignment="Center" VerticalAlignment="Top" Click="Btn_contrastDetect_Click" />
+                                        <!--<DockPanel Margin="5">
+                                            <Label Content="Contrast" Width="100"/>
+                                            <Label x:Name="lbl_contrast"  />
+                                        </DockPanel>-->
+                                        <DockPanel Margin="5">
+                                            <Label Content="Result" Width="100"/>
+                                            <Label x:Name="lbl_contrast_result"  />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
                         <TabItem x:Name="Expander_Decode" Header="Barcode" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="True" Grid.Row="5" Margin="0" Height="35">
                             <Grid  Margin="5">
                                 <Grid.RowDefinitions>
