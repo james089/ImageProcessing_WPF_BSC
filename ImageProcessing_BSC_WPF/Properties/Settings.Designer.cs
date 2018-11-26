@@ -94,5 +94,17 @@ namespace ImageProcessing_BSC_WPF.Properties {
                 this["isEthernet"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        public double contrast_sensitivity {
+            get {
+                return ((double)(this["contrast_sensitivity"]));
+            }
+            set {
+                this["contrast_sensitivity"] = value;
+            }
+        }
     }
 }

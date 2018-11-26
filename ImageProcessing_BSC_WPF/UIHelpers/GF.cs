@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Utilities_BSC_dll_x64;
+using static ImageProcessing_BSC_WPF.Modules.PTCam;
+using static ImageProcessing_BSC_WPF.Properties.Settings;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -39,6 +41,13 @@ namespace ImageProcessing_BSC_WPF
                         GV.imgHeight = c.Height;
                         GV.imgWidth = c.Width; break;
                 }
+            }
+            else if (Default.isEthernet && mPTCam.mCameras[0].IsConnected())
+            {
+                Image<Bgr, byte> c = mPTCam.capture(mPTCam.mCameras[0], 0);
+                if (c == null) return;
+                GV.imgHeight = c.Height;
+                GV.imgWidth = c.Width; 
             }
             else if (GV._pictureLoaded) // Static picture
             {

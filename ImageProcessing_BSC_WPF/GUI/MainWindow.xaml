@@ -203,6 +203,11 @@
                                             <Label x:Name="lbl_contrast"  />
                                         </DockPanel>-->
                                         <DockPanel Margin="5">
+                                            <Label Content="Sensitivity" Width="100"/>
+                                            <Slider x:Name="Slider_contrastSensitivity" Width="220" Maximum="1" Minimum="0.1" TickFrequency="0.1" SmallChange="0.01" ValueChanged="Slider_contrastSensitivity_ValueChanged"/>
+                                            <Label Content="{Binding ElementName=Slider_contrastSensitivity, Path=Value}"/>
+                                        </DockPanel>
+                                        <DockPanel Margin="5">
                                             <Label Content="Result" Width="100"/>
                                             <Label x:Name="lbl_contrast_result"  />
                                         </DockPanel>

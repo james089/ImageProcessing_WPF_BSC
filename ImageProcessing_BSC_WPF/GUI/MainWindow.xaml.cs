@@ -101,6 +101,7 @@ namespace ImageProcessing_BSC_WPF
             toggleExpander_object(false);
 
             Chk_isEthernet.IsChecked = Default.isEthernet;
+            Slider_contrastSensitivity.Value = Default.contrast_sensitivity;
         }
 
         private void selectCam(camType index)
@@ -906,5 +907,12 @@ namespace ImageProcessing_BSC_WPF
         }
 
         #endregion Difference Detect
+
+        private void Slider_contrastSensitivity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider_contrastSensitivity.Value = Convert.ToDouble(Slider_contrastSensitivity.Value.ToString("0.00"));
+            Default.contrast_sensitivity = Slider_contrastSensitivity.Value;
+            Default.Save();
+        }
     }
 }

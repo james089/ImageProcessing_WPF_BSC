@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ImageProcessing_BSC_WPF.Properties.Settings;
 
 namespace ImageProcessing_BSC_WPF.Modules
 {
@@ -14,7 +15,7 @@ namespace ImageProcessing_BSC_WPF.Modules
     class ContrastDetection
     {
         private const double CONTRAST_THRESHOLD = 180;
-        private const double DETECTION_THRESHOLD = 0.1;
+        //private const double DETECTION_THRESHOLD = 0.1;
 
         /// <summary>
         /// Detect difference, return true means difference found
@@ -27,7 +28,7 @@ namespace ImageProcessing_BSC_WPF.Modules
             double contrast_ref = calculateContrast(Ref_Img);
             double contrast = calculateContrast(Img);
 
-            return (Math.Abs(contrast - contrast_ref) > DETECTION_THRESHOLD * contrast_ref);
+            return (Math.Abs(contrast - contrast_ref) > Default.contrast_sensitivity * contrast_ref);
         }
 
         private static double calculateContrast(Image<Bgr, byte> Img)

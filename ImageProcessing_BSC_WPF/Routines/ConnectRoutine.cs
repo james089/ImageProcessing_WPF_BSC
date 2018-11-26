@@ -44,7 +44,8 @@ namespace ImageProcessing_BSC_WPF
 
         private static void connectRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (GV.mCamera.IsConnected) GF.UpdateImgInfo();
+            if (!Default.isEthernet && GV.mCamera.IsConnected) GF.UpdateImgInfo();
+            else if(Default.isEthernet && mPTCam.mCameras[0].IsConnected()) GF.UpdateImgInfo();
         }
 
         private static void connectRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
