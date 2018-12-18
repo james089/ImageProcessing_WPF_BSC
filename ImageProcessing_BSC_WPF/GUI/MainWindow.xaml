@@ -95,10 +95,9 @@
                                             <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
                                         <RadioButton x:Name="Radio_webcam" Content="WebCam" VerticalAlignment="Center" Checked="Radio_webcam_Checked" Margin="5,5,0,5"/>
-                                        <StackPanel  Margin="0,5" Grid.Column="1" VerticalAlignment="Center">
-                                            <RadioButton x:Name="Radio_PTcam" Content="PTCam" Checked="Radio_PTcam_Checked"/>
-                                            <CheckBox x:Name="Chk_isEthernet" Content="Ethernet" Margin="0 5" Click="Chk_isEthernet_Click"/>
-                                        </StackPanel>
+
+                                        <RadioButton x:Name="Radio_PTcam" Content="PTCam" Checked="Radio_PTcam_Checked" Grid.Column="1" VerticalAlignment="Center"/>
+                                        <CheckBox x:Name="Chk_isEthernet" Content="Ethernet" Margin="0 5" Click="Chk_isEthernet_Click" Grid.Column="2" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DockPanel>
 
