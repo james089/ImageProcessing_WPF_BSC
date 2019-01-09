@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {
@@ -19,20 +20,38 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
         static int DesWidth;
         static int DesHeight;
         static int TotalImages;
+        static bool IsDeleteOriginal;
         private static int CurrentImageIndex = 0;
 
-        public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight)
+        public static void ImageResizingSetup()
         {
             ResizingRoutine.DoWork += new DoWorkEventHandler(ResizingRoutine_doWork);
             ResizingRoutine.ProgressChanged += new ProgressChangedEventHandler(ResizingRoutine_ProgressChanged);
             ResizingRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ResizingRoutine_WorkerCompleted);
             ResizingRoutine.WorkerReportsProgress = true;
             ResizingRoutine.WorkerSupportsCancellation = true;
+        }
 
+        public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight)
+        {
+            ImageBatchResizing(_imgDir, _saveDir, _desWidth, _desHeight, false);
+        }
+
+        /// <summary>
+        /// This will save image with
+        /// </summary>
+        /// <param name="_imgDir"></param>
+        /// <param name="_saveDir"></param>
+        /// <param name="_desWidth"></param>
+        /// <param name="_desHeight"></param>
+        /// <param name="isDeleteOriginal"></param>
+        public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight, bool _isDeleteOriginal)
+        {
             ImgDir = _imgDir;
             SaveDir = _saveDir;
             DesWidth = _desWidth;
             DesHeight = _desHeight;
+            IsDeleteOriginal = _isDeleteOriginal;
 
             if (!Directory.Exists(ImgDir)) Directory.CreateDirectory(ImgDir);
             if (!Directory.Exists(SaveDir)) Directory.CreateDirectory(SaveDir);
@@ -42,8 +61,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 
             if (!ResizingRoutine.IsBusy)
                 ResizingRoutine.RunWorkerAsync();
-
-
         }
 
         private static void ResizingRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -76,12 +93,17 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
             {
                 Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
                 Bitmap rbm = CntkBitmapExtensions.Resize(bm, DesWidth, DesHeight, true);
+                
                 rbm.Save(SaveDir + string.Format("\\{0:D5}.jpg", i));         // This will make it "00000" "00001"...
 
                 bm.Dispose();
                 rbm.Dispose();
+
+                if(IsDeleteOriginal)
+                    File.Delete(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
+
                 ResizingRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / TotalImages));
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
 
                 CurrentImageIndex++;
             }

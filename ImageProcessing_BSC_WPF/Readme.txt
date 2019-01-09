@@ -2,6 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+2019/1/7
+v4.2.0.0
+1. Added YoloSharp dll, works 
+2. Re-organize machine learning folder
+
 2018/9/18
 v4.1.4.1
 1. Add fit ellipse

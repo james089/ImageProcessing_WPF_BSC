@@ -69,7 +69,6 @@ namespace ImageProcessing_BSC_WPF
             if (e.ProgressPercentage == 100)
             {
                 Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
-                //mNotification.Show("Connected");
                 Windows.main.Btn_PR.IsEnabled = true;
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
@@ -99,12 +98,12 @@ namespace ImageProcessing_BSC_WPF
                     GV.mCamera.disposeCam();
                 if (!GV.mCamera.connect(ct))
                 {
-                    GV._cameraConnected = false;
+                    GV.IsCameraConnected = false;
                     //mMessageBox.Show("No " + ct.ToString() + " found!");
                 }
                 else
                 {
-                    GV._cameraConnected = true;
+                    GV.IsCameraConnected = true;
                     connectRoutine.ReportProgress(100);
                 }
             }

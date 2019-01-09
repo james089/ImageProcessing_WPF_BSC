@@ -15,11 +15,13 @@ using Utilities_BSC_dll_x64;
 using OpenCV_BSC_dll_x64.Windows;
 using OpenCV_BSC_dll_x64.General;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 using ImageProcessing_BSC_WPF.Modules.ZxingDecoder;
 using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules;
 using mUserControl_BSC_dll.UserControls;
 using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
+using static ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO.YoloSharpCore;
 using static ImageProcessing_BSC_WPF.Modules.PTCam;
 using static ImageProcessing_BSC_WPF.Properties.Settings;
 
@@ -51,6 +53,11 @@ namespace ImageProcessing_BSC_WPF
         
         public static void startPreview(previewFPS previewFPS)
         {
+            if (!GV.IsCameraConnected)
+            {
+                mMessageBox.Show("No camera connected");
+                return;
+            }
             Windows.main.Btn_PR.Content = "Pause";
             IsCapturing = true;
             Windows.main.Panel_staticImageOperation.IsEnabled = false;
@@ -114,18 +121,22 @@ namespace ImageProcessing_BSC_WPF
 
             if (GV._MLSwitch)
             {
-                for (int i = 0; i < ResNet.resultList.Count; i++)
+                switch (MLCore.MLModelSelected)
                 {
-                    Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                    case MLModel.ResNet:
+                        for (int i = 0; i < ResNet.resultList.Count; i++)
+                        {
+                            Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                        }
+                        if (ResNet.OutputProbablility > 0)
+                            BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
+                        else
+                            BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
+                        break;
+                    case MLModel.Yolo:
+
+                        break;
                 }
-                //foreach (double a in ResNet.resultList)
-                //{
-                //    Windows.main.listBox.Items.Add(a);
-                //}
-                if (ResNet.OutputProbablility > 0)
-                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!",ResNet.OutputString, ResNet.OutputProbablility);
-                else
-                    BindManager.BindMngr.GMessage.value = "This doesn't look like anything to me... probably a " + ResNet.OutputString + "?";
             }
 
             // Motion Detection
@@ -251,7 +262,15 @@ namespace ImageProcessing_BSC_WPF
             // Machine Learing
             else if (GV._MLSwitch)
             {
-                ResNet.startMLRoutine();
+                switch (MLCore.MLModelSelected)
+                {
+                    case MLModel.ResNet:
+                        ResNet.startMLRoutine();
+                        break;
+                    case MLModel.Yolo:
+                        GV.imgProcessed = new Image<Bgr, byte>(mYolo.Detect(GV.imgOriginal.ToBitmap()));
+                        break;
+                }
             }
         }
 

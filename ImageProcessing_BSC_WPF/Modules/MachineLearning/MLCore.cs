@@ -24,7 +24,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
     public enum MLModel
     {
         ResNet,
-        FastRCNN
+        FastRCNN,
+        Yolo
     }
 
     public struct DataSet
@@ -33,7 +34,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning
         static string[] MNIST = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
         static string[] Custom1 = new string[] { "0", "1", "6" };
 
-        public static List<string[]> labelSet = new List<string[]>() { CIFAR10, MNIST, Custom1 };
+        public static List<string[]> LabelSet = new List<string[]>() { CIFAR10, MNIST, Custom1 };
     }
 
     public class MLCore

@@ -49,7 +49,7 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgHeight = c.Height;
                 GV.imgWidth = c.Width; 
             }
-            else if (GV._pictureLoaded) // Static picture
+            else if (GV.IsPictureLoaded) // Static picture
             {
                 GV.imgHeight = GV.imgOriginal.Height;
                 GV.imgWidth = GV.imgOriginal.Width;

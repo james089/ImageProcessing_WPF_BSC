@@ -69,11 +69,15 @@ namespace ImageProcessing_BSC_WPF.Modules
                     mCameras[i].SetEmbeddedImageInfo(imageInfo);
 
                     //IsConnected[i] = true;
+
+                    GV.IsCameraConnected = true;
                 }
                 catch (Exception ex)
                 {
 
                     //IsConnected[i] = false;
+
+                    GV.IsCameraConnected = false;
                     return false;
                 }
             }

@@ -23,9 +23,9 @@
             </DockPanel>
             <StackPanel Height="35" Margin="0,5,0,0" VerticalAlignment="Top" Orientation="Horizontal" Width="428">
                 <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Preview FPS" Margin="0,0,31,0"/>
-                <RadioButton x:Name="Radio_FPS_low" Style="{DynamicResource Radio_left}" Content="Slow" Margin="0" Width="80" Checked="Radio_FPS_low_Checked"/>
+                <RadioButton x:Name="Radio_FPS_low" Content="Slow" Margin="0" Width="80" Checked="Radio_FPS_low_Checked"/>
                 <RadioButton x:Name="Radio_FPS_medium" Content="Medium" Margin="0" Width="80" Checked="Radio_FPS_medium_Checked"/>
-                <RadioButton x:Name="Radio_FPS_high" Style="{DynamicResource Radio_right}" Content="High" Margin="0,0,10,0" Width="80" Checked="Radio_FPS_high_Checked"/>
+                <RadioButton x:Name="Radio_FPS_high" Content="High" Margin="0,0,10,0" Width="80" Checked="Radio_FPS_high_Checked"/>
                 <TextBlock x:Name="TB_previewFPS" TextWrapping="Wrap" Text="-" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>

@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using mUserControl_BSC_dll;
 using System.ComponentModel;
 using mUserControl_BSC_dll.UserControls;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {

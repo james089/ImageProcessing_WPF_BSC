@@ -7,6 +7,7 @@ using OpenCV_BSC_dll_x64;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Media;
+using System.Windows.Data;
 using System.Threading;
 using System.Reflection;
 using CameraToImage_dll_x64;
@@ -21,11 +22,16 @@ using ImageProcessing_BSC_WPF.Modules.OCR;
 using ImageProcessing_BSC_WPF.Modules.ZxingDecoder;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 using mUserControl_BSC_dll.UserControls;
 using ImageProcessing_BSC_WPF.Modules.CortexDecoder;
 using static ImageProcessing_BSC_WPF.BindManager;
 using static ImageProcessing_BSC_WPF.Modules.PTCam;
+using static ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO.YoloSharpCore;
 using static ImageProcessing_BSC_WPF.Properties.Settings;
+using System.Linq;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO;
+using System.Collections.Generic;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -43,14 +49,61 @@ namespace ImageProcessing_BSC_WPF
         {
             //Static MainWindow
             Windows.main = this;
+            DataContext = BindMngr;
+
             loadingScreen.Show();
             InitializeComponent();
 
+            // Setup background worker
             PreviewRoutine.previewSetup();
             ConnectRoutine.connectionSetup();
-            ResNet.MLSetup();
-
+            ImageResizing.ImageResizingSetup();
+            ResNet.CNTK_ResNetSetup();
             ZxingDecoder.DecoderSetup();
+
+            OCR.OCRSetup(OCRMode.NUMBERS);
+
+            // Create Directories
+            GV.ML_Folders[(int)MLFolders.MLRoot]        = Environment.CurrentDirectory + MLFolders.MLRoot.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_CNTK]       = Environment.CurrentDirectory + MLFolders.ML_CNTK.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_CNTK_model] = Environment.CurrentDirectory + MLFolders.ML_CNTK_model.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO]       = Environment.CurrentDirectory + MLFolders.ML_YOLO.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO_model] = Environment.CurrentDirectory + MLFolders.ML_YOLO_model.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO_data]  = Environment.CurrentDirectory + MLFolders.ML_YOLO_data.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO_img]   = Environment.CurrentDirectory + MLFolders.ML_YOLO_img.GetDescription();
+
+            foreach (string str in GV.ML_Folders)
+            {
+                if (str != null && !Directory.Exists(str))
+                {
+                    Directory.CreateDirectory(str);
+                }
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Title.Content = "Image processing vers." + Assembly.GetExecutingAssembly().GetName().Version;
+
+            loadProgramSetting();
+            applyProgramSetting();
+
+            // Show ML Model types
+            ML_cmb_model.ItemsSource = Enum.GetValues(typeof(MLModel)).Cast<MLModel>();
+            ML_cmb_model.SelectedIndex = 0;
+        }
+
+        private void loadProgramSetting()
+        {
+            MLCore.MLSelectedLabels = DataSet.LabelSet[ML_cmb_dataset.SelectedIndex];
+
+            GV._camSelected = (camType)Properties.Settings.Default.camSelection;
+            GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
+            PreviewRoutine._previewFPS = (previewFPS)Properties.Settings.Default.previewFPS;
+        }
+
+        private void applyProgramSetting()
+        {
             if (Properties.Settings.Default.useCortexDecoder)
             {
                 Radio_cortex.IsEnabled = true;
@@ -63,36 +116,6 @@ namespace ImageProcessing_BSC_WPF
                 Radio_cortex.IsChecked = false;
                 Radio_zxing.IsChecked = true;
             }
-
-            OCR.OCRSetup(OCRMode.NUMBERS);
-
-
-            //DataContext = Windows.main;                         // This is neccessary
-            //GMessage = new BindString();
-
-            DataContext = BindManager.BindMngr;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Title.Content = "Image processing vers." + Assembly.GetExecutingAssembly().GetName().Version;
-
-            loadProgramSetting();
-            applyProgramSetting();
-            //Chk_connectCam.IsChecked = true;
-        }
-
-        private void loadProgramSetting()
-        {
-            MLCore.MLSelectedLabels = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
-
-            GV._camSelected = (camType)Properties.Settings.Default.camSelection;
-            GV._camConnectAtStartup = Properties.Settings.Default.camConnect;
-            PreviewRoutine._previewFPS = (previewFPS)Properties.Settings.Default.previewFPS;
-        }
-
-        private void applyProgramSetting()
-        {
             Chk_connectCam.IsChecked = GV._camConnectAtStartup;
             selectCam(GV._camSelected);
 
@@ -273,7 +296,7 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgOriginal_save = ImgStiching.createFixRatioBitmap((new Image<Bgr, byte>(loadPic)).Copy(), 4, 3);
                 GV.imgOriginal = GV.imgOriginal_save.Copy();
                 ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
-                GV._pictureLoaded = true;
+                GV.IsPictureLoaded = true;
                 GF.UpdateImgInfo();
             }
         }
@@ -323,7 +346,8 @@ namespace ImageProcessing_BSC_WPF
 
         private void preferenceWindow_preferenceUpdated(object sender, EventArgs e)
         {
-            PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
+            if(GV.IsCameraConnected)
+                PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
         }
 
         private void Menu_conversion_Click(object sender, RoutedEventArgs e)
@@ -426,7 +450,7 @@ namespace ImageProcessing_BSC_WPF
                     //Chk_connectCam.IsEnabled = false;
                     if (GV.imgOriginal != null)
                     {
-                        GV._pictureLoaded = true;
+                        GV.IsPictureLoaded = true;
                     }
                     PreviewRoutine.IsCapturing = false;
                 }
@@ -684,19 +708,19 @@ namespace ImageProcessing_BSC_WPF
                 if (PreviewRoutine.IsCapturing)
                 {
                     PreviewRoutine.StopPreview();
-                    BindManager.BindMngr.GMessage.value = "Select the area and hit set area again to confirm";
+                    BindMngr.GMessage.value = "Select the area and hit set area again to confirm";
                 }
                 else if (!PreviewRoutine.IsCapturing && ImgCropping.rect.Width * ImgCropping.rect.Height != 0)
                 {
                     OCR.croppedOCRArea = ImgCropping.rect;
                     PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
-                    BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
+                    BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 }
             }
             else if(!PreviewRoutine.IsCapturing && ImgCropping.rect.Width * ImgCropping.rect.Height != 0)   //crop static picture
             {
                 OCR.croppedOCRArea = ImgCropping.rect;
-                BindManager.BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
+                BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
                 Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
                 Image<Bgr, byte> bm = GV.imgOriginal.Copy();
                 bm.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
@@ -717,6 +741,9 @@ namespace ImageProcessing_BSC_WPF
                     break;
                 case MLModel.FastRCNN:
                     break;
+                case MLModel.Yolo:
+                    mYolo.LoadModel(GV.ML_Folders[(int)MLFolders.ML_YOLO_model]);
+                    break;
             }
             GB_ML_operation.IsEnabled = true;
 
@@ -734,10 +761,14 @@ namespace ImageProcessing_BSC_WPF
                     {
                         Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
                     }
-                    BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
+                    BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
                     break;
                 case MLModel.FastRCNN:
                     FastRCNN.EvaluateObjectDetectionModel();
+                    break;
+                case MLModel.Yolo:
+                    GV.imgProcessed = new Image<Bgr, byte>(mYolo.Detect(GV.imgOriginal.ToBitmap()));
+                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
                     break;
             }
         }
@@ -747,12 +778,25 @@ namespace ImageProcessing_BSC_WPF
             if (!this.IsLoaded) return;
             GB_ML_operation.IsEnabled = false;
             MLCore.MLModelSelected = (MLModel)ML_cmb_model.SelectedIndex;
+
+            if (MLCore.MLModelSelected == MLModel.Yolo)
+            {
+                ML_cmb_dataset.Visibility = Visibility.Hidden;
+                Panel_ML_LabelJobType.Visibility = Visibility.Hidden;
+                TB_ML_modelName.Text = ModelPath.GetWeightFile(GV.ML_Folders[(int)MLFolders.ML_YOLO_model]);
+            }
+            else
+            {
+                ML_cmb_dataset.Visibility = Visibility.Visible;
+                Panel_ML_LabelJobType.Visibility = Visibility.Visible;
+            }
         }
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
             GB_ML_operation.IsEnabled = false;
-            MLCore.MLSelectedLabels = DataSet.labelSet[ML_cmb_dataset.SelectedIndex];
+
+            MLCore.MLSelectedLabels = DataSet.LabelSet[ML_cmb_dataset.SelectedIndex];
             MLCore.MLTrainedDataSetSelectedIndex = ML_cmb_dataset.SelectedIndex;
         }
 
@@ -770,16 +814,16 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_generateImgFolder_source_Click(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(BindManager.BindMngr.ML_sourceTrainImgDir.value))
+            if (!Directory.Exists(BindMngr.ML_CNTK_sourceTrainImgDir.value))
             {
-                Directory.CreateDirectory(BindManager.BindMngr.ML_sourceTrainImgDir.value);
+                Directory.CreateDirectory(BindMngr.ML_CNTK_sourceTrainImgDir.value);
                 mNotification.Show("Source train image folder is created");
             }
             else
                 mNotification.Show("Folder exists");
-            if (!Directory.Exists(BindManager.BindMngr.ML_sourceTestImgDir.value))
+            if (!Directory.Exists(BindMngr.ML_CNTK_sourceTestImgDir.value))
             {
-                Directory.CreateDirectory(BindManager.BindMngr.ML_sourceTestImgDir.value);
+                Directory.CreateDirectory(BindMngr.ML_CNTK_sourceTestImgDir.value);
                 mNotification.Show("Source test image folder is created");
             }
             else
@@ -788,16 +832,16 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_generateImgFolder_MLRoot_Click(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(BindManager.BindMngr.ML_trainImgDir.value))
+            if (!Directory.Exists(BindMngr.ML_CNTK_trainImgDir.value))
             {
-                Directory.CreateDirectory(BindManager.BindMngr.ML_trainImgDir.value);
+                Directory.CreateDirectory(BindMngr.ML_CNTK_trainImgDir.value);
                 mNotification.Show("ML train image folder is created");
             }
             else
                 mNotification.Show("Folder exists");
-            if (!Directory.Exists(BindManager.BindMngr.ML_testImgDir.value))
+            if (!Directory.Exists(BindMngr.ML_CNTK_testImgDir.value))
             {
-                Directory.CreateDirectory(BindManager.BindMngr.ML_testImgDir.value);
+                Directory.CreateDirectory(BindMngr.ML_CNTK_testImgDir.value);
                 mNotification.Show("ML test image folder is created");
             }
             else
@@ -808,58 +852,66 @@ namespace ImageProcessing_BSC_WPF
         {
             if (TB_sourceImgDir.Text != "" && TB_resizedImgDir.Text != "" && TB_resizeWidth.Text != "" && TB_resizeHeight.Text != "")
                 ImageResizing.ImageBatchResizing(
-                    BindManager.BindMngr.ML_sourceImgDir.value, 
-                    BindManager.BindMngr.ML_rootDir.value, 
-                    Convert.ToInt32(BindManager.BindMngr.ML_desWidth.value), 
-                    Convert.ToInt32(BindManager.BindMngr.ML_desHeight.value));
+                    BindMngr.ML_CNTK_sourceImgDir.value, 
+                    BindMngr.ML_CNTK_rootDir.value, 
+                    Convert.ToInt32(BindMngr.ML_desWidth.value), 
+                    Convert.ToInt32(BindMngr.ML_desHeight.value));
             else
                 mMessageBox.Show("Empty string");
         }
 
         private void Btn_openDir_Click(object sender, RoutedEventArgs e)
         {
-            BindManager.BindMngr.ML_sourceImgDir.value = GF.OpenDirectoryDialog();
+            BindMngr.ML_CNTK_sourceImgDir.value = GF.OpenDirectoryDialog();
         }
 
         private void Btn_openDir_ML_root_Click(object sender, RoutedEventArgs e)
         {
-            BindManager.BindMngr.ML_rootDir.value = GF.OpenDirectoryDialog();
+            BindMngr.ML_CNTK_rootDir.value = GF.OpenDirectoryDialog();
         }
 
         private void Btn_calculateMean_Click(object sender, RoutedEventArgs e)
         {
             //string trainFileDir = @"C:\Users\bojun.lin\Downloads\cifar\train";
-            //string meanFileDir = @"C:\Users\bojun.lin\Downloads\cifar";//BindManager.BindMngr.ML_rootDir.value;
-            MeanFileGenerator.GenerateMeanFile(TB_meanCalImgDir.Text, BindManager.BindMngr.ML_rootDir.value);
+            //string meanFileDir = @"C:\Users\bojun.lin\Downloads\cifar";//BindMngr.ML_rootDir.value;
+            MeanFileGenerator.GenerateMeanFile(TB_meanCalImgDir.Text, BindMngr.ML_CNTK_rootDir.value);
            // MeanFileGenerator.GenerateConstMeanFile(meanFileDir);
         }
 
         private void Btn_calculateConstMean_Click(object sender, RoutedEventArgs e)
         {
-            MeanFileGenerator.GenerateConstMeanFile(BindManager.BindMngr.ML_rootDir.value, ImageColorType.RGB);
+            MeanFileGenerator.GenerateConstMeanFile(BindMngr.ML_CNTK_rootDir.value, ImageColorType.RGB);
         }
 
         private void Btn_calculateConstMeanMono_Click(object sender, RoutedEventArgs e)
         {
-            MeanFileGenerator.GenerateConstMeanFile(BindManager.BindMngr.ML_rootDir.value, ImageColorType.Mono);
+            MeanFileGenerator.GenerateConstMeanFile(BindMngr.ML_CNTK_rootDir.value, ImageColorType.Mono);
         }
 
         private void Btn_ML_labling_Click(object sender, RoutedEventArgs e)
         {
-            ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLSelectedLabels);
-            w.ShowDialog();
+            if (MLCore.MLModelSelected == MLModel.Yolo)
+            {
+                ImageLabel_Yolo w = new ImageLabel_Yolo();
+                w.ShowDialog();
+            }
+            else
+            {
+                ImageLabelingWindow w = new ImageLabelingWindow((JobType)Cmb_ML_jobType.SelectedIndex, MLCore.MLSelectedLabels);
+                w.ShowDialog();
+            }
         }
 
         private void TB_sourceImgDir_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (TB_sourceImgDir.Text != "")
-                BindManager.BindMngr.ML_sourceImgDir.value = TB_sourceImgDir.Text;
+                BindMngr.ML_CNTK_sourceImgDir.value = TB_sourceImgDir.Text;
         }
 
         private void TB_resizedImgDir_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (TB_resizedImgDir.Text != "")
-                BindManager.BindMngr.ML_rootDir.value = TB_resizedImgDir.Text;
+                BindMngr.ML_CNTK_rootDir.value = TB_resizedImgDir.Text;
         }
 
         #endregion Machine Learning

@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Utilities_BSC_dll_x64;
+using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 {
@@ -41,15 +42,15 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         /// <summary>
         /// For source image labling use
         /// </summary>
-        static string sourceMapFile_train = BindManager.BindMngr.ML_sourceImgDir.value + "\\local_train_map.txt";
-        static string sourceMapFile_test = BindManager.BindMngr.ML_sourceImgDir.value + "\\local_test_map.txt";
+        static string sourceMapFile_train = BindManager.BindMngr.ML_CNTK_sourceImgDir.value + "\\local_train_map.txt";
+        static string sourceMapFile_test = BindManager.BindMngr.ML_CNTK_sourceImgDir.value + "\\local_test_map.txt";
         string[] sourceMapFileArr = new string[2] { sourceMapFile_train, sourceMapFile_test };
 
         /// <summary>
         /// For ML model use
         /// </summary>
-        static string mapFile_train = BindManager.BindMngr.ML_rootDir.value + "\\train_map.txt";
-        static string mapFile_test = BindManager.BindMngr.ML_rootDir.value + "\\test_map.txt";
+        static string mapFile_train = BindManager.BindMngr.ML_CNTK_rootDir.value + "\\train_map.txt";
+        static string mapFile_test = BindManager.BindMngr.ML_CNTK_rootDir.value + "\\test_map.txt";
         string[] mapFileArr = new string[2] { mapFile_train, mapFile_test };
 
         Style radio_tagStyle;
@@ -59,13 +60,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         JobType jobType;
         string[] sourceImgFolderArr = new string[2] 
         {
-            BindManager.BindMngr.ML_sourceTrainImgDir.value,
-            BindManager.BindMngr.ML_sourceTestImgDir.value
+            BindManager.BindMngr.ML_CNTK_sourceTrainImgDir.value,
+            BindManager.BindMngr.ML_CNTK_sourceTestImgDir.value
         };
         string[] mlImgFolderArr = new string[2]
         {
-            BindManager.BindMngr.ML_trainImgDir.value,
-            BindManager.BindMngr.ML_testImgDir.value
+            BindManager.BindMngr.ML_CNTK_trainImgDir.value,
+            BindManager.BindMngr.ML_CNTK_testImgDir.value
         };
 
         List<RadioButton> radioBtnList = new List<RadioButton>();
@@ -268,14 +269,6 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             return total;
         }
 
-        //private int scanImgs(string _imgDir)
-        //{
-        //    int total = 0;
-        //    FileInfo[] fileInfo = new DirectoryInfo(_imgDir).GetFiles();
-        //    total = fileInfo.Length;
-        //    return total;
-        //}
-
         private void loadLabels(string mapFileUrl)
         {
             sourceImgMapList.Clear();
@@ -413,7 +406,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         private void ResizingRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             createFinalMapFile(mapFileArr[(int)jobType]);
-            generateMeanFile(BindManager.BindMngr.ML_rootDir.value);
+            generateMeanFile(BindManager.BindMngr.ML_CNTK_rootDir.value);
             BindManager.BindMngr.GMessage.value = "Map file created";
         }
 

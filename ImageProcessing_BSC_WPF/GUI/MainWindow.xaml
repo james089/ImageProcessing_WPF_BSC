@@ -179,7 +179,7 @@
 
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="Expander_difference" Header="Difference Detect" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35">
+                        <TabItem x:Name="Expander_difference" Header="Contrast Detect" Margin="0" RenderTransformOrigin="0.5,0.5" Grid.Row="8" Height="35">
                             <Grid Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -315,19 +315,19 @@
                                                 </Grid.ColumnDefinitions>
                                                 <Label Content="Model Type" Grid.RowSpan="1"/>
                                                 <ComboBox x:Name="ML_cmb_model" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.RowSpan="1" SelectionChanged="ML_cmb_model_SelectionChanged" Height="35" Width="100">
-                                                    <ComboBoxItem Content="ResNet"/>
-                                                    <ComboBoxItem Content="FastRCNN"/>
+                                      
                                                 </ComboBox>
                                                 <Label Content="DataSet" Grid.Row="1"/>
                                                 <ComboBox x:Name="ML_cmb_dataset" SelectedIndex="0" Grid.Column="1" Margin="5" Grid.Row="1" SelectionChanged="ML_cmb_dataset_SelectionChanged" Height="35" Width="100">
                                                     <ComboBoxItem Content="CIFAR10"/>
                                                     <ComboBoxItem Content="MNIST"/>
                                                     <ComboBoxItem Content="Custom"/>
+                                                    <ComboBoxItem Content="LocalFile"/>
                                                 </ComboBox>
                                                 <Grid Grid.Column="2" Grid.RowSpan="2" >
                                                     <Grid.RowDefinitions>
-                                                        <RowDefinition Height="*"/>
-                                                        <RowDefinition Height="*"/>
+                                                        <RowDefinition/>
+                                                        <RowDefinition Height="45"/>
                                                     </Grid.RowDefinitions>
                                                     <DockPanel Margin="5">
                                                         <Label Content="Model Name" />
@@ -358,22 +358,22 @@
                                         <Expander x:Name="Grid_FileDirectory" Header="File Directory" Margin="5" Grid.Row="1">
                                             <Grid >
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="10*"/>
+                                                    <ColumnDefinition Width="180"/>
                                                     <ColumnDefinition Width="15*"/>
-                                                    <ColumnDefinition Width="5*"/>
-                                                    <ColumnDefinition Width="10*"/>
+                                                    <ColumnDefinition Width="50"/>
+                                                    <ColumnDefinition Width="auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="1*"/>
                                                     <RowDefinition Height="1*"/>
                                                 </Grid.RowDefinitions>
                                                 <Label Content="Source Image Directory: " Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
-                                                <TextBox x:Name="TB_sourceImgDir" Text="{Binding ML_sourceImgDir.value}" Grid.Column="1" Margin="5" TextChanged="TB_sourceImgDir_TextChanged"/>
+                                                <TextBox x:Name="TB_sourceImgDir" Text="{Binding ML_CNTK_sourceImgDir.value}" Grid.Column="1" Margin="5" TextChanged="TB_sourceImgDir_TextChanged"/>
                                                 <Button x:Name="Btn_openDir" Content="..." Grid.Column="2" Margin="5" Click="Btn_openDir_Click" Height="27" VerticalAlignment="Top"/>
                                                 <Button x:Name="Btn_generateImgFolder_source" Content="Create Sub Image Folder" Grid.Column="3" Margin="5" Click="Btn_generateImgFolder_source_Click" Height="27" VerticalAlignment="Top"/>
 
                                                 <Label Content="ML Root Directory: " Grid.Row="1" Margin="5" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
-                                                <TextBox x:Name="TB_resizedImgDir" Text="{Binding ML_rootDir.value}" Grid.Row="1" Grid.Column="1" Margin="5" TextChanged="TB_resizedImgDir_TextChanged"/>
+                                                <TextBox x:Name="TB_resizedImgDir" Text="{Binding ML_CNTK_rootDir.value}" Grid.Row="1" Grid.Column="1" Margin="5" TextChanged="TB_resizedImgDir_TextChanged"/>
                                                 <Button x:Name="Btn_openDir_ML_root" Content="..." Grid.Row="1" Grid.Column="2" Margin="5" Click="Btn_openDir_ML_root_Click"/>
                                                 <Button x:Name="Btn_generateImgFolder_MLRoot" Content="Create Sub Image Folder" Grid.Row="1" Grid.Column="3" Margin="5" Click="Btn_generateImgFolder_MLRoot_Click" Height="27" VerticalAlignment="Top"/>
 
@@ -384,14 +384,15 @@
                                             <Grid x:Name="Grid_labeling" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="1*"/>
-                                                    <ColumnDefinition Width="1*"/>
                                                     <ColumnDefinition Width="2*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Content="Job Type: "  Margin="5"/>
-                                                <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
-                                                    <ComboBoxItem Content="Train" />
-                                                    <ComboBoxItem Content="Test" />
-                                                </ComboBox>
+                                                <DockPanel x:Name="Panel_ML_LabelJobType" >
+                                                    <Label Content="Job Type: "  Margin="5"/>
+                                                    <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
+                                                        <ComboBoxItem Content="Train" />
+                                                        <ComboBoxItem Content="Test" />
+                                                    </ComboBox>
+                                                </DockPanel>
                                                 <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2"/>
                                             </Grid>
                                         </GroupBox>
@@ -436,13 +437,13 @@
                                                     <Button x:Name="Btn_calculateConstMean" Height="35" Content="Const Mean (RGB)"  Margin="5" Click="Btn_calculateConstMean_Click"/>
                                                     <Button x:Name="Btn_calculateConstMeanMono" Height="35" Content="Const Mean (Mono)"  Margin="5" Click="Btn_calculateConstMeanMono_Click"/>
                                                 </StackPanel>
-                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                    <Label Content="ImgFolder" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Label Content="ImgFolder" VerticalAlignment="Center" />
                                                     <TextBox x:Name="TB_meanCalImgDir" MinWidth="100" Height="35" VerticalAlignment="Top"/>
                                                 </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2">
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Center">
                                                     <Label Content="Mean File Saved at: " Grid.Column="1" Margin="5"/>
-                                                    <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_rootDir.value}" Grid.Column="2" Margin="5"/>
+                                                    <Label Style="{DynamicResource Label_frame}" Content="{Binding ML_CNTK_rootDir.value}" Grid.Column="2" Margin="5"/>
                                                 </StackPanel>
                                             </Grid>
                                         </Expander>

@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="1000" d:DesignWidth="1600" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
+             d:DesignHeight="950" d:DesignWidth="1450" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Background="{DynamicResource TransBlackColor}" AllowsTransparency="True" Loaded="Window_Loaded">
 
     <Grid Height="900" Width="1400" >
         <Grid.ColumnDefinitions>
@@ -143,6 +143,6 @@
         </StackPanel>
 
         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-        <Button x:Name="Btn_close" Content="Save Result" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Background="{x:Null}" Foreground="{DynamicResource ActiveColor}"/>
+        <Button x:Name="Btn_close" Content="Save Result" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Background="{x:Null}" Foreground="{DynamicResource BlueColor}"/>
     </Grid>
 </Window>
