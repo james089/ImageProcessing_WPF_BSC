@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace ImageProcessing_BSC_WPF.GUI.Panels
 {
     /// <summary>
-    /// Interaction logic for CameraConnectIcon.xaml
+    /// Interaction logic for CameraConnectButton.xaml
     /// </summary>
-    public partial class CameraConnectIcon : ToggleButton
+    public partial class CameraConnectButton : ToggleButton
     {
-        public CameraConnectIcon()
+        public CameraConnectButton()
         {
             InitializeComponent();
         }

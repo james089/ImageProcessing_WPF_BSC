@@ -7,7 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Emgu.CV;
+using Emgu.CV.Structure;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
+using Utilities_BSC_dll_x64;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 {
@@ -21,6 +24,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
         static int DesHeight;
         static int TotalImages;
         static bool IsDeleteOriginal;
+        static bool IsKeepRatio;
         private static int CurrentImageIndex = 0;
 
         public static void ImageResizingSetup()
@@ -34,7 +38,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
 
         public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight)
         {
-            ImageBatchResizing(_imgDir, _saveDir, _desWidth, _desHeight, false);
+            ImageBatchResizing(_imgDir, _saveDir, _desWidth, _desHeight, false, false);
         }
 
         /// <summary>
@@ -45,13 +49,14 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
         /// <param name="_desWidth"></param>
         /// <param name="_desHeight"></param>
         /// <param name="isDeleteOriginal"></param>
-        public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight, bool _isDeleteOriginal)
+        public static void ImageBatchResizing(string _imgDir, string _saveDir, int _desWidth, int _desHeight, bool _isDeleteOriginal, bool _isKeepRatio)
         {
             ImgDir = _imgDir;
             SaveDir = _saveDir;
             DesWidth = _desWidth;
             DesHeight = _desHeight;
             IsDeleteOriginal = _isDeleteOriginal;
+            IsKeepRatio = _isKeepRatio;
 
             if (!Directory.Exists(ImgDir)) Directory.CreateDirectory(ImgDir);
             if (!Directory.Exists(SaveDir)) Directory.CreateDirectory(SaveDir);
@@ -86,21 +91,48 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.Helpers
         private static void ResizingRoutine_doWork(object sender, DoWorkEventArgs e)
         {
             DirectoryInfo Folder = new DirectoryInfo(ImgDir);
-            FileInfo[] ImageInfo = Folder.GetFiles();
+            FileInfo[] ImageInfo = Folder.GetFiles().OrderBy(p => p.Name).ToArray();
             TotalImages = ImageInfo.Length;
 
             for (int i = 0; i < TotalImages; i++)
             {
                 Bitmap bm = new Bitmap(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
-                Bitmap rbm = CntkBitmapExtensions.Resize(bm, DesWidth, DesHeight, true);
-                
-                rbm.Save(SaveDir + string.Format("\\{0:D5}.jpg", i));         // This will make it "00000" "00001"...
+                Bitmap rbm = bm;
+                if (IsKeepRatio)
+                {
+                    Image<Bgr, byte> grayBackground = new Image<Bgr, byte>(DesWidth, DesHeight);
+                    grayBackground.SetValue(new Bgr(Color.Gray));   // Set background color
+
+                    if (((double)bm.Width / (double)bm.Height) < ((double)DesWidth / (double)DesHeight))
+                    {
+                        int rbm_w = bm.Width * (DesHeight / bm.Height);
+                        rbm = CntkBitmapExtensions.Resize(bm, rbm_w, DesHeight, true);
+
+                        Image<Bgr, byte> rbm_emgu = new Image<Bgr, byte>(rbm);
+
+                        rbm = ImgStiching.combine(grayBackground, rbm_emgu, new Point((DesWidth - rbm_w) / 2, 0)).ToBitmap();
+                    }
+                    else
+                    {
+                        int rbm_h = bm.Height * (DesWidth / bm.Width);
+                        rbm = CntkBitmapExtensions.Resize(bm, DesWidth, rbm_h, true);
+
+                        Image<Bgr, byte> rbm_emgu = new Image<Bgr, byte>(rbm);
+
+                        rbm = ImgStiching.combine(grayBackground, rbm_emgu, new Point(0, (DesHeight - rbm_h) / 2)).ToBitmap();
+                    }
+                }
+                else
+                    rbm = CntkBitmapExtensions.Resize(bm, DesWidth, DesHeight, true);
+
+                if (IsDeleteOriginal)
+                    File.Delete(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
+
+                rbm.Save(SaveDir + $"\\res_{i:D5}.jpg");         // This will make it "00000" "00001"...
 
                 bm.Dispose();
                 rbm.Dispose();
 
-                if(IsDeleteOriginal)
-                    File.Delete(String.Format(@"{0}\{1}", ImgDir, ImageInfo[i].Name));
 
                 ResizingRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / TotalImages));
                 //Thread.Sleep(1);

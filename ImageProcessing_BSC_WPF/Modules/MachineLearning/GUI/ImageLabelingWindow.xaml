@@ -25,7 +25,7 @@
 
         <Grid x:Name="Grid_title" Grid.ColumnSpan="2">
             <Border Background="{DynamicResource Background_titleBar}" CornerRadius="15,15,0,0"/>
-            <Label x:Name="lbl_title" Content="{Binding GMessage.value}" FontSize="20"/>
+            <Label x:Name="lbl_title" Content="{Binding GMessage.value}" FontSize="20" Foreground="White"/>
             <ProgressBar x:Name="progressBar" Style="{DynamicResource ProgressBar_flat}" Height="5" Value="{Binding Progress.value}" VerticalAlignment="Bottom"/>
         </Grid>
 

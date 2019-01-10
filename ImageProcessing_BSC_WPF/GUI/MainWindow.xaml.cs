@@ -90,7 +90,7 @@ namespace ImageProcessing_BSC_WPF
 
             // Show ML Model types
             ML_cmb_model.ItemsSource = Enum.GetValues(typeof(MLModel)).Cast<MLModel>();
-            ML_cmb_model.SelectedIndex = 0;
+            ML_cmb_model.SelectedIndex = 2;
         }
 
         private void loadProgramSetting()
@@ -892,7 +892,7 @@ namespace ImageProcessing_BSC_WPF
         {
             if (MLCore.MLModelSelected == MLModel.Yolo)
             {
-                ImageLabel_Yolo w = new ImageLabel_Yolo();
+                ImageLabelTool_Yolo w = new ImageLabelTool_Yolo();
                 w.ShowDialog();
             }
             else

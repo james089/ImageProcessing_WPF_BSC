@@ -84,7 +84,7 @@
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
-                                <panels:CameraConnectIcon x:Name="Chk_connectCam" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="50" Margin="0,5"/>
+                                <panels:CameraConnectButton x:Name="Chk_connectCam" Unchecked="Chk_connectCam_Unchecked" Checked="Chk_connectCam_Checked" Height="50" Margin="0,5"/>
 
                                 <DockPanel Grid.Column="1">
                                     <Label Content="" Grid.Row="0" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120"/>

@@ -65,13 +65,13 @@ namespace ImageProcessing_BSC_WPF
         ML_YOLO,
 
         /// <summary>
-        /// @"\Modules\MachineLearning\YOLO\model"
+        /// @"\Modules\MachineLearning\YOLO\model", files to be used in detection
         /// </summary>
         [Description(@"\Modules\MachineLearning\YOLO\model")]
         ML_YOLO_model,
 
         /// <summary>
-        /// @"\Modules\MachineLearning\YOLO\data"
+        /// @"\Modules\MachineLearning\YOLO\data", used to train a model
         /// </summary>
         [Description(@"\Modules\MachineLearning\YOLO\data")]
         ML_YOLO_data,

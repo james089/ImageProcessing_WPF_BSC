@@ -1,0 +1,67 @@
+﻿<RadioButton x:Class="ImageProcessing_BSC_WPF.GUI.Panels.OrientationSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageProcessing_BSC_WPF.GUI.Panels"
+             mc:Ignorable="d" Height="auto" Width="auto">
+    <RadioButton.Template>
+
+        <ControlTemplate TargetType="{x:Type RadioButton}">
+            <ControlTemplate.Resources>
+                <Storyboard x:Key="HighlightedOn">
+                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="HoverShineBorder" Storyboard.TargetProperty="(UIElement.Opacity)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="1"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="HightlightedOff">
+                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="HoverShineBorder" Storyboard.TargetProperty="(UIElement.Opacity)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="Checked">
+                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CheckBorder" Storyboard.TargetProperty="(UIElement.Opacity)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="1"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="Unchecked">
+                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CheckBorder" Storyboard.TargetProperty="(UIElement.Opacity)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+            </ControlTemplate.Resources>
+            <Grid x:Name="Background">
+
+                <Viewbox>
+                    <Grid Width="100" Height="100">
+                        <Border BorderThickness="10" Width="80" Height="60" BorderBrush="{DynamicResource BorderBrush}"/>
+                    </Grid>
+                </Viewbox>
+                <Border x:Name="HoverShineBorder" Background="{DynamicResource HoverShineColor}" 
+                                Grid.ColumnSpan="2" Opacity="0" CornerRadius="{DynamicResource CornerRadius}"/>
+                <Border x:Name="CheckBorder" Background="{DynamicResource SuperTransGrayColor}"></Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="CheckBorder" Property="Opacity" Value="1"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="CheckBorder" Property="Opacity" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Trigger.ExitActions>
+                        <BeginStoryboard Storyboard="{StaticResource HightlightedOff}"/>
+                    </Trigger.ExitActions>
+                    <Trigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource HighlightedOn}"/>
+                    </Trigger.EnterActions>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Background" Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </RadioButton.Template>
+    
+   
+</RadioButton>

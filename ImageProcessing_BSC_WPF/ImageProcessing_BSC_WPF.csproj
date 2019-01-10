@@ -166,8 +166,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="GUI\Panels\CameraConnectIcon.xaml.cs">
-      <DependentUpon>CameraConnectIcon.xaml</DependentUpon>
+    <Compile Include="GUI\Panels\CameraConnectButton.xaml.cs">
+      <DependentUpon>CameraConnectButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Panels\LabelledTextBox.xaml.cs">
+      <DependentUpon>LabelledTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Panels\OrientationSelector.xaml.cs">
+      <DependentUpon>OrientationSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\CheckBoundry.cs" />
     <Compile Include="Modules\ColorDetection.cs" />
@@ -177,8 +183,8 @@
     <Compile Include="Modules\CortexDecoder\CortexDecoder.cs" />
     <Compile Include="Modules\MachineLearning\CNTK\FastRCNN.cs" />
     <Compile Include="Modules\MachineLearning\CNTK\CntkBitmapExtensions.cs" />
-    <Compile Include="Modules\MachineLearning\GUI\ImageLabel_Yolo.xaml.cs">
-      <DependentUpon>ImageLabel_Yolo.xaml</DependentUpon>
+    <Compile Include="Modules\MachineLearning\GUI\ImageLabelTool_Yolo.xaml.cs">
+      <DependentUpon>ImageLabelTool_Yolo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\MachineLearning\Helpers\ImageResizing.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />
@@ -203,11 +209,19 @@
     <Compile Include="GUI\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="GUI\Panels\CameraConnectIcon.xaml">
+    <Page Include="GUI\Panels\CameraConnectButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Modules\MachineLearning\GUI\ImageLabel_Yolo.xaml">
+    <Page Include="GUI\Panels\LabelledTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Panels\OrientationSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\MachineLearning\GUI\ImageLabelTool_Yolo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -361,7 +375,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GUI\Icons\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)Dlls\* $(ProjectDir)$(OutDir)</PostBuildEvent>
