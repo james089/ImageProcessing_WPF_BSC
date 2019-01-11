@@ -80,10 +80,10 @@
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="Btn_back" Content="back" Margin="0,5,2.5,5" Click="Btn_back_Click"/>
+                        <!--<Button x:Name="Btn_back" Content="back" Margin="0,5,2.5,5" Click="Btn_back_Click"/>-->
                         <Button x:Name="Btn_next1" Content="Next" Margin="5" Grid.Column="1" Click="Btn_next1_Click"/>
                     </Grid>
                 </StackPanel>
@@ -98,7 +98,7 @@
 
             <Grid x:Name="Grid_ImageViewer" Margin="10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="130"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid>
@@ -131,46 +131,86 @@
                     </Button>
                 </Grid>
 
-
-                <Viewbox Margin="5" Grid.Row="1" >
-                    <Image x:Name="Img_viewer" Height="480" Width="640" />
-                </Viewbox>
+                <DockPanel Grid.Row="1" >
+                    <DockPanel DockPanel.Dock="Top">
+                        <Label Content="ImageBoxSize: [640x480]" HorizontalAlignment="Left" FontSize="12"/>
+                        <Label x:Name="lbl_imgInfo" Content="" HorizontalAlignment="Left" FontSize="12"/>
+                    </DockPanel>
+                    <Viewbox >
+                        <Border Margin="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                            <Image x:Name="Img_viewer" Height="480" Width="640" Stretch="Fill"
+                           MouseDown="Img_viewer_MouseDown" MouseMove="Img_viewer_MouseMove" MouseUp="Img_viewer_MouseUp"/>
+                        </Border>
+                    </Viewbox>
+                </DockPanel>
             </Grid>
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <GroupBox Header="Set label" Grid.Row="0" Grid.ColumnSpan="3" Margin="5" >
-                    <Grid >
+
+            <Grid x:Name="Grid_rightPanel" Grid.Column="1" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.RowSpan="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Set label" Grid.Row="0" Margin="5" >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Set label: " Margin="5,5,0,5" HorizontalAlignment="Left"/>
+                            <WrapPanel x:Name="Wrap_radios" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" ></WrapPanel>
+                            <!--<Button x:Name="Btn_editLabels" Content="Edit" Grid.Column="2" Width="50" Height="35" Margin="5,0,0,0" Click="Btn_editLabels_Click" Visibility="Collapsed"/>-->
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="ROI" Grid.Row="1" Margin="5">
+                        <StackPanel>
+                            <Button x:Name="Btn_deleteLastRegion" Content="Delete Last Region" Width="150" HorizontalAlignment="Left" Click="Btn_deleteLastRegion_Click"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Rectangles (X, Y, W, H)" />
+                                <Label Content="Relative Values" Grid.Column="1"/>
+                                <ListBox x:Name="LB_regionRectangles" Margin="0,5,5,5" Grid.Row="1" Style="{x:Null}"/>
+                                <ListBox x:Name="LB_outPutRegionValues" Margin="5,5,0,5" Grid.Row="1" Grid.Column="1" Style="{x:Null}"/>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+
+                <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                    <Grid x:Name="Grid_dirInfo" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Set label: " Margin="5,5,0,5" HorizontalAlignment="Left"/>
-                        <WrapPanel x:Name="Wrap_radios" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" ></WrapPanel>
-                        <Button x:Name="Btn_editLabels" Content="Edit" Grid.Column="2" Width="50" Height="35" Margin="5,0,0,0" Click="Btn_editLabels_Click" Visibility="Collapsed"/>
+                        <Label Content="Labeling img from: " Margin="5,5,0,5" HorizontalAlignment="Left" Grid.Row="0"  Opacity="0.5"/>
+                        <TextBlock x:Name="lbl_imgFolder" Text="" Grid.Column="1" Margin="5" Opacity="0.5" TextWrapping="Wrap" Foreground="{DynamicResource FontColor}"/>
                     </Grid>
-                </GroupBox>
-            </StackPanel>
 
+                    <Grid x:Name="Grid_mapDir" Grid.Row="1" Grid.ColumnSpan="3" Visibility="Visible">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Files Saved At: " Margin="5,5,0,5" VerticalContentAlignment="Center" HorizontalAlignment="Left" Opacity="0.5"/>
+                        <TextBlock x:Name="lbl_trainingFilesFolder" Text="" Margin="5" Grid.Column="1" Opacity="0.5" TextWrapping="Wrap" Foreground="{DynamicResource FontColor}"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom">
-                <Grid x:Name="Grid_dirInfo" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Labeling img from: " Margin="5,5,0,5" HorizontalAlignment="Left" Grid.Row="0"  Opacity="0.5"/>
-                    <TextBlock x:Name="lbl_imgFolder" Text="" Grid.Column="1" Margin="5" Opacity="0.5" TextWrapping="Wrap" Foreground="{DynamicResource FontColor}"/>
-                </Grid>
-
-                <Grid x:Name="Grid_mapDir" Grid.Row="1" Grid.ColumnSpan="3" Visibility="Visible">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Training Data Saved At: " Margin="5,5,0,5" VerticalContentAlignment="Center" HorizontalAlignment="Left" Opacity="0.5"/>
-                    <TextBlock x:Name="lbl_trainingFilesFolder" Text="" Margin="5" Grid.Column="1" Opacity="0.5" TextWrapping="Wrap" Foreground="{DynamicResource FontColor}"/>
-                </Grid>
-            </StackPanel>
         </Grid>
 
         <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="2"/>

@@ -355,7 +355,7 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <Expander x:Name="Grid_FileDirectory" Header="File Directory" Margin="5" Grid.Row="1">
+                                        <Expander x:Name="Exp_FileDirectory" Header="File Directory" Margin="5" Grid.Row="1">
                                             <Grid >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="180"/>
@@ -397,7 +397,7 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <Expander Header="Image Resizing (Image Source Dir, All photos)" Grid.Row="2" Visibility="Visible" Margin="5">
+                                        <Expander x:Name="Exp_ImgResizing" Header="Image Resizing (Image Source Dir, All photos)" Grid.Row="2" Visibility="Visible" Margin="5">
                                             <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="10*"/>
@@ -425,7 +425,7 @@
                                             </Grid>
                                         </Expander>
 
-                                        <Expander Header="Mean Calculation (Optional)[Calculate source train image mean]" Grid.Row="3" Margin="5" Visibility="Visible">
+                                        <Expander x:Name="Exp_MeanCalculation" Header="Mean Calculation (Optional)[Calculate source train image mean]" Grid.Row="3" Margin="5" Visibility="Visible">
                                             <Grid x:Name="Grid_mean" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>

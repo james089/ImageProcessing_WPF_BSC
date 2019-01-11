@@ -15,6 +15,9 @@ using Utilities_BSC_dll_x64;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK;
 using System.Threading;
 using ImageProcessing_BSC_WPF.GUI.Panels;
+using System.Windows.Input;
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 {
@@ -25,7 +28,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
     {
         enum Steps
         {
-            step0_resize,
+            //step0_resize, // can be skipped
             step1_createLabels,
             step2_labeling,
         }
@@ -34,13 +37,39 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         int res_img_w = 0, res_img_h = 0;
         int totalImgNum = 0;
         /// <summary>
+        /// ImageBoxWidth / imgWidth
+        /// </summary>
+        double zoomFactor_x = 0;
+        /// <summary>
+        /// ImageBoxHeight / imgHeight
+        /// </summary>
+        double zoomFactor_y = 0;
+        /// <summary>
         ///  The labeling img index inside the imgThumbList
         /// </summary>
-        int sImgIndex = 0;       
+        int cImgIndex = 0;
 
-        FileInfo[] srcImgFile_Info;
-        FileInfo[] ImgLabelROI_Info;
+        /// <summary>
+        /// train images / total images
+        /// </summary>
+        const double TRAIN_IMG_RATE = 0.75;
+
+        /// <summary>
+        /// The Image that is currently showing
+        /// </summary>
+        static Image<Bgr, byte> currentImage;
+        /// <summary>
+        /// This is the class index for labeling (0 1 2 3...)
+        /// </summary>
+        static int clabelIndex = 0;
+
+        /// <summary>
+        /// Folder contais all src image
+        /// </summary>
         static string currentImgDir;                                     // Img dir
+        /// <summary>
+        /// Root folder
+        /// </summary>
         static string yoloDataDir;
 
         /// <summary>
@@ -51,23 +80,28 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         static string obj_train_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\train.txt";
         static string obj_test_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\test.txt";
 
-        List<string> labelSet = new List<string>();
+        List<string> labelSet;
         List<RadioButton> labelSelectorList = new List<RadioButton>();
         List<System.Windows.Controls.Image> imgThumbList = new List<System.Windows.Controls.Image>();
-        List<imgInfo> mImgInfoList = new List<imgInfo>();
+        List<imgInfo> mImgInfoList;
+
 
         /// <summary>
         /// This stores every info about an image
         /// </summary>
         private class imgInfo
         {
-            public int index;
+            /// <summary>
+            /// This is filled up when loading image thumbnails
+            /// </summary>
             public string imagePath;
+            /// <summary>
+            /// This contains the location of objects in 1 image
+            /// </summary>
             public List<regionInfo> regionInfoList;
 
             public imgInfo()
             {
-                index = 0;
                 imagePath = "";
                 regionInfoList = new List<regionInfo>();
             }
@@ -75,14 +109,20 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private class regionInfo
         {
-            public int label;
+            public int labelIndex;
             public Rectangle rect;
-            //public double[] location;
+            public double[] location;
             public regionInfo()
             {
-                label = 0;
+                labelIndex = 0;
                 rect = new Rectangle();
-                //location = new double[4] {0,0,0,0};
+                location = new double[4];
+            }
+            public regionInfo(int _label, Rectangle _rect, double[] _loc)
+            {
+                labelIndex = _label;
+                rect = _rect;
+                location = _loc;
             }
         }
         //private class imgMapStruct
@@ -99,14 +139,17 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         {
             InitializeComponent();
             DataContext = BindManager.BindMngr;
+
+            labelSet = new List<string>();
+            mImgInfoList = new List<imgInfo>();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            currentImgDir = GV.ML_Folders[(int)MLFolders.ML_YOLO_img];
+            currentImgDir = GV.ML_Folders[(int)MLFolders.ML_YOLO_data_img];
             yoloDataDir = GV.ML_Folders[(int)MLFolders.ML_YOLO_data];
 
-            SwitchSteps(Steps.step0_resize);
+            SwitchSteps(Steps.step1_createLabels);
         }
 
         private void Btn_close_Click(object sender, RoutedEventArgs e)
@@ -116,8 +159,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 case mDialogResult.yes:
                     SaveNamesFile(obj_names_file);
                     SaveDataFile(obj_data_file);
-                    SaveTrainFile(obj_train_file);
-                    SaveTestFile(obj_test_file);
+                    SaveTrainAndTestFile();
                     break;
                 case mDialogResult.no:
                     break;
@@ -133,13 +175,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         {
             switch (mSteps)
             {
-                case Steps.step0_resize:
-                    Grid_step0.Visibility = Visibility.Visible;
-                    Grid_step1.Visibility = Visibility.Collapsed;
-                    Grid_step2.Visibility = Visibility.Collapsed;
+                //case Steps.step0_resize:
+                //    Grid_step0.Visibility = Visibility.Visible;
+                //    Grid_step1.Visibility = Visibility.Collapsed;
+                //    Grid_step2.Visibility = Visibility.Collapsed;
 
-                    RB_640480_Checked(null, null);
-                    break;
+                //    RB_640480_Checked(null, null);
+                //    break;
                 case Steps.step1_createLabels:
                     BindManager.BindMngr.GMessage.value = "Add your classes";
                     Grid_step0.Visibility = Visibility.Collapsed;
@@ -165,27 +207,16 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     Grid_step2.Visibility = Visibility.Visible;
 
                     /// Adding radio buttons to wrap panel
-                    loadDataSetLabelRadioButtons();
-
-                    /// Scan images
-                    totalImgNum = ScanImgs(currentImgDir, out srcImgFile_Info);
-                    if (totalImgNum == 0)
-                    {
-                        Close(); return;
-                    }
+                    LoadDataSetRadioButtons();
 
                     /// Show image folder info
                     lbl_imgFolder.Text = currentImgDir;
                     lbl_trainingFilesFolder.Text = GV.ML_Folders[(int)MLFolders.ML_YOLO_data];
 
-                    /// Load existing labels
-                    LoadLabelAndRegions(currentImgDir);
-
                     /// Loading all images in this folder
-                    loadImgThumbs();
+                    /// Init imgInfoList, load existing label and location from txt file 
+                    LoadImgThumbs();
 
-                    /// Display the first img and the label
-                    DisplayImgAndLabel(0);
                     break;
             }
         }
@@ -283,7 +314,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private void Btn_next0_Click(object sender, RoutedEventArgs e)
         {
-            ImageResizing.ImageBatchResizing(GV.ML_Folders[(int)MLFolders.ML_YOLO_img], GV.ML_Folders[(int)MLFolders.ML_YOLO_img]
+            ImageResizing.ImageBatchResizing(GV.ML_Folders[(int)MLFolders.ML_YOLO_data_img], GV.ML_Folders[(int)MLFolders.ML_YOLO_data_img]
                , res_img_w, res_img_h, (bool)Chk_deleteOriImg.IsChecked, true);
 
 
@@ -319,7 +350,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         private void Btn_back_Click(object sender, RoutedEventArgs e)
         {
-            SwitchSteps(Steps.step0_resize);
+            //SwitchSteps(Steps.step0_resize);
         }
 
         private void Btn_next1_Click(object sender, RoutedEventArgs e)
@@ -338,28 +369,28 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         #region ================================= Step2 Labeling =========================================== 
         private void Btn_right_Click(object sender, RoutedEventArgs e)
         {
-            if (sImgIndex < totalImgNum - 1) sImgIndex++;
+            if (cImgIndex < totalImgNum - 1) cImgIndex++;
             else
-                sImgIndex = totalImgNum - 1;
+                cImgIndex = totalImgNum - 1;
 
-            List_imgs.SelectedIndex = sImgIndex;
+            List_imgs.SelectedIndex = cImgIndex;
             List_imgs.ScrollIntoView(List_imgs.SelectedItem);
         }
 
         private void Btn_left_Click(object sender, RoutedEventArgs e)
         {
-            if (sImgIndex > 0) sImgIndex--;
+            if (cImgIndex > 0) cImgIndex--;
             else
-                sImgIndex = 0;
+                cImgIndex = 0;
 
-            List_imgs.SelectedIndex = sImgIndex;
+            List_imgs.SelectedIndex = cImgIndex;
             List_imgs.ScrollIntoView(List_imgs.SelectedItem);
         }
 
         private void List_imgs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            sImgIndex = List_imgs.SelectedIndex;
-            DisplayImgAndLabel(sImgIndex);
+            cImgIndex = List_imgs.SelectedIndex;
+            DisplayImgAndLabel(cImgIndex);
         }
 
         private void disabelPreviewAnddeselectTags()
@@ -371,16 +402,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
         }
 
-        private void Btn_editLabels_Click(object sender, RoutedEventArgs e)
-        {
-           
-        }
-
-        #endregion ================================= Step2 Labeling ===========================================
-        #endregion Between Steps
-
         #region Load image thumbs
-
         private struct indexedImg
         {
             public int index;
@@ -388,28 +410,55 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         }
 
         BackgroundWorker loadImgRoutine = new BackgroundWorker();
-        private void loadImgThumbs()
+
+        /// <summary>
+        /// init imgInfoList, load existing label and location from txt file 
+        /// </summary>
+        private void LoadImgThumbs()
         {
             loadImgRoutine.DoWork += LoadImg_DoWork;
             loadImgRoutine.ProgressChanged += LoadImg_ProgressChanged;
             loadImgRoutine.RunWorkerCompleted += LoadImgRoutine_RunWorkerCompleted;
             loadImgRoutine.WorkerReportsProgress = true;
+     
+            FileInfo[] _fileInfo = new DirectoryInfo(currentImgDir).GetFiles("*.jpg");
+            totalImgNum = _fileInfo.Length;
+            if (totalImgNum == 0)
+            {
+                mMessageBox.Show("No image found");
+            }
 
+            /// Create Image Controls and Init imgInfoList, load locations
             for (int i = 0; i < totalImgNum; i++)
             {
                 imgThumbList.Add(new System.Windows.Controls.Image());
                 imgThumbList[i].Width = thumb_w;
                 imgThumbList[i].Height = thumb_h;
                 List_imgs.Items.Add(imgThumbList[i]);
+                
+                mImgInfoList.Add(new imgInfo());
+                mImgInfoList[i].imagePath = _fileInfo[i].FullName;
+
+                /// Load txt list
+                string txtFile = mImgInfoList[i].imagePath.Replace(".jpg", ".txt");
+                LoadLabelAndLocationFromTxt(txtFile, mImgInfoList[i]);
             }
             List_imgs.SelectedIndex = 0;
             Thread.Sleep(20);
             if (!loadImgRoutine.IsBusy) loadImgRoutine.RunWorkerAsync();
         }
 
-        private void LoadImgRoutine_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void LoadImg_DoWork(object sender, DoWorkEventArgs e)
         {
-            BindManager.BindMngr.GMessage.value = "Start labeling your image";
+            /// Load Actual Images
+            for (int i = 0; i < totalImgNum; i++)
+            {
+                Bitmap bmp = new Bitmap(mImgInfoList[i].imagePath);
+                Bitmap bmp_resized = CntkBitmapExtensions.Resize(bmp, thumb_w, thumb_h, false);
+                //Thread.Sleep(1);
+                loadImgRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / totalImgNum), new indexedImg() { index = i, image = bmp_resized });
+                bmp.Dispose();
+            }
         }
 
         private void LoadImg_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -431,21 +480,120 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             ((indexedImg)e.UserState).image.Dispose();
         }
 
-        private void LoadImg_DoWork(object sender, DoWorkEventArgs e)
+        private void LoadImgRoutine_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            for (int i = 0; i < totalImgNum; i++)
-            {
-                Bitmap bmp = new Bitmap(string.Format(@"{0}\{1}", currentImgDir, srcImgFile_Info[i].Name));
-                Bitmap bmp_resized = CntkBitmapExtensions.Resize(bmp, thumb_w, thumb_h, false);
-                //Thread.Sleep(1);
-                loadImgRoutine.ReportProgress(Convert.ToInt32((i + 1) * 100 / totalImgNum), new indexedImg() { index = i, image = bmp_resized });
-                bmp.Dispose();
-            }
+            BindManager.BindMngr.GMessage.value = "Start labeling your image";
         }
         #endregion Load image thumbs
+
+        #region Select Area
+        private Rectangle           cropRect;
+        private double              X0, Y0, X1, Y1;
+        private bool                selectingArea       = false;
+        //private Image<Bgr, byte>    originalImage       = null;
+        private Graphics            selectedGraphics    = null;
+        private void Img_viewer_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                Img_viewer.Cursor = Cursors.Cross;
+                System.Drawing.Point p = new System.Drawing.Point();
+                p.X = (int)e.GetPosition(Img_viewer).X;
+                p.Y = (int)e.GetPosition(Img_viewer).Y;
+
+                selectingArea = true;
+                X0 = (int)((double)p.X / zoomFactor_x);
+                Y0 = (int)((double)p.Y / zoomFactor_y);
+            }
+        }
+
+        private void Img_viewer_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            lbl_imgInfo.Content = $"Mouse Location: [{e.GetPosition(Img_viewer).X : 0}, {e.GetPosition(Img_viewer).Y : 0}]";
+            if (currentImage != null)
+            {
+                System.Drawing.Point p = new System.Drawing.Point();
+                p.X = (int)e.GetPosition(Img_viewer).X;
+                p.Y = (int)e.GetPosition(Img_viewer).Y;
+                if (!selectingArea) return;
+
+                if (((double)p.X / zoomFactor_x) != X0)
+                    X1 = ((double)p.X / zoomFactor_x);
+                if (((double)p.Y / zoomFactor_y) != Y0)
+                    Y1 = ((double)p.Y / zoomFactor_y);
+
+                cropRect = ShapeNDraw.MakeRectangle(X0, Y0, X1, Y1);
+
+                Bitmap bmp = currentImage.Copy().ToBitmap();
+                selectedGraphics = Graphics.FromImage(bmp);
+                selectedGraphics.FillRectangle(new SolidBrush(Color.FromArgb(128, 72, 145, 220)), cropRect);
+                Img_viewer.Source = ImgConverter.ToBitmapSource(bmp);
+            }
+        }
+
+        private void Img_viewer_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (currentImage != null)
+            {
+                Img_viewer.Cursor = Cursors.Arrow;
+                if (!selectingArea) return;
+                selectingArea = false;
+
+                /// Add to region info list
+                double[] loc = ConvertRectToLocation(currentImage.ToBitmap(), cropRect);
+                mImgInfoList[cImgIndex].regionInfoList.Add(new regionInfo(clabelIndex, cropRect, loc));
+                /// Draw 
+                DrawRegion(mImgInfoList[cImgIndex], ref currentImage);
+
+                /// Update list
+                UpdateListBox(mImgInfoList[cImgIndex]);
+
+                /// Save txt file
+                SaveLocationToTxtFile(mImgInfoList[cImgIndex]);
+                                
+                selectedGraphics = null;
+            }
+        }
+
+        private void DrawRegion(imgInfo imgIn, ref Image<Bgr, byte> image)
+        {
+            foreach (regionInfo ri in imgIn.regionInfoList)
+            {
+                Bitmap bmp = image.ToBitmap();
+                selectedGraphics = Graphics.FromImage(bmp);
+                selectedGraphics.DrawRectangle(new Pen(Color.Red), ri.rect);
+                selectedGraphics.DrawString($"{ri.labelIndex}-{labelSet[ri.labelIndex]}"
+                    , new Font("Arial", 9), new SolidBrush(Color.Red), ri.rect.X, ri.rect.Y);
+                image = new Image<Bgr, byte>(bmp);
+            }
+            /// Update final image
+            Img_viewer.Source = ImgConverter.ToBitmapSource(image.ToBitmap());
+        }
+
+        private void UpdateListBox(imgInfo imgIn)
+        {
+            LB_regionRectangles.Items.Clear();
+            LB_outPutRegionValues.Items.Clear();
+            foreach (regionInfo r in imgIn.regionInfoList)
+            {
+                Label l = new Label();
+                l.Content = $"Class{r.labelIndex}, ({r.rect.X}, {r.rect.Y}, {r.rect.Width}, {r.rect.Height})";
+                l.FontSize = 12;
+                LB_regionRectangles.Items.Add(l);
+                
+                Label l2 = new Label();
+                l2.Content = $"Class{r.labelIndex}, ({r.location[0]}, {r.location[1]}, {r.location[2]}, {r.location[3]})";
+                l2.FontSize = 12;
+                LB_outPutRegionValues.Items.Add(l2);
+            }
+        }
+        #endregion Select Area
+        #endregion ================================= Step2 Labeling ===========================================
+        #endregion Between Steps
+
         #region Functions
 
-        private void loadDataSetLabelRadioButtons()
+        private void LoadDataSetRadioButtons()
         {
             for (int i = 0; i < labelSet.Count; i++)
             {
@@ -454,51 +602,60 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 labelSelectorList[i].Content = labelSet[i];
                 Wrap_radios.Children.Add(labelSelectorList[i]);
             }
+            labelSelectorList[0].IsChecked = true;
         }
 
         private void RadioButton_checked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            //for (int i = 0; i < labelSet.Length; i++)
-            //{
-            //    if ((bool)labelSelectorList[i].IsChecked)
-            //        mImgInfoList[sImgIndex].regionInfoList[0].label = i;
-            //}
+            for (int i = 0; i < labelSet.Count; i++)
+            {
+                if ((bool)labelSelectorList[i].IsChecked)
+                    clabelIndex = i;
+            }
         }
 
-        private int ScanImgs(string _imgDir, out FileInfo[] _fileInfo)
+        private void Btn_deleteLastRegion_Click(object sender, RoutedEventArgs e)
         {
-            int total = 0;
-            _fileInfo = new DirectoryInfo(_imgDir).GetFiles("*.jpg");
-            total = _fileInfo.Length;
-            if (total == 0)
+            if (mImgInfoList[cImgIndex].regionInfoList.Count > 0)
             {
-                mMessageBox.Show("No image found");
-            }
-            return total;
-        }
+                mImgInfoList[cImgIndex].regionInfoList.RemoveAt(mImgInfoList[cImgIndex].regionInfoList.Count - 1);
 
-        private void LoadLabelAndRegions(string _imgDir)
-        {
-            if (!Directory.Exists(_imgDir))
-            {
-                mMessageBox.Show("Folder not exits");
-                return;
-            }
-            else
-            {
+                /// Draw from blank image
+                currentImage = new Image<Bgr, byte>(new Bitmap(mImgInfoList[cImgIndex].imagePath));
+                DrawRegion(mImgInfoList[cImgIndex], ref currentImage);
 
+                /// Update list
+                UpdateListBox(mImgInfoList[cImgIndex]);
+
+                /// Save txt file
+                SaveLocationToTxtFile(mImgInfoList[cImgIndex]);
             }
         }
 
         private void DisplayImgAndLabel(int index)
         {
-            Img_viewer.Source = new BitmapImage(new Uri(string.Format(@"{0}\{1}", currentImgDir, srcImgFile_Info[index].Name)));
-            //radioBtnList[sourceImgMapList[index].label].IsChecked = true;
+            Bitmap temp = new Bitmap(mImgInfoList[index].imagePath);
+            currentImage = new Image<Bgr, byte>(temp);
+            zoomFactor_x = Img_viewer.Width / temp.Width;
+            zoomFactor_y = Img_viewer.Height / temp.Height;
+            temp.Dispose();
+
+            /// Draw 
+            DrawRegion(mImgInfoList[cImgIndex], ref currentImage);
+
+            /// Update list
+            UpdateListBox(mImgInfoList[cImgIndex]);
         }
 
-        private double[] OutputRegionInfo(Bitmap image, Rectangle _rect)
+        /// <summary>
+        /// Convert a rectangle to relative value that yolo requires
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="_rect"></param>
+        /// <returns></returns>
+        private double[] ConvertRectToLocation(Bitmap image, Rectangle _rect)
         {
             double[] location = new double[4];
 
@@ -507,7 +664,28 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             location[2] = _rect.Width / (double)image.Width;
             location[3] = _rect.Height / (double)image.Height;
 
+            location[0] = Convert.ToDouble(location[0].ToString("0.00000"));
+            location[1] = Convert.ToDouble(location[1].ToString("0.00000"));
+            location[2] = Convert.ToDouble(location[2].ToString("0.00000"));
+            location[3] = Convert.ToDouble(location[3].ToString("0.00000"));
             return location;
+        }
+        /// <summary>
+        /// Convert yolo location value back to rectangle
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="_rect"></param>
+        /// <returns></returns>
+        private Rectangle ConvertLocationToRect(Bitmap image, double[] loc)
+        {
+            Rectangle rect = new Rectangle();
+
+            rect.Width = (int)(loc[2] * image.Width);
+            rect.Height = (int)(loc[3] * image.Height);
+            rect.X = (int)((loc[0] * image.Width) * 2 - rect.Width);
+            rect.Y = (int)((loc[1] * image.Height) * 2 - rect.Height);
+
+            return rect;
         }
 
 
@@ -562,7 +740,51 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         }
 
-        private void SaveTrainFile(string fileName)
+        private void SaveTrainAndTestFile()
+        {
+            /// Split images
+            int totalClasses = labelSet.Count;
+            int[] eachClassCount = new int[totalClasses];
+            List<List<imgInfo>> eachClassImgInfo = new List<List<imgInfo>>();
+
+            List<imgInfo> mImgInfoList_train = new List<imgInfo>();
+            List<imgInfo> mImgInfoList_test = new List<imgInfo>();
+
+            for (int i = 0; i < totalClasses; i++)
+            {
+                eachClassImgInfo.Add(new List<imgInfo>());
+            }
+
+            foreach(imgInfo imI in mImgInfoList)
+            {
+                for (int i = 0; i < totalClasses; i++)
+                {
+                    if (imI.regionInfoList.Count > 0 && imI.regionInfoList[0].labelIndex == i)
+                    {
+                        eachClassCount[i]++;
+                        eachClassImgInfo[i].Add(imI);
+                    }
+                }
+            }
+            for (int i = 0; i < totalClasses; i++)
+            {
+                for (int j = 0; j < eachClassCount[i]; j++)
+                {
+                    if (eachClassImgInfo[i][j].regionInfoList[0].labelIndex == i)
+                    {
+                        if (j < TRAIN_IMG_RATE * eachClassCount[i])
+                            mImgInfoList_train.Add(eachClassImgInfo[i][j]);
+                        else
+                            mImgInfoList_test.Add(eachClassImgInfo[i][j]);
+                    }
+                }
+            }
+
+            SaveFile(obj_train_file, mImgInfoList_train);
+            SaveFile(obj_test_file, mImgInfoList_test);
+        }
+
+        private void SaveFile(string fileName, List<imgInfo> imgList)
         {
             if (!File.Exists(fileName))
             {
@@ -570,21 +792,64 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
             using (StreamWriter sw = new StreamWriter(fileName))
             {
-                //sw.WriteLine($"classes = {labelSet.Count()}");
+                foreach (imgInfo imI in imgList)
+                {
+                    sw.WriteLine($"data/img/{GetFileName(imI.imagePath)}");
+                }
+            }
+        }
+
+        private void LoadLabelAndLocationFromTxt(string fileName, imgInfo imgInfo)
+        {
+            if (!File.Exists(fileName))
+            {
+                return;
+            }
+
+            imgInfo.regionInfoList.Clear();
+            using (StreamReader sr = new StreamReader(fileName))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] labelAndLoc = new string[5];
+                    labelAndLoc = line.Split(' ');
+                    int label = Convert.ToInt32(labelAndLoc[0]);
+                    double[] loc = new double[4];
+                    loc[0] = Convert.ToDouble(labelAndLoc[1]);
+                    loc[1] = Convert.ToDouble(labelAndLoc[2]);
+                    loc[2] = Convert.ToDouble(labelAndLoc[3]);
+                    loc[3] = Convert.ToDouble(labelAndLoc[4]);
+                    Bitmap t = new Bitmap(imgInfo.imagePath);
+                    Rectangle r = ConvertLocationToRect(t, loc);
+                    imgInfo.regionInfoList.Add(new regionInfo(label, r, loc));
+                    t.Dispose();
+                }
+            }
+        }
+
+        private void SaveLocationToTxtFile(imgInfo imgInfo)
+        {
+            string txtFile = mImgInfoList[cImgIndex].imagePath.Replace(".jpg", ".txt");
+            if (!File.Exists(txtFile))
+            {
+                File.Create(txtFile).Dispose();
+            }
+            
+            using (StreamWriter sw = new StreamWriter(txtFile))
+            {
+                foreach (regionInfo r in imgInfo.regionInfoList)
+                {
+                    sw.WriteLine($"{r.labelIndex} {r.location[0]} {r.location[1]} {r.location[2]} {r.location[3]}");
+                }
             }
 
         }
-        private void SaveTestFile(string fileName)
-        {
-            if (!File.Exists(fileName))
-            {
-                File.Create(fileName).Dispose();
-            }
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                //sw.WriteLine($"classes = {labelSet.Count()}");
-            }
 
+        private string GetFileName(string fileFullName)
+        {
+            FileInfo f = new FileInfo(fileFullName);
+            return f.Name;
         }
         #endregion Functions
 

@@ -2,6 +2,11 @@
 linbojun089@gmail.com	
 
 change log:
+2019/1/10
+v4.3.0.0 [Full yolo Automation]
+1. New Labeling tool for yolo, can create your own classes and label them with region
+2. Auto split all images inside img folder, some goes for training, some for testing
+
 2019/1/7
 v4.2.0.0
 1. Added YoloSharp dll, works 

@@ -65,6 +65,12 @@ namespace ImageProcessing_BSC_WPF
         ML_YOLO,
 
         /// <summary>
+        /// @"\Modules\MachineLearning\YOLO\data\backup", this is to save temp training file
+        /// </summary>
+        [Description(@"\Modules\MachineLearning\YOLO\data\backup")]
+        ML_YOLO_backup,
+
+        /// <summary>
         /// @"\Modules\MachineLearning\YOLO\model", files to be used in detection
         /// </summary>
         [Description(@"\Modules\MachineLearning\YOLO\model")]
@@ -75,11 +81,12 @@ namespace ImageProcessing_BSC_WPF
         /// </summary>
         [Description(@"\Modules\MachineLearning\YOLO\data")]
         ML_YOLO_data,
+
         /// <summary>
         /// @"\Modules\MachineLearning\YOLO\data\img"
         /// </summary>
         [Description(@"\Modules\MachineLearning\YOLO\data\img")]
-        ML_YOLO_img,
+        ML_YOLO_data_img,
     }
 
     public static class Func

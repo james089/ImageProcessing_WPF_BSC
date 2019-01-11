@@ -68,9 +68,10 @@ namespace ImageProcessing_BSC_WPF
             GV.ML_Folders[(int)MLFolders.ML_CNTK]       = Environment.CurrentDirectory + MLFolders.ML_CNTK.GetDescription();
             GV.ML_Folders[(int)MLFolders.ML_CNTK_model] = Environment.CurrentDirectory + MLFolders.ML_CNTK_model.GetDescription();
             GV.ML_Folders[(int)MLFolders.ML_YOLO]       = Environment.CurrentDirectory + MLFolders.ML_YOLO.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO_backup] = Environment.CurrentDirectory + MLFolders.ML_YOLO_backup.GetDescription();
             GV.ML_Folders[(int)MLFolders.ML_YOLO_model] = Environment.CurrentDirectory + MLFolders.ML_YOLO_model.GetDescription();
             GV.ML_Folders[(int)MLFolders.ML_YOLO_data]  = Environment.CurrentDirectory + MLFolders.ML_YOLO_data.GetDescription();
-            GV.ML_Folders[(int)MLFolders.ML_YOLO_img]   = Environment.CurrentDirectory + MLFolders.ML_YOLO_img.GetDescription();
+            GV.ML_Folders[(int)MLFolders.ML_YOLO_data_img]   = Environment.CurrentDirectory + MLFolders.ML_YOLO_data_img.GetDescription();
 
             foreach (string str in GV.ML_Folders)
             {
@@ -782,15 +783,24 @@ namespace ImageProcessing_BSC_WPF
             if (MLCore.MLModelSelected == MLModel.Yolo)
             {
                 ML_cmb_dataset.Visibility = Visibility.Hidden;
-                Panel_ML_LabelJobType.Visibility = Visibility.Hidden;
+                Panel_ML_LabelJobType.Visibility = Visibility.Collapsed;
                 TB_ML_modelName.Text = ModelPath.GetWeightFile(GV.ML_Folders[(int)MLFolders.ML_YOLO_model]);
+
+                Exp_FileDirectory.Visibility = Visibility.Collapsed;
+                Exp_ImgResizing.Visibility = Visibility.Collapsed;
+                Exp_MeanCalculation.Visibility = Visibility.Collapsed;
             }
             else
             {
                 ML_cmb_dataset.Visibility = Visibility.Visible;
                 Panel_ML_LabelJobType.Visibility = Visibility.Visible;
+
+                Exp_FileDirectory.Visibility = Visibility.Visible;
+                Exp_ImgResizing.Visibility = Visibility.Visible;
+                Exp_MeanCalculation.Visibility = Visibility.Visible;
             }
         }
+
         private void ML_cmb_dataset_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (!this.IsLoaded) return;
