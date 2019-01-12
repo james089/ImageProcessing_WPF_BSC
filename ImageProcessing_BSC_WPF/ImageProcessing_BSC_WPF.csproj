@@ -186,6 +186,9 @@
     <Compile Include="Modules\MachineLearning\GUI\ImageLabelTool_Yolo.xaml.cs">
       <DependentUpon>ImageLabelTool_Yolo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modules\MachineLearning\GUI\TrainingWindow.xaml.cs">
+      <DependentUpon>TrainingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modules\MachineLearning\Helpers\ImageResizing.cs" />
     <Compile Include="Modules\MachineLearning\Helpers\MeanFileGenerator.cs" />
     <Compile Include="Modules\MachineLearning\CNTK\TestHelpers.cs" />
@@ -224,6 +227,10 @@
     <Page Include="Modules\MachineLearning\GUI\ImageLabelTool_Yolo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Modules\MachineLearning\GUI\TrainingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIHelpers\Style\ExpressionDark.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -286,6 +293,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Modules\MachineLearning\YOLO\yolov3.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

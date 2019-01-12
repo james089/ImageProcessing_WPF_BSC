@@ -353,9 +353,27 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <Expander x:Name="Exp_FileDirectory" Header="File Directory" Margin="5" Grid.Row="1">
+                                        
+                                        <GroupBox Header="Labeling" Grid.Row="0" Margin="5" >
+                                            <Grid x:Name="Grid_labeling" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <DockPanel x:Name="Panel_ML_LabelJobType" >
+                                                    <Label Content="Job Type: "  Margin="5"/>
+                                                    <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
+                                                        <ComboBoxItem Content="Train" />
+                                                        <ComboBoxItem Content="Test" />
+                                                    </ComboBox>
+                                                </DockPanel>
+                                                <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <Expander x:Name="Exp_FileDirectory" Header="File Directory" Margin="5" Grid.Row="2">
                                             <Grid >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="180"/>
@@ -380,24 +398,7 @@
                                             </Grid>
                                         </Expander>
 
-                                        <GroupBox Header="Labeling" Grid.Row="0" Margin="5" >
-                                            <Grid x:Name="Grid_labeling" >
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <DockPanel x:Name="Panel_ML_LabelJobType" >
-                                                    <Label Content="Job Type: "  Margin="5"/>
-                                                    <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
-                                                        <ComboBoxItem Content="Train" />
-                                                        <ComboBoxItem Content="Test" />
-                                                    </ComboBox>
-                                                </DockPanel>
-                                                <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2"/>
-                                            </Grid>
-                                        </GroupBox>
-
-                                        <Expander x:Name="Exp_ImgResizing" Header="Image Resizing (Image Source Dir, All photos)" Grid.Row="2" Visibility="Visible" Margin="5">
+                                        <Expander x:Name="Exp_ImgResizing" Header="Image Resizing (Image Source Dir, All photos)" Grid.Row="3" Visibility="Visible" Margin="5">
                                             <Grid x:Name="Grid_prepare" VerticalAlignment="Top">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="10*"/>
@@ -425,7 +426,7 @@
                                             </Grid>
                                         </Expander>
 
-                                        <Expander x:Name="Exp_MeanCalculation" Header="Mean Calculation (Optional)[Calculate source train image mean]" Grid.Row="3" Margin="5" Visibility="Visible">
+                                        <Expander x:Name="Exp_MeanCalculation" Header="Mean Calculation (Optional)[Calculate source train image mean]" Grid.Row="4" Margin="5" Visibility="Visible">
                                             <Grid x:Name="Grid_mean" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -448,8 +449,10 @@
                                             </Grid>
                                         </Expander>
 
-                                        <GroupBox Header="Model Training/Evaluating" Grid.Row="4" Margin="5" Visibility="Collapsed">
-                                            <Grid x:Name="Grid_trainModel" />
+                                        <GroupBox Header="Model Training/Evaluating" Grid.Row="1" Margin="5" Visibility="Visible">
+                                            <Grid x:Name="Grid_trainModel" >
+                                                <Button x:Name="Btn_trainModel" Content="Train Model" Margin="5" Click="Btn_trainModel_Click"/>
+                                            </Grid>
                                         </GroupBox>
                                     </Grid>
                                 </Grid>

@@ -43,6 +43,7 @@ namespace ImageProcessing_BSC_WPF
     {
         #region Local setup
         LoadingScreen loadingScreen = new LoadingScreen();
+        public static TrainingWindow tw = new TrainingWindow();
         #endregion Local setup
 
         public MainWindow()
@@ -60,6 +61,7 @@ namespace ImageProcessing_BSC_WPF
             ImageResizing.ImageResizingSetup();
             ResNet.CNTK_ResNetSetup();
             ZxingDecoder.DecoderSetup();
+            YoloSharpCore.mYolo.TrainModelRoutineSetup();
 
             OCR.OCRSetup(OCRMode.NUMBERS);
 
@@ -975,6 +977,29 @@ namespace ImageProcessing_BSC_WPF
             Slider_contrastSensitivity.Value = Convert.ToDouble(Slider_contrastSensitivity.Value.ToString("0.00"));
             Default.contrast_sensitivity = Slider_contrastSensitivity.Value;
             Default.Save();
+        }
+
+
+        private void Btn_trainModel_Click(object sender, RoutedEventArgs e)
+        {
+            switch (MLCore.MLModelSelected)
+            {
+                case MLModel.ResNet:
+                case MLModel.FastRCNN:
+                    break;
+                case MLModel.Yolo:
+                    if (tw.IsActive)
+                    {
+                        tw.Close();
+                        tw = new TrainingWindow();
+                        tw.Show();
+                    }
+                    else
+                        tw.Show();
+
+                    mYolo.TrainModel();
+                    break;
+            }
         }
     }
 }

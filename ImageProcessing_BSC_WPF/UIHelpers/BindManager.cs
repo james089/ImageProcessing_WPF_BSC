@@ -9,7 +9,8 @@ namespace ImageProcessing_BSC_WPF
 
         public BindString GMessage { set; get; }             //Messages showing during live view applications
         public BindInt Progress { set; get; }             
-        public BindString ProgressString { set; get; }             
+        public BindString ProgressString { set; get; }
+        public BindString CmdWindowString { set; get; }
 
         /// Machine learning
         public BindString ML_CNTK_sourceImgDir { set; get; }      // Source Image Directory
@@ -23,18 +24,19 @@ namespace ImageProcessing_BSC_WPF
 
         public BindManager()
         {
-            GMessage = new BindString();                GMessage.value = "";
-            Progress = new BindInt();                   Progress.value = 0;
-            ProgressString = new BindString();          ProgressString.value = "%";
+            GMessage = new BindString();                        GMessage.value = "";
+            Progress = new BindInt();                           Progress.value = 0;
+            ProgressString = new BindString();                  ProgressString.value = "%";
+            CmdWindowString = new BindString();                 CmdWindowString.value = "";
             ///
-            ML_CNTK_sourceImgDir = new BindString();         ML_CNTK_sourceImgDir.value = @"C:\temp\source";
-            ML_CNTK_sourceTrainImgDir = new BindString();    ML_CNTK_sourceTrainImgDir.value = ML_CNTK_sourceImgDir.value + @"\train";
-            ML_CNTK_sourceTestImgDir = new BindString();     ML_CNTK_sourceTestImgDir.value = ML_CNTK_sourceImgDir.value + @"\test";
-            ML_CNTK_rootDir = new BindString();              ML_CNTK_rootDir.value = @"C:\temp\MLRoot";
-            ML_CNTK_trainImgDir = new BindString();          ML_CNTK_trainImgDir.value = ML_CNTK_rootDir.value + @"\train";
-            ML_CNTK_testImgDir = new BindString();           ML_CNTK_testImgDir.value = ML_CNTK_rootDir.value + @"\test";
-            ML_desWidth = new BindInt();                ML_desWidth.value = 32;
-            ML_desHeight = new BindInt();               ML_desHeight.value = 32;
+            ML_CNTK_sourceImgDir = new BindString();            ML_CNTK_sourceImgDir.value = @"C:\temp\source";
+            ML_CNTK_sourceTrainImgDir = new BindString();       ML_CNTK_sourceTrainImgDir.value = ML_CNTK_sourceImgDir.value + @"\train";
+            ML_CNTK_sourceTestImgDir = new BindString();        ML_CNTK_sourceTestImgDir.value = ML_CNTK_sourceImgDir.value + @"\test";
+            ML_CNTK_rootDir = new BindString();                 ML_CNTK_rootDir.value = @"C:\temp\MLRoot";
+            ML_CNTK_trainImgDir = new BindString();             ML_CNTK_trainImgDir.value = ML_CNTK_rootDir.value + @"\train";
+            ML_CNTK_testImgDir = new BindString();              ML_CNTK_testImgDir.value = ML_CNTK_rootDir.value + @"\test";
+            ML_desWidth = new BindInt();                        ML_desWidth.value = 32;
+            ML_desHeight = new BindInt();                       ML_desHeight.value = 32;
         }
 
         #region Binding Settings

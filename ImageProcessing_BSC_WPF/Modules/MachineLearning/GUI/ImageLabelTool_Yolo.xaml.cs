@@ -26,6 +26,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
     /// </summary>
     public partial class ImageLabelTool_Yolo : Window
     {
+        public static ImageLabelTool_Yolo mLabelTool = new ImageLabelTool_Yolo();
         enum Steps
         {
             //step0_resize, // can be skipped
@@ -57,28 +58,33 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         /// <summary>
         /// The Image that is currently showing
         /// </summary>
-        static Image<Bgr, byte> currentImage;
+        Image<Bgr, byte> currentImage;
         /// <summary>
         /// This is the class index for labeling (0 1 2 3...)
         /// </summary>
-        static int clabelIndex = 0;
+        int clabelIndex = 0;
 
         /// <summary>
         /// Folder contais all src image
         /// </summary>
-        static string currentImgDir;                                     // Img dir
+        string currentImgDir;                                     // Img dir
         /// <summary>
         /// Root folder
         /// </summary>
-        static string yoloDataDir;
+        string yoloDataDir;
 
         /// <summary>
         /// For ML model use
         /// </summary>
-        static string obj_data_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\obj.data";
-        static string obj_names_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\obj.names";
-        static string obj_train_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\train.txt";
-        static string obj_test_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\test.txt";
+        string obj_data_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\obj.data";
+        string obj_names_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\obj.names";
+        string obj_train_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\train.txt";
+        string obj_test_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\test.txt";
+
+        string pretrained_weight_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\darknet53.conv.74";
+        string obj_cfg_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\yolo-obj.cfg";
+        string yolo_cfg_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\yolov3.cfg";
+        public string train_cmd_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\train_obj.cmd";
 
         List<string> labelSet;
         List<RadioButton> labelSelectorList = new List<RadioButton>();
@@ -137,6 +143,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
         public ImageLabelTool_Yolo()
         {
+            mLabelTool = this;
             InitializeComponent();
             DataContext = BindManager.BindMngr;
 
@@ -149,6 +156,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             currentImgDir = GV.ML_Folders[(int)MLFolders.ML_YOLO_data_img];
             yoloDataDir = GV.ML_Folders[(int)MLFolders.ML_YOLO_data];
 
+            /// Show image folder info
+            lbl_imgFolder.Text = currentImgDir;
+            lbl_trainingFilesFolder.Text = GV.ML_Folders[(int)MLFolders.ML_YOLO_data];
+
             SwitchSteps(Steps.step1_createLabels);
         }
 
@@ -160,6 +171,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     SaveNamesFile(obj_names_file);
                     SaveDataFile(obj_data_file);
                     SaveTrainAndTestFile();
+                    GenerateCfgFile();
+                    GenerateCmdFile();
                     break;
                 case mDialogResult.no:
                     break;
@@ -187,6 +200,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     Grid_step0.Visibility = Visibility.Collapsed;
                     Grid_step1.Visibility = Visibility.Visible;
                     Grid_step2.Visibility = Visibility.Collapsed;
+                    Btn_close.Visibility = Visibility.Hidden;
 
                     LoadNames(obj_names_file);
 
@@ -205,13 +219,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     Grid_step0.Visibility = Visibility.Collapsed;
                     Grid_step1.Visibility = Visibility.Collapsed;
                     Grid_step2.Visibility = Visibility.Visible;
+                    Btn_close.Visibility = Visibility.Visible;
 
                     /// Adding radio buttons to wrap panel
                     LoadDataSetRadioButtons();
-
-                    /// Show image folder info
-                    lbl_imgFolder.Text = currentImgDir;
-                    lbl_trainingFilesFolder.Text = GV.ML_Folders[(int)MLFolders.ML_YOLO_data];
 
                     /// Loading all images in this folder
                     /// Init imgInfoList, load existing label and location from txt file 
@@ -549,7 +560,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 UpdateListBox(mImgInfoList[cImgIndex]);
 
                 /// Save txt file
-                SaveLocationToTxtFile(mImgInfoList[cImgIndex]);
+                SaveROIToTxtFile(mImgInfoList[cImgIndex]);
                                 
                 selectedGraphics = null;
             }
@@ -630,7 +641,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                 UpdateListBox(mImgInfoList[cImgIndex]);
 
                 /// Save txt file
-                SaveLocationToTxtFile(mImgInfoList[cImgIndex]);
+                SaveROIToTxtFile(mImgInfoList[cImgIndex]);
             }
         }
 
@@ -687,22 +698,68 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
 
             return rect;
         }
-
-
-        private void SaveNamesFile(string fileName)
+        private void LoadLabelAndLocationFromTxt(string fileName, imgInfo imgInfo)
         {
             if (!File.Exists(fileName))
             {
-                File.Create(fileName).Dispose();
+                return;
             }
-            using (StreamWriter sw = new StreamWriter(fileName))
+
+            imgInfo.regionInfoList.Clear();
+            using (StreamReader sr = new StreamReader(fileName))
             {
-                foreach (string str in labelSet)
+                string line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    sw.WriteLine(str);
+                    string[] labelAndLoc = new string[5];
+                    labelAndLoc = line.Split(' ');
+                    int label = Convert.ToInt32(labelAndLoc[0]);
+                    double[] loc = new double[4];
+                    loc[0] = Convert.ToDouble(labelAndLoc[1]);
+                    loc[1] = Convert.ToDouble(labelAndLoc[2]);
+                    loc[2] = Convert.ToDouble(labelAndLoc[3]);
+                    loc[3] = Convert.ToDouble(labelAndLoc[4]);
+                    Bitmap t = new Bitmap(imgInfo.imagePath);
+                    Rectangle r = ConvertLocationToRect(t, loc);
+                    imgInfo.regionInfoList.Add(new regionInfo(label, r, loc));
+                    t.Dispose();
+                }
+            }
+        }
+
+        private void SaveROIToTxtFile(imgInfo imgInfo)
+        {
+            string txtFile = mImgInfoList[cImgIndex].imagePath.Replace(".jpg", ".txt");
+            if (!File.Exists(txtFile))
+            {
+                File.Create(txtFile).Dispose();
+            }
+
+            using (StreamWriter sw = new StreamWriter(txtFile))
+            {
+                foreach (regionInfo r in imgInfo.regionInfoList)
+                {
+                    sw.WriteLine($"{r.labelIndex} {r.location[0]} {r.location[1]} {r.location[2]} {r.location[3]}");
                 }
             }
 
+        }
+
+        private string GetFileName(string fileFullName)
+        {
+            FileInfo f = new FileInfo(fileFullName);
+            return f.Name;
+        }
+
+        /// <summary>
+        /// Replace \ with / in directory string
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <returns></returns>
+        private string ConvertFileName(string fileFullName)
+        {
+            string str = fileFullName.Replace(@"\", @"/");
+            return str;
         }
 
         private void LoadNames(string fileName)
@@ -723,6 +780,22 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
         }
 
+        private void SaveNamesFile(string fileName)
+        {
+            if (!File.Exists(fileName))
+            {
+                File.Create(fileName).Dispose();
+            }
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                foreach (string str in labelSet)
+                {
+                    sw.WriteLine(str);
+                }
+            }
+
+        }
+
         private void SaveDataFile(string fileName)
         {
             if (!File.Exists(fileName))
@@ -732,10 +805,10 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 sw.WriteLine($"classes = {labelSet.Count()}");
-                sw.WriteLine($"train =  data/{new FileInfo(obj_train_file).Name}");
-                sw.WriteLine($"valid = data/{new FileInfo(obj_test_file).Name}");
-                sw.WriteLine($"names = data/{new FileInfo(obj_names_file).Name}");
-                sw.WriteLine($"backup = backup/");
+                sw.WriteLine($"train = {ConvertFileName(obj_train_file)}");
+                sw.WriteLine($"valid = {ConvertFileName(obj_test_file)}");
+                sw.WriteLine($"names = {ConvertFileName(obj_names_file)}");
+                sw.WriteLine($"backup = {ConvertFileName(GV.ML_Folders[(int)MLFolders.ML_YOLO_backup])}/");
             }
 
         }
@@ -794,62 +867,102 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             {
                 foreach (imgInfo imI in imgList)
                 {
-                    sw.WriteLine($"data/img/{GetFileName(imI.imagePath)}");
+                    sw.WriteLine(ConvertFileName(imI.imagePath));
+                    //sw.WriteLine($"data/img/{GetFileName(imI.imagePath)}");
                 }
             }
         }
 
-        private void LoadLabelAndLocationFromTxt(string fileName, imgInfo imgInfo)
+        private void GenerateCfgFile()
         {
-            if (!File.Exists(fileName))
+            if (!File.Exists(yolo_cfg_file))
             {
+                mMessageBox.Show($"{GetFileName(yolo_cfg_file)} file doesn't exist");
                 return;
             }
 
-            imgInfo.regionInfoList.Clear();
-            using (StreamReader sr = new StreamReader(fileName))
+            if (File.Exists(obj_cfg_file))
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                File.Delete(obj_cfg_file);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (string line in File.ReadLines(yolo_cfg_file))
+            {
+                string result = line;
+                if (line == "batch=1")
                 {
-                    string[] labelAndLoc = new string[5];
-                    labelAndLoc = line.Split(' ');
-                    int label = Convert.ToInt32(labelAndLoc[0]);
-                    double[] loc = new double[4];
-                    loc[0] = Convert.ToDouble(labelAndLoc[1]);
-                    loc[1] = Convert.ToDouble(labelAndLoc[2]);
-                    loc[2] = Convert.ToDouble(labelAndLoc[3]);
-                    loc[3] = Convert.ToDouble(labelAndLoc[4]);
-                    Bitmap t = new Bitmap(imgInfo.imagePath);
-                    Rectangle r = ConvertLocationToRect(t, loc);
-                    imgInfo.regionInfoList.Add(new regionInfo(label, r, loc));
-                    t.Dispose();
+                    result = line.Replace("batch=1", "batch=64");
                 }
+                if (line == "subdivisions=1")
+                {
+                    result = line.Replace("subdivisions=1", "subdivisions=64");
+                }
+                if (line == "classes=80")
+                {
+                    result = line.Replace("classes=80", $"classes={labelSet.Count}");
+                }
+                if (line == "filters=255")
+                {
+                    result = line.Replace("filters=255", $"filters={(labelSet.Count + 5) * 3}");
+                }
+
+                
+                sb.AppendLine(result);
+            }
+
+            File.AppendAllText(obj_cfg_file, sb.ToString());
+        }
+
+        private void GenerateCmdFile()
+        {
+            if (!CheckRequiredFiles()) return;
+
+            if (!File.Exists(train_cmd_file))
+            {
+                File.Create(train_cmd_file).Dispose();
+            }
+            //using (StreamWriter sw = new StreamWriter(train_cmd_file))
+            //{
+            //    sw.WriteLine($"darknet.exe detector train data/{GetFileName(obj_data_file)} {GetFileName(obj_cfg_file)} {GetFileName(pretrained_weight_file)}");
+            //    sw.WriteLine("pause");
+            //}
+
+            using (StreamWriter sw = new StreamWriter(train_cmd_file))
+            {
+                sw.WriteLine(DarknetTrainCmd());
+                sw.WriteLine("pause");
             }
         }
 
-        private void SaveLocationToTxtFile(imgInfo imgInfo)
+        public string DarknetTrainCmd()
         {
-            string txtFile = mImgInfoList[cImgIndex].imagePath.Replace(".jpg", ".txt");
-            if (!File.Exists(txtFile))
-            {
-                File.Create(txtFile).Dispose();
-            }
-            
-            using (StreamWriter sw = new StreamWriter(txtFile))
-            {
-                foreach (regionInfo r in imgInfo.regionInfoList)
-                {
-                    sw.WriteLine($"{r.labelIndex} {r.location[0]} {r.location[1]} {r.location[2]} {r.location[3]}");
-                }
-            }
-
+            return $"darknet.exe detector train {ConvertFileName(obj_data_file)} {ConvertFileName(obj_cfg_file)} {ConvertFileName(pretrained_weight_file)} -dont_show";
         }
 
-        private string GetFileName(string fileFullName)
+
+        public bool CheckRequiredFiles()
         {
-            FileInfo f = new FileInfo(fileFullName);
-            return f.Name;
+            StringBuilder sb = new StringBuilder();
+            if (!File.Exists(obj_data_file))
+            {
+                sb.AppendLine(GetFileName(obj_data_file) + " is missing!");
+            }
+            if (!File.Exists(obj_cfg_file))
+            {
+                sb.AppendLine(GetFileName(obj_cfg_file) + " is missing!");
+            }
+            if (!File.Exists(pretrained_weight_file))
+            {
+                sb.AppendLine(GetFileName(pretrained_weight_file) + " is missing!");
+            }
+
+            if (sb.ToString() != "")
+            {
+                MessageBox.Show(sb.ToString(), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            return true;
         }
         #endregion Functions
 

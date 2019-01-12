@@ -65,9 +65,9 @@ namespace ImageProcessing_BSC_WPF
         ML_YOLO,
 
         /// <summary>
-        /// @"\Modules\MachineLearning\YOLO\data\backup", this is to save temp training file
+        /// @"\Modules\MachineLearning\YOLO\backup", this is to save temp training file
         /// </summary>
-        [Description(@"\Modules\MachineLearning\YOLO\data\backup")]
+        [Description(@"\Modules\MachineLearning\YOLO\backup")]
         ML_YOLO_backup,
 
         /// <summary>
