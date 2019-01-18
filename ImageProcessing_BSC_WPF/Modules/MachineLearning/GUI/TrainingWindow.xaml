@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="550" Background="{x:Null}" WindowStyle="None" 
-        ResizeMode="NoResize" AllowsTransparency="True" Topmost="True">
+        ResizeMode="NoResize" AllowsTransparency="True" Topmost="True" IsVisibleChanged="Window_IsVisibleChanged">
     
     <Grid Height="600" Width="auto" MinWidth="500" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center" >
         <Grid.RowDefinitions>
@@ -22,11 +22,14 @@
 
         <Grid x:Name="Grid_title" Grid.ColumnSpan="2">
             <Border Background="{DynamicResource Background_titleBar}" CornerRadius="15,15,0,0"/>
-            <Label x:Name="lbl_title" Content="Training in progress..." FontSize="20" Foreground="White"/>
+            <Label x:Name="lbl_title" Content="Training in progress..." FontSize="20" Foreground="White" MouseDown="lbl_title_MouseDown"/>
         </Grid>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <TextBlock x:Name="TB_info" Text="{Binding CmdWindowString.value}" Margin="10"/>
+            <TextBox x:Name="TB_info" Text=""  Margin="10"/>
         </ScrollViewer>
+
+        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <Button x:Name="Btn_close" Content="Terminate" Click="Btn_close_Click" Grid.Row="2" Grid.ColumnSpan="2" Background="{x:Null}" Foreground="{DynamicResource BlueColor}" FontWeight="Bold" FontSize="20"/>
     </Grid>
 </Window>

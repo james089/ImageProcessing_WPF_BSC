@@ -20,9 +20,21 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO
 
         public static string GetWeightFile(string path)
         {
-            return (new DirectoryInfo(path).EnumerateFiles("*.weights")
-                    .OrderByDescending(f => f.CreationTime)
-                    .FirstOrDefault()).Name;
+            if (new DirectoryInfo(path).EnumerateFiles("*.weights").Count() != 0)
+            {
+                string fileName = (new DirectoryInfo(path).EnumerateFiles("*.weights")
+                   .OrderByDescending(f => f.CreationTime)
+                   .FirstOrDefault()).Name;
+                if (File.Exists(fileName))
+                    return fileName;
+                else
+                    return "No Weight File";
+            }
+            else
+            {
+                return "No Weight File";
+            }
+           
         }
 
         private void getModelFiles(string modelPath)

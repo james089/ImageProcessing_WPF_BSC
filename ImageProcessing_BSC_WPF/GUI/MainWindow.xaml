@@ -360,17 +360,17 @@
                                         <GroupBox Header="Labeling" Grid.Row="0" Margin="5" >
                                             <Grid x:Name="Grid_labeling" >
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="auto"/>
                                                     <ColumnDefinition Width="2*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <DockPanel x:Name="Panel_ML_LabelJobType" >
                                                     <Label Content="Job Type: "  Margin="5"/>
-                                                    <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0">
+                                                    <ComboBox x:Name="Cmb_ML_jobType" Grid.Column="1" Margin="5" SelectedIndex="0" Width="100">
                                                         <ComboBoxItem Content="Train" />
                                                         <ComboBoxItem Content="Test" />
                                                     </ComboBox>
                                                 </DockPanel>
-                                                <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2"/>
+                                                <Button x:Name="Btn_ML_labling" Height="35" Content="Start Labeling Your Image" Margin="5,6" Click="Btn_ML_labling_Click" Grid.Column="2" HorizontalAlignment="Left" Width="200"/>
                                             </Grid>
                                         </GroupBox>
                                         <Expander x:Name="Exp_FileDirectory" Header="File Directory" Margin="5" Grid.Row="2">
@@ -451,7 +451,7 @@
 
                                         <GroupBox Header="Model Training/Evaluating" Grid.Row="1" Margin="5" Visibility="Visible">
                                             <Grid x:Name="Grid_trainModel" >
-                                                <Button x:Name="Btn_trainModel" Content="Train Model" Margin="5" Click="Btn_trainModel_Click"/>
+                                                <Button x:Name="Btn_trainModel" Content="Train Model" Margin="5" Click="Btn_trainModel_Click" Width="200" HorizontalAlignment="Left"/>
                                             </Grid>
                                         </GroupBox>
                                     </Grid>

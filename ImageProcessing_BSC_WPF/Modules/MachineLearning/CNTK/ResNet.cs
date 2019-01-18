@@ -184,7 +184,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK
             }
             catch (Exception ex)
             {
-                //Windows.main.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
+                //MainWindow.mMainWindow.listBox.Items.Add("Error: {0}\nCallStack: {1}\n Inner Exception: {2}");
                 throw ex;
             }
         }

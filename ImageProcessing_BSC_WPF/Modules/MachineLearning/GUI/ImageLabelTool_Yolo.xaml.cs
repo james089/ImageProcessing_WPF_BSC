@@ -82,7 +82,13 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         string obj_test_file = GV.ML_Folders[(int)MLFolders.ML_YOLO_data] + "\\test.txt";
 
         string pretrained_weight_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\darknet53.conv.74";
+        /// <summary>
+        /// This is the one we are using
+        /// </summary>
         string obj_cfg_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\yolo-obj.cfg";
+        /// <summary>
+        /// This is the template
+        /// </summary>
         string yolo_cfg_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\yolov3.cfg";
         public string train_cmd_file = GV.ML_Folders[(int)MLFolders.ML_YOLO] + "\\train_obj.cmd";
 
@@ -173,6 +179,8 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
                     SaveTrainAndTestFile();
                     GenerateCfgFile();
                     GenerateCmdFile();
+                    SaveAspectRatioFile();
+                    MoveCfgAndNameFileToDesFolder();
                     break;
                 case mDialogResult.no:
                     break;
@@ -182,7 +190,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             imgThumbList.Clear();
             this.Close();
         }
-      
+
         #region Between Steps
         private void SwitchSteps(Steps mSteps)
         {
@@ -939,8 +947,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
         {
             return $"darknet.exe detector train {ConvertFileName(obj_data_file)} {ConvertFileName(obj_cfg_file)} {ConvertFileName(pretrained_weight_file)} -dont_show";
         }
-
-
+        
         public bool CheckRequiredFiles()
         {
             StringBuilder sb = new StringBuilder();
@@ -964,6 +971,48 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI
             }
             return true;
         }
+
+        private void SaveAspectRatioFile()
+        {
+            string aspectFile;
+            Bitmap temp = new Bitmap(mImgInfoList[0].imagePath);
+            if (temp.Width == temp.Height)
+                aspectFile = GV.ML_Folders[(int)MLFolders.ML_YOLO_model] + @"\fixed.aspect";
+            else
+                aspectFile = GV.ML_Folders[(int)MLFolders.ML_YOLO_model] + @"\fixed.aspect.remove_this_ext_if_you_use_fixed_aspect_ratio";
+
+            if (!File.Exists(aspectFile))
+            {
+                File.Create(aspectFile).Dispose();
+            }
+
+            using (StreamWriter sw = new StreamWriter(aspectFile))
+            {
+                sw.WriteLine($"1.00");
+            }
+        }
+
+        private void MoveCfgAndNameFileToDesFolder()
+        {
+            if (File.Exists(obj_cfg_file))
+            {
+                File.Copy(obj_cfg_file, GV.ML_Folders[(int)MLFolders.ML_YOLO_model] + "\\" + GetFileName(obj_cfg_file));
+            }
+            else
+            {
+                MessageBox.Show("Config file missing!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            if (File.Exists(obj_names_file))
+            {
+                File.Copy(obj_names_file, GV.ML_Folders[(int)MLFolders.ML_YOLO_model] + "\\" + GetFileName(obj_names_file));
+            }
+            else
+            {
+                MessageBox.Show("Names file missing!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         #endregion Functions
 
     }

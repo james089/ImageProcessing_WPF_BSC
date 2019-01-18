@@ -53,15 +53,15 @@ namespace ImageProcessing_BSC_WPF.Modules.OCR
         {
             if (!OCRRoutine.IsBusy)
             {
-                Windows.main.lbl_OCR.Content = "";
+                MainWindow.mMainWindow.lbl_OCR.Content = "";
                 OCRRoutine.RunWorkerAsync();
             }
         }
 
         private static void OCRRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
-            Windows.main.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
+            MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
+            MainWindow.mMainWindow.lbl_OCR.Content = detectedOCRString + " [" + timeSpent.ToString("#") + " ms]";
         }
 
         private static void OCRRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)

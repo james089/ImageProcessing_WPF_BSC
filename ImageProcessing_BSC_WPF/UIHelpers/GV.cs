@@ -33,11 +33,6 @@ namespace ImageProcessing_BSC_WPF
         Cortex
     }
 
-    public class Windows
-    {
-        public static MainWindow main = null;
-    }
-
     public enum MLFolders
     {
         /// <summary>
@@ -155,8 +150,7 @@ namespace ImageProcessing_BSC_WPF
         // Color detection, multi points select
         public static int _remainColorPoints = 3;               //total interest points in color detection
         public static int _colorRegionSize = 10;                //pixels
-
-        public static bool maxmized = false;
+        
         public static Image<Bgr, byte> imgOriginal;
         public static Image<Bgr, byte> imgOriginal_pure;
         public static Image<Bgr, byte> imgOriginal_save;

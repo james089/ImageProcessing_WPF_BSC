@@ -29,9 +29,12 @@ using static ImageProcessing_BSC_WPF.BindManager;
 using static ImageProcessing_BSC_WPF.Modules.PTCam;
 using static ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO.YoloSharpCore;
 using static ImageProcessing_BSC_WPF.Properties.Settings;
+using static ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI.TrainingWindow;
 using System.Linq;
 using ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO;
 using System.Collections.Generic;
+using ImageProcessing_BSC_WPF.UIHelpers;
+using System.Windows.Threading;
 
 namespace ImageProcessing_BSC_WPF
 {
@@ -43,17 +46,20 @@ namespace ImageProcessing_BSC_WPF
     {
         #region Local setup
         LoadingScreen loadingScreen = new LoadingScreen();
-        public static TrainingWindow tw = new TrainingWindow();
+        public static MainWindow mMainWindow = null;
         #endregion Local setup
 
         public MainWindow()
         {
             //Static MainWindow
-            Windows.main = this;
+            mMainWindow = this;
+            //Windows.main = this;
             DataContext = BindMngr;
 
             loadingScreen.Show();
             InitializeComponent();
+
+            mTrainingWindow = new TrainingWindow();
 
             // Setup background worker
             PreviewRoutine.previewSetup();
@@ -61,7 +67,7 @@ namespace ImageProcessing_BSC_WPF
             ImageResizing.ImageResizingSetup();
             ResNet.CNTK_ResNetSetup();
             ZxingDecoder.DecoderSetup();
-            YoloSharpCore.mYolo.TrainModelRoutineSetup();
+            mTrainingWindow.TrainModelRoutineSetup();
 
             OCR.OCRSetup(OCRMode.NUMBERS);
 
@@ -94,6 +100,8 @@ namespace ImageProcessing_BSC_WPF
             // Show ML Model types
             ML_cmb_model.ItemsSource = Enum.GetValues(typeof(MLModel)).Cast<MLModel>();
             ML_cmb_model.SelectedIndex = 2;
+
+
         }
 
         private void loadProgramSetting()
@@ -201,7 +209,7 @@ namespace ImageProcessing_BSC_WPF
 
                         GV.imgOriginal.Draw(bond, new Bgr(Color.AliceBlue), 1);
 
-                        Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
+                        MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
 
                         regionImgSet[GV._remainColorPoints - 1] = GV.imgOriginal_pure.Copy(bond);
 
@@ -245,7 +253,7 @@ namespace ImageProcessing_BSC_WPF
                         finalColorRegionImg =
                             imageCombine(imageCombine(regionImgSet[0], regionImgSet[1]), regionImgSet[2]);
                         Chk_multiColorPoints.IsChecked = false;
-                        Windows.main.ibObject.Source = ImgConverter.ToBitmapSource(finalColorRegionImg);
+                        MainWindow.mMainWindow.ibObject.Source = ImgConverter.ToBitmapSource(finalColorRegionImg);
                     }
                 }
                 else
@@ -614,7 +622,7 @@ namespace ImageProcessing_BSC_WPF
                 PreviewRoutine.StopPreview();
                 Thread.Sleep(300);
                 if (GV.imgOriginal_pure == null)
-                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal_pure);
+                    MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal_pure);
             }
         }
         private void Chk_multiColorPoints_Unchecked(object sender, RoutedEventArgs e)
@@ -724,10 +732,10 @@ namespace ImageProcessing_BSC_WPF
             {
                 OCR.croppedOCRArea = ImgCropping.rect;
                 BindMngr.GMessage.value = "Area set! Only do OCR inside the red rectangle!";
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
+                MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgOriginal);
                 Image<Bgr, byte> bm = GV.imgOriginal.Copy();
                 bm.Draw(OCR.croppedOCRArea, new Bgr(Color.Red), 2);
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(bm);
+                MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(bm);
             }
 
         }
@@ -754,7 +762,7 @@ namespace ImageProcessing_BSC_WPF
 
         private void Btn_runML_Click(object sender, RoutedEventArgs e)
         {
-            Windows.main.listBox.Items.Clear();
+            MainWindow.mMainWindow.listBox.Items.Clear();
             switch (MLCore.MLModelSelected)
             {
                 case MLModel.ResNet:
@@ -762,7 +770,7 @@ namespace ImageProcessing_BSC_WPF
 
                     for (int i = 0; i < ResNet.resultList.Count; i++)
                     {
-                        Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                        MainWindow.mMainWindow.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
                     }
                     BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
                     break;
@@ -771,7 +779,7 @@ namespace ImageProcessing_BSC_WPF
                     break;
                 case MLModel.Yolo:
                     GV.imgProcessed = new Image<Bgr, byte>(mYolo.Detect(GV.imgOriginal.ToBitmap()));
-                    Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
+                    MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
                     break;
             }
         }
@@ -784,7 +792,7 @@ namespace ImageProcessing_BSC_WPF
 
             if (MLCore.MLModelSelected == MLModel.Yolo)
             {
-                ML_cmb_dataset.Visibility = Visibility.Hidden;
+                ML_cmb_dataset.Visibility = Visibility.Collapsed;
                 Panel_ML_LabelJobType.Visibility = Visibility.Collapsed;
                 TB_ML_modelName.Text = ModelPath.GetWeightFile(GV.ML_Folders[(int)MLFolders.ML_YOLO_model]);
 
@@ -988,18 +996,15 @@ namespace ImageProcessing_BSC_WPF
                 case MLModel.FastRCNN:
                     break;
                 case MLModel.Yolo:
-                    if (tw.IsActive)
-                    {
-                        tw.Close();
-                        tw = new TrainingWindow();
-                        tw.Show();
-                    }
-                    else
-                        tw.Show();
-
                     mYolo.TrainModel();
                     break;
             }
         }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("hey");
+        }
+        
     }
 }

@@ -72,7 +72,7 @@ namespace ImageProcessing_BSC_WPF.Modules.ZxingDecoder
         {
             if (!decodeRoutine.IsBusy)
             {
-                Windows.main.listBox.Items.Clear();
+                MainWindow.mMainWindow.listBox.Items.Clear();
                 decodeRoutine.RunWorkerAsync();
             }
         }
@@ -84,11 +84,11 @@ namespace ImageProcessing_BSC_WPF.Modules.ZxingDecoder
                 Image<Bgr, Byte> processed = ImgToDecode;
                 //drawDecodeResultInImg(processed);  //can't draw on a roated bitmap...
 
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
+                MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(processed.Convert<Bgr, Byte>().Rotate(_angle, new Bgr(Color.Black), false));
             }
             else
             {
-                Windows.main.listBox.Items.Add("Fail to find any result");
+                MainWindow.mMainWindow.listBox.Items.Add("Fail to find any result");
             }
             s = 0;
         }
@@ -96,14 +96,14 @@ namespace ImageProcessing_BSC_WPF.Modules.ZxingDecoder
         private static void decodeRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (s == 0 || s % 5 == 0)                                            //skip the repeated angle (5 rounds of check in each angle)
-                Windows.main.listBox.Items.Add("Checked angle: " + _angle);
+                MainWindow.mMainWindow.listBox.Items.Add("Checked angle: " + _angle);
             s++;
 
-            Windows.main.TB_progress.Text = e.ProgressPercentage.ToString() + "%";
-            Windows.main.progressBar.Value = e.ProgressPercentage;
+            MainWindow.mMainWindow.TB_progress.Text = e.ProgressPercentage.ToString() + "%";
+            MainWindow.mMainWindow.progressBar.Value = e.ProgressPercentage;
 
-            if (Windows.main.listBox.Items.Count != 0)
-                Windows.main.listBox.ScrollIntoView(Windows.main.listBox.Items[Windows.main.listBox.Items.Count - 1]);
+            if (MainWindow.mMainWindow.listBox.Items.Count != 0)
+                MainWindow.mMainWindow.listBox.ScrollIntoView(MainWindow.mMainWindow.listBox.Items[MainWindow.mMainWindow.listBox.Items.Count - 1]);
         }
 
         private static void decodeRoutine_doWork(object sender, DoWorkEventArgs e)
@@ -215,7 +215,7 @@ namespace ImageProcessing_BSC_WPF.Modules.ZxingDecoder
                 for (int i = 0; i < result.Length; i++)
                 {
                     ShapeNDraw.drawString(outputStringList[i], (int)loc[i].X, (int)loc[i].Y + 50, Color.Red, 24, imgToDraw);
-                    Windows.main.listBox.Items.Add(outputStringList[i] + "\n" + loc[i]);
+                    MainWindow.mMainWindow.listBox.Items.Add(outputStringList[i] + "\n" + loc[i]);
                 }
             }
         }

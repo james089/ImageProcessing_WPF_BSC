@@ -1,4 +1,5 @@
 ﻿using ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI;
+using ImageProcessing_BSC_WPF.UIHelpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using YoloSharp;
 using static ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI.ImageLabelTool_Yolo;
+using static ImageProcessing_BSC_WPF.Modules.MachineLearning.GUI.TrainingWindow;
 
 namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO
 {
@@ -39,7 +41,7 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO
             }
             else
             {
-                MessageBox.Show("Missing Required model files", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Missing Required model(.cfg, .weight, .name) files", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             return Tuple.Create<Yolo, float>(_yolo, _aspectRatio);
         }
@@ -97,67 +99,35 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.YOLO
         }
 
         #region Training Model
-        private BackgroundWorker trainModelRoutine = new BackgroundWorker();
-        public void TrainModelRoutineSetup()
-        {
-            trainModelRoutine.DoWork += new DoWorkEventHandler(trainModelRoutine_doWork);
-            trainModelRoutine.ProgressChanged += new ProgressChangedEventHandler(trainModelRoutine_ProgressChanged);
-            trainModelRoutine.RunWorkerCompleted += new RunWorkerCompletedEventHandler(trainModelRoutine_WorkerCompleted);
-            trainModelRoutine.WorkerReportsProgress = true;
-            trainModelRoutine.WorkerSupportsCancellation = true;
-        }
-
         ProcessStartInfo processInfo;
         Process process;
         public void TrainModel()
         {
             if (!mLabelTool.CheckRequiredFiles()) return;
-            
+
+            //if (mTrainingWindow.IsActive)
+            //{
+            //    mTrainingWindow.Close();
+            //    mTrainingWindow = new TrainingWindow();
+            //    mTrainingWindow.Show();
+            //}
+            //else
+            //    mTrainingWindow.Show();
+
             string temp = mLabelTool.DarknetTrainCmd();
 
-            temp = "/c " + temp; 
+            temp = "/c " + temp;
             processInfo = new ProcessStartInfo("cmd.exe", temp);
-            processInfo.CreateNoWindow = true;
-            processInfo.UseShellExecute = false;
-            processInfo.RedirectStandardOutput = true;
-            processInfo.RedirectStandardError = true;
 
             process = Process.Start(processInfo);
-
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-            Console.WriteLine("output>>" + e.Data);
-            //BindManager.BindMngr.CmdWindowString.value += e.Data + "\n";
-
-            process.BeginOutputReadLine();
-
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-            Console.WriteLine("error>>" + e.Data);
-            //BindManager.BindMngr.CmdWindowString.value += e.Data + "\n";
-            process.BeginErrorReadLine();
 
             process.WaitForExit();
 
             Console.WriteLine();
             process.Close();
 
-            trainModelRoutine.RunWorkerAsync();
-
         }
 
-        private void trainModelRoutine_doWork(object sender, DoWorkEventArgs e)
-        {
-           
-        }
-
-        private void trainModelRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-        }
-
-        private void trainModelRoutine_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-        }
-
-        
         #endregion Training Model
     }
 }

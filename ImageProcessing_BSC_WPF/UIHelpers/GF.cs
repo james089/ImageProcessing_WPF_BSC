@@ -55,10 +55,10 @@ namespace ImageProcessing_BSC_WPF
                 GV.imgWidth = GV.imgOriginal.Width;
             }
 
-            GV._zoomFactor = ImgCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, Windows.main.ibOriginal);
-            Windows.main.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
-                                  "PictureBox size: (" + Windows.main.ibOriginal.ActualWidth.ToString("0.#") + "," +
-                                  Windows.main.ibOriginal.ActualHeight.ToString("0.#") + ") " +
+            GV._zoomFactor = ImgCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, MainWindow.mMainWindow.ibOriginal);
+            MainWindow.mMainWindow.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
+                                  "PictureBox size: (" + MainWindow.mMainWindow.ibOriginal.ActualWidth.ToString("0.#") + "," +
+                                  MainWindow.mMainWindow.ibOriginal.ActualHeight.ToString("0.#") + ") " +
                                   "Zoom factor: " + GV._zoomFactor.ToString("0.##");
         }
 

@@ -50,26 +50,26 @@ namespace ImageProcessing_BSC_WPF
 
         private static void connectRoutine_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Image<Bgr, byte> connecting = new Image<Bgr, byte>(new Bitmap((int)Windows.main.ibOriginal.Width, (int)Windows.main.ibOriginal.Height));
+            Image<Bgr, byte> connecting = new Image<Bgr, byte>(new Bitmap((int)MainWindow.mMainWindow.ibOriginal.Width, (int)MainWindow.mMainWindow.ibOriginal.Height));
             connecting.SetValue(new Bgr(Color.Gray));   // Set background color
             ShapeNDraw.drawString("Connecting", connecting, new System.Drawing.Point(connecting.Width / 3 - 10, connecting.Height / 2 - 10), 1, Color.White);
 
-            Image<Bgr, byte> connected = new Image<Bgr, byte>(new Bitmap((int)Windows.main.ibOriginal.Width, (int)Windows.main.ibOriginal.Height));
+            Image<Bgr, byte> connected = new Image<Bgr, byte>(new Bitmap((int)MainWindow.mMainWindow.ibOriginal.Width, (int)MainWindow.mMainWindow.ibOriginal.Height));
             connected.SetValue(new Bgr(Color.Black));   // Set background color
             ShapeNDraw.drawString("Connected", connected, new System.Drawing.Point(connected.Width / 3 - 10, connected.Height / 2 - 10), 1, Color.White);
 
 
             if (e.ProgressPercentage == 0)
             {
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connecting);
-                Windows.main.Btn_PR.IsEnabled = false;
+                MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(connecting);
+                MainWindow.mMainWindow.Btn_PR.IsEnabled = false;
             }
 
 
             if (e.ProgressPercentage == 100)
             {
-                Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
-                Windows.main.Btn_PR.IsEnabled = true;
+                MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(connected);
+                MainWindow.mMainWindow.Btn_PR.IsEnabled = true;
                 PreviewRoutine.startPreview(PreviewRoutine._previewFPS);
             }
         }

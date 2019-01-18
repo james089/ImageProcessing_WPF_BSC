@@ -58,18 +58,18 @@ namespace ImageProcessing_BSC_WPF
                 mMessageBox.Show("No camera connected");
                 return;
             }
-            Windows.main.Btn_PR.Content = "Pause";
+            MainWindow.mMainWindow.Btn_PR.Content = "Pause";
             IsCapturing = true;
-            Windows.main.Panel_staticImageOperation.IsEnabled = false;
+            MainWindow.mMainWindow.Panel_staticImageOperation.IsEnabled = false;
             if(!previewRoutine.IsBusy)
                 previewRoutine.RunWorkerAsync(previewFPS);
         }
 
         public static void StopPreview()
         {
-            Windows.main.Btn_PR.Content = "Resume";
+            MainWindow.mMainWindow.Btn_PR.Content = "Resume";
             IsCapturing = false;
-            Windows.main.Panel_staticImageOperation.IsEnabled = true;
+            MainWindow.mMainWindow.Panel_staticImageOperation.IsEnabled = true;
             previewRoutine.CancelAsync();
         }
 
@@ -88,9 +88,9 @@ namespace ImageProcessing_BSC_WPF
 
         public static void GUIUpdates()
         {
-            //Windows.main.TB_info.Text = GV.liveViewMessage;
-            Windows.main.listBox.Items.Clear();
-            Windows.main.lbl_barcodeDetectResult.Content = "";
+            //MainWindow.mMainWindow.TB_info.Text = GV.liveViewMessage;
+            MainWindow.mMainWindow.listBox.Items.Clear();
+            MainWindow.mMainWindow.lbl_barcodeDetectResult.Content = "";
 
             //Detect code
             if (GV._decodeSwitch)
@@ -98,16 +98,16 @@ namespace ImageProcessing_BSC_WPF
                 if (GV.mDecoderEngine == DecoderEngine.Zxing)
                 {
                     if (ZxingDecoder.outputStringList != null && ZxingDecoder.outputStringList.Count != 0)
-                        Windows.main.lbl_barcodeDetectResult.Content = ZxingDecoder.outputStringList[0];
+                        MainWindow.mMainWindow.lbl_barcodeDetectResult.Content = ZxingDecoder.outputStringList[0];
                 }
                 else if (GV.mDecoderEngine == DecoderEngine.Cortex)
                 {
-                    Windows.main.lbl_barcodeDetectResult.Content = CortexDecoder.ResultString;
-                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner0);
-                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner1);
-                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner2);
-                    Windows.main.listBox.Items.Add(CortexDecoder.FullResult.corner3);
-                    Windows.main.listBox.Items.Add(CortexDecoder.BondRec);
+                    MainWindow.mMainWindow.lbl_barcodeDetectResult.Content = CortexDecoder.ResultString;
+                    MainWindow.mMainWindow.listBox.Items.Add(CortexDecoder.FullResult.corner0);
+                    MainWindow.mMainWindow.listBox.Items.Add(CortexDecoder.FullResult.corner1);
+                    MainWindow.mMainWindow.listBox.Items.Add(CortexDecoder.FullResult.corner2);
+                    MainWindow.mMainWindow.listBox.Items.Add(CortexDecoder.FullResult.corner3);
+                    MainWindow.mMainWindow.listBox.Items.Add(CortexDecoder.BondRec);
 
                     GV.imgProcessed.Draw(CortexDecoder.BondRec, new Bgr(0, 0, 255), 3);
                 }
@@ -115,8 +115,8 @@ namespace ImageProcessing_BSC_WPF
 
             if (GV._OCRSwitch)
             {
-                Windows.main.lbl_OCR.Content = OCR.detectedOCRString;
-                Windows.main.ibOCR.Source = ImgConverter.ToBitmapSource(GV.OCROutputImg);
+                MainWindow.mMainWindow.lbl_OCR.Content = OCR.detectedOCRString;
+                MainWindow.mMainWindow.ibOCR.Source = ImgConverter.ToBitmapSource(GV.OCROutputImg);
             }
 
             if (GV._MLSwitch)
@@ -126,7 +126,7 @@ namespace ImageProcessing_BSC_WPF
                     case MLModel.ResNet:
                         for (int i = 0; i < ResNet.resultList.Count; i++)
                         {
-                            Windows.main.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
+                            MainWindow.mMainWindow.listBox.Items.Add(string.Format("{0}: {1}", MLCore.MLSelectedLabels[i], ResNet.resultList[i]));
                         }
                         if (ResNet.OutputProbablility > 0)
                             BindManager.BindMngr.GMessage.value = string.Format("This must be a {0}!", ResNet.OutputString, ResNet.OutputProbablility);
@@ -155,7 +155,7 @@ namespace ImageProcessing_BSC_WPF
 
             // Normal
             if (GV.imgProcessed == null) GV.imgProcessed = GV.imgOriginal;
-            Windows.main.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
+            MainWindow.mMainWindow.ibOriginal.Source = ImgConverter.ToBitmapSource(GV.imgProcessed);
 
 
             // Error reporting
