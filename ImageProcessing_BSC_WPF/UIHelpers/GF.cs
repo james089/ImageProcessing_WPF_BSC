@@ -57,8 +57,8 @@ namespace ImageProcessing_BSC_WPF
 
             GV._zoomFactor = ImgCropping.zoomFactorCalculator(GV.imgWidth, GV.imgHeight, 4, 3, MainWindow.mMainWindow.ibOriginal);
             MainWindow.mMainWindow.TB_info_camera.Text = "Image size: (" + GV.imgWidth + "," + GV.imgHeight + ") " +
-                                  "PictureBox size: (" + MainWindow.mMainWindow.ibOriginal.ActualWidth.ToString("0.#") + "," +
-                                  MainWindow.mMainWindow.ibOriginal.ActualHeight.ToString("0.#") + ") " +
+                                  "PictureBox size: (" + MainWindow.mMainWindow.ibOriginal.Width.ToString("0.#") + "," +
+                                  MainWindow.mMainWindow.ibOriginal.Height.ToString("0.#") + ") " +
                                   "Zoom factor: " + GV._zoomFactor.ToString("0.##");
         }
 

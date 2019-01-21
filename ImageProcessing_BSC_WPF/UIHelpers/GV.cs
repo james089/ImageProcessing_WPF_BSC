@@ -159,8 +159,6 @@ namespace ImageProcessing_BSC_WPF
         public static Image<Bgr, byte> object_img = null;
         public static Image<Bgr, byte> ref_img = null;
 
-        public static Graphics mGraphics;
-
         public static CameraConnection mCamera = new CameraConnection();
         public static CameraToImage_dll_x64.Windows.Conversion mConvert;
 
