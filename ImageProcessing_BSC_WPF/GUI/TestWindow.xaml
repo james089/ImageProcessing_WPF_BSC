@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageProcessing_BSC_WPF"
         mc:Ignorable="d"
-        Title="TestWindow" Height="300" Width="300" Background="White">
+        Title="TestWindow" Height="300" Width="300" Background="White" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary Source="/mUserControl_BSC_dll;component/Themes/CloudPoint.xaml"/>
     </Window.Resources>
@@ -16,5 +16,11 @@
                 <Button Content="22" />
             </GroupBox>
         </Expander>
+
+        <Grid Width="100">
+            <ScrollViewer x:Name="SV" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                <TextBlock x:Name="TBL_longtext" Text="This is a super long text that is showing in a loop"/>
+            </ScrollViewer>
+        </Grid>
     </StackPanel>
 </Window>

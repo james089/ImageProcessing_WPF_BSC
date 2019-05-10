@@ -35,7 +35,14 @@ namespace ImageProcessing_BSC_WPF.Modules.MachineLearning.CNTK
 
         public static void CNTK_ResNetSetup()
         {
-            device = DeviceDescriptor.GPUDevice(0);
+            try
+            {
+                device = DeviceDescriptor.GPUDevice(0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             MLRoutine.DoWork += new DoWorkEventHandler(MLRoutine_doWork);
             MLRoutine.ProgressChanged += new ProgressChangedEventHandler(MLRoutine_ProgressChanged);
