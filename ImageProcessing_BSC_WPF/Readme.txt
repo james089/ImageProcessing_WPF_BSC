@@ -97,14 +97,15 @@ v3.0.0.0
 
 =======================================
 
-2016/6/10
-v2.0
-1. Reborn as WPF version
+2017/4/3
+v2.2
+1. Rearrange the functions, group into different folders, mainwindow.cs is cleaner
 
 2017/1/4
 v2.1
 1. Adding centering check functions
 
-2017/4/3
-v2.2
-1. Rearrange the functions, group into different folders, mainwindow.cs is cleaner
+2016/6/10
+v2.0
+1. Reborn as WPF version
+
